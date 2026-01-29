@@ -1,36 +1,86 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}경제 기사 마스터{% endblock %}</title>
-    <style>
-        body { font-family: 'Malgun Gothic', sans-serif; line-height: 1.6; color: #333; max-width: 1000px; margin: 0 auto; padding: 20px; }
-        nav { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 30px; }
-        nav a { text-decoration: none; color: #333; font-weight: bold; margin-left: 15px; }
-        .logo { font-size: 24px; font-weight: 900; color: #007bff; }
-        footer { margin-top: 50px; text-align: center; font-size: 14px; color: #888; border-top: 1px solid #eee; padding-top: 20px; }
-    </style>
-    {% block extra_css %}{% endblock %}
+    <title>Custom Economy | 금융 1타 강사</title>
+    
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+    
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    
+    {% block extra_css %}
+    {% endblock %}
 </head>
-<body>
-    <nav>
-        <div class="logo"><a href="/" style="margin-left: 0; color: #007bff;">ECONOMY QUIZ</a></div>
-        <div>
-            <a href="/">홈</a>
-            <a href="/api/articles/">기사목록</a>
-            <a href="/api/terms/search/">용어사전</a>
-            <a href="/api/accounts/profile/1/">마이페이지</a>
+
+<body class="dashboard-body">
+    <aside class="main-sidebar">
+        <a href="{% url 'articles:index' %}" class="logo">
+            <div class="logo-icon">C</div>
+            <span>Custom<span class="text-mustard">Economy</span></span>
+        </a>
+
+        <nav class="nav-menu">
+            <a href="{% url 'articles:index' %}"
+                class="nav-link {% if request.resolver_match.app_name == 'articles' and request.resolver_match.url_name == 'index' %}active{% endif %}">
+                🏠 홈 (대시보드)
+            </a>
+            
+            <a href="{% url 'articles:explore' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'explore' %}active{% endif %}">
+                🔍 뉴스 탐색
+            </a>
+            
+            <a href="{% url 'accounts:league' %}"
+                class="nav-link {% if request.resolver_match.url_name == 'league' %}active{% endif %}">
+                🏆 리그
+            </a>
+            
+            <a href="{% url 'accounts:profile' %}" 
+                class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                👤 마이페이지
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            {% if user.is_authenticated %}
+            <div class="user-profile">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}" class="mini-avatar">
+                <div class="user-info">
+                    <span class="user-nickname">{{ user.nickname }}</span>
+                    <span class="user-level">Lv.{{ user.level }} 금융 루키</span>
+                </div>
+            </div>
+            <form method="post" action="{% url 'accounts:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout-sidebar">로그아웃</button>
+            </form>
+            {% else %}
+            <div style="text-align: center;">
+                <p style="font-size: 0.85rem; color: #aaa; margin-bottom: 10px;">로그인이 필요합니다</p>
+                <a href="{% url 'accounts:login' %}">
+                    <button class="btn-login-sidebar">로그인 하러가기</button>
+                </a>
+            </div>
+            {% endif %}
         </div>
-    </nav>
+    </aside>
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+    <div class="main-layout-wrapper">
+        <main class="container" style="flex:1; padding-top: 40px; padding-bottom: 40px;">
+            {% block content %}
+            {% endblock %}
+        </main>
 
-    <footer>
-        <p>&copy; 2026 경제 기사 마스터 프로젝트. All rights reserved.</p>
-    </footer>
+        <footer
+            style="text-align:center; padding:30px 0; color:var(--gray-400); font-size:0.8rem; border-top:1px solid var(--border-color);">
+            <p>&copy; 2026 Custom Economy Project. All rights reserved.</p>
+        </footer>
+    </div>
+
 </body>
+
 </html>
