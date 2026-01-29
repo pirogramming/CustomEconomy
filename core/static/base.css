@@ -1,0 +1,64 @@
+.sidebar_hs{
+    background-color: #192237;
+    width: 258px;
+    height: 100vh;
+    position: fixed;
+}
+.sidebar_hs .sidebar_profile_hs{width: 258px; height: 258px; background-color: pink;}
+.sidebar_hs .sidebar_btns_hs{
+
+}
+.sidebar_hs .sidebar_btns_hs .main-btn-hs {
+    color: white; padding: 12px;
+    text-align: center;
+}
+.sidebar_hs .sidebar_btns_hs .articleList-btn-hs {
+    color: white; padding: 12px;
+    text-align: center;
+}
+.sidebar_hs .sidebar_btns_hs .terms-btn-hs {
+    color: white; padding: 12px;
+    text-align: center;
+}
+.sidebar_hs .sidebar_btns_hs .league-btn-hs {
+    color: white; padding: 12px;
+    text-align: center;
+}
+.sidebar_hs .sidebar_btns_hs .mypage-btn-hs {
+    color: white; padding: 12px;
+    text-align: center;
+}
+
+
+.sidebar_hs .sidebar_btns_hs .main-btn-hs a{
+    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
+}
+.sidebar_hs .sidebar_btns_hs .articleList-btn-hs a{
+    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
+}
+.sidebar_hs .sidebar_btns_hs .terms-btn-hs a{
+    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
+}
+.sidebar_hs .sidebar_btns_hs .league-btn-hs a{
+    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
+}
+.sidebar_hs .sidebar_btns_hs .mypage-btn-hs a{
+    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
+}
+
+
+.sidebar_hs .sidebar_btns_hs .main-btn-hs a:hover{color: #80B27F;}
+.sidebar_hs .sidebar_btns_hs .articleList-btn-hs a:hover{color: #80B27F;}
+.sidebar_hs .sidebar_btns_hs .terms-btn-hs a:hover{color: #80B27F;}
+.sidebar_hs .sidebar_btns_hs .league-btn-hs a:hover{color: #80B27F;}
+.sidebar_hs .sidebar_btns_hs .mypage-btn-hs a:hover{color: #80B27F;}
+
+.sidebar_hs .sidebar_btns_hs a.active{
+    color: #80B27F;
+    font-weight: 700; /* 선택: 살짝 강조 */
+}
+
+
+
+.sidebar_hs .sidebar_btns_user_hs .login-btn-hs{color: white;}
+.sidebar_hs .sidebar_btns_user_hs .signup-btn-hs{color: white;}

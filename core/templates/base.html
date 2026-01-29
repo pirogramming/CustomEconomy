@@ -6,20 +6,25 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>{% block title %}Custom Economy{% endblock %}</title>
-	<style>
-		nav { background:#f5f5f5; padding:10px; }
-		nav a { margin-right:12px; text-decoration:none; color:#333; }
-	</style>
+    <link rel="stylesheet" href="{% static 'base.css' %}">
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+    {% block extra_css %}{% endblock %}
+    <link href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-	<nav>
-		<a href="{% url 'main' %}">홈</a>
-		<a href="{% url 'articleList' %}">기사</a>
-		<a href="{% url 'terms' %}">경제 단어</a>
-		<a href="{% url 'league' %}">리그</a>
-		<a href="{% url 'mypage' %}">마이페이지</a>
-		<a href="{% url 'login' %}">로그인</a>
-		<a href="{% url 'signup' %}">회원가입</a>
+	<nav class="sidebar_hs">
+        <div class="sidebar_profile_hs"></div>
+        <div class="sidebar_btns_hs">
+            <div class="main-btn-hs"><a href="{% url 'main' %}" class="{% if request.resolver_match.url_name == 'main' %}active{% endif %}">홈</a></div>
+            <div class="articleList-btn-hs"><a href="{% url 'articleList' %}" class="{% if request.resolver_match.url_name == 'articleList' %}active{% endif %}">기사</a></div>
+            <div class="terms-btn-hs"><a href="{% url 'terms' %}" class="{% if request.resolver_match.url_name == 'terms' %}active{% endif %}">경제 단어</a></div>
+            <div class="league-btn-hs"><a href="{% url 'league' %}" class="{% if request.resolver_match.url_name == 'league' %}active{% endif %}">리그</a></div>
+            <div class="mypage-btn-hs"><a href="{% url 'mypage' %}" class="{% if request.resolver_match.url_name == 'mypage' %}active{% endif %}">마이페이지</a></div>
+        </div>
+        <div class="sidebar_btns_user_hs">
+            <a href="{% url 'login' %}" class="login-btn-hs">로그인</a>
+            <a href="{% url 'signup' %}" class="signup-btn-hs">회원가입</a>
+        </div>
 	</nav>
 
 	<main>
