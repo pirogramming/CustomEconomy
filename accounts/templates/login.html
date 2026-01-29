@@ -1,5 +1,10 @@
-
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'login.css' %}">
+{% endblock %}
+
 {% block content %}
-<h2> 로그인 페이지 </h2>
+<div class="login"><h2> 로그인 페이지 </h2>
 {% endblock %}
