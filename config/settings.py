@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "explanations",
     "quizzes",
     "terms",
-    
 ]
 
 MIDDLEWARE = [
