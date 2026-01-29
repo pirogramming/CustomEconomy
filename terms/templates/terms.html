@@ -1,5 +1,11 @@
 
 {% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'terms.css' %}">
+{% endblock %}
+
 {% block content %}
-<h2> 경제 단어 페이지 </h2>
+<div class="terms"><h2> 경제 단어 페이지 </h2>
 {% endblock %}
