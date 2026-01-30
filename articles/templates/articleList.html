@@ -7,5 +7,22 @@
 {% endblock %}
 
 {% block content %}
-<div class="articleList"><h2> 기사 목록 페이지 </h2>
+<div class="articleListBody">
+    <h2> 기사 목록 페이지 </h2>
+    <div class="articleMenuBar">
+        <div class="ecoBtn">경제</div>
+        <div class="financeBtn">금융</div>
+        <div class="stockBtn">증권</div>
+        <div class="entreBtn">기업</div>
+        <div class="reBtn">부동산</div>
+    </div>
+    <div class="middleFloat">
+        <select>
+            <option value="current">최신순</option> 
+            <option value="popular">인기순</option> 
+        </select>
+
+        <div class="article-card"></div>
+    </div>
+</div>
 {% endblock %}

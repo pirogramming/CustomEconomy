@@ -1,4 +1,68 @@
-.articleList {
+.articleListBody{
   margin-left: 258px;
-  padding: 20px;      
+  padding: 20px;
+  background-color: #EEEFEE;
+
+  min-height: 100vh;         
+  box-sizing: border-box;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+.articleListBody .articleMenuBar{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 12px;          
+  padding: 0px 0px;
+  background-color: pink;
+  max-width: 900px;  
+  width: 100%;
+}
+.articleListBody .articleMenuBar > div{
+  padding: 10px 16px;
+  border-radius: 20px 20px 0 0 ;
+  cursor: pointer;
+  font-weight: 700;
+  color: white;
+  background-color: #d0d0d0;
+  margin-top: auto; margin-bottom: 0px;
+  width: 100px; height: 10px;
+  text-align: center;
+}
+.articleListBody .articleMenuBar > div:hover{
+  color: #EF9160;
+  background-color: #FFFFFF;
+}
+.articleListBody .articleMenuBar .ecoBtn{}
+.articleListBody .articleMenuBar .financeBtn{}
+.articleListBody .articleMenuBar .stockBtn{}
+.articleListBody .articleMenuBar .entreBtn{}
+.articleListBody .articleMenuBar .reBtn{}
+
+.articleListBody .middleFloat{
+  background-color: #FFFFFF;
+  margin-top: 0px;
+  padding: 16px;
+  box-shadow: 3px 3px 23px 1px #555555;
+
+  max-width: 900px;  
+  width: 100%;   
+  height: 500px;
+  min-height: 300px; 
+}
+
+.articleListBody .middleFloat select{background-color: aqua;}
+.articleListBody .middleFloat .article-card{
+  width: 200px; height: 300px;
+  background-color: #F4F4F4;
+  box-shadow: 3px 3px 23px 1px #555555;
+  border-radius: 12px;
+}
+.articleListBody .middleFloat .article-card:hover{
+  cursor: pointer;
+  box-shadow: none
 }
