@@ -1,3 +1,4 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from .models import Term
+from django.shortcuts import render, HttpResponse
+
+def terms_view(request) :
+	return render(request, 'terms.html')
