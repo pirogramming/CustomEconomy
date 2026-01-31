@@ -18,7 +18,7 @@ class MKNewsFetcher:
 
     def _clean_content(self, text):
         if not text: return ""
-        lines = text.split('\n') # 본문을 줄 단위로 쪼개서 검사합니다.
+        lines = text.split('\n')
         
         cleaned_lines = []
         for l in lines:
@@ -43,6 +43,11 @@ class MKNewsFetcher:
                 news = NewsArticle(entry.link, language='ko')
                 news.download()
                 news.parse()
+
+                cleaned_content = self._clean_content(news.text)
+                if cleaned_content.strip().startswith("Key Points"):
+                    print(f"⏩ 건너뜀: 'Key Points'로 시작하는 기사 ({entry.title[:10]}...)")
+                    continue
                 
                 pub_date = parser.parse(entry.published)
 
