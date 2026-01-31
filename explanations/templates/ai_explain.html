@@ -1,1 +1,119 @@
-<h2> AI 재풀이 페이지 </h2>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI 상세 해설 - {{ article.title }}{% endblock %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/explanation.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="explanation-wrapper">
+    
+    <h1 class="page-main-title">Custom Economy</h1>
+
+    <div class="card-ui-container">
+        
+        <div class="tabs-header">
+            <button class="tab-item active" onclick="openTab(event, 'tab-origin')">
+                기사 원문
+            </button>
+
+            {% for i in "12345" %}
+                {% with current_level=i|add:"0" %} {% if current_level <= user_level %}
+                        <button class="tab-item" onclick="openTab(event, 'tab-lv{{ i }}')">
+                            Lv{{ i }}
+                        </button>
+                    {% else %}
+                        <button class="tab-item locked" disabled>
+                            🔒 Lv{{ i }}
+                        </button>
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
+        </div>
+
+        <div class="white-card-body">
+            
+            <div class="article-date-badge">
+                {{ article.published_at|date:"Y.m.d" }}
+            </div>
+
+            <h2 class="content-title">{{ article.title }}</h2>
+
+            {% if article.image_url %}
+            <div class="article-hero-image">
+                <img src="{{ article.image_url }}" alt="기사 대표 이미지">
+            </div>
+            {% endif %}
+
+            <div id="tab-origin" class="tab-pane" style="display: block;">
+                <div class="text-content origin">
+                    {{ article.content|linebreaksbr }}
+                </div>
+            </div>
+
+            {% for expl in explanations %}
+            <div id="tab-lv{{ expl.level }}" class="tab-pane" style="display: none;">
+                
+                <div class="ai-section">
+                    <h3 class="ai-header text-orange">AI 재풀이????</h3>
+                    <div class="ai-box">
+                        <p>{{ expl.article_explanation|linebreaksbr }}</p>
+                    </div>
+                </div>
+
+                <div class="ai-section">
+                    <h3 class="ai-header text-green">용어 설명??</h3>
+                    <div class="ai-box">
+                        <p>{{ expl.term_explanation|linebreaksbr }}</p>
+                    </div>
+                </div>
+
+                <div class="ai-section">
+                    <h3 class="ai-header text-yellow">관심분야 전망</h3>
+                    <div class="ai-box">
+                        <p>{{ expl.prediction|linebreaksbr }}</p>
+                    </div>
+                </div>
+
+            </div>
+            {% endfor %}
+
+            <div class="quiz-btn-area">
+                <a href="{% url 'quizzes:detail' article.id %}" class="quiz-floating-btn">
+                    🚀 지금 바로 퀴즈 풀어보기 🚀
+                </a>
+            </div>
+
+        </div> </div> </div>
+
+<script>
+    function openTab(evt, tabName) {
+        // 1. 모든 탭 내용 숨기기
+        var tabPanes = document.getElementsByClassName("tab-pane");
+        for (var i = 0; i < tabPanes.length; i++) {
+            tabPanes[i].style.display = "none";
+        }
+
+        // 2. 모든 탭 버튼 활성화 스타일 제거
+        var tabBtns = document.getElementsByClassName("tab-item");
+        for (var i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].className = tabBtns[i].className.replace(" active", "");
+        }
+
+        // 3. 선택된 탭 내용 보이기
+        var selectedPane = document.getElementById(tabName);
+        if (selectedPane) {
+            selectedPane.style.display = "block";
+        } else {
+            // 데이터가 없을 경우 (예: 아직 AI 분석 전)
+            alert("해당 레벨의 분석 데이터가 준비되지 않았습니다.");
+        }
+
+        // 4. 클릭한 버튼 활성화
+        evt.currentTarget.className += " active";
+    }
+</script>
+{% endblock %}
