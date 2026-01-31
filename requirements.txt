@@ -5,3 +5,10 @@ djangorestframework==3.16.1
 sqlparse==0.5.5
 typing_extensions==4.15.0
 tzdata==2025.3
+
+feedparser
+newspaper3k
+google-generativeai
+PyJWT
+cryptography
+lxml_html_clean
