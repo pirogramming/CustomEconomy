@@ -1,0 +1,65 @@
+/* static/css/detail.css */
+
+.detail-container {
+    display: grid; grid-template-columns: 1fr 320px; /* 본문 | 사이드바 */
+    gap: 50px; max-width: 1200px; margin: 40px auto;
+    padding: 0 20px; align-items: start;
+}
+
+/* Article Content */
+.article-main { min-width: 0; }
+.article-header {
+    margin-bottom: 30px; border-bottom: 1px solid var(--border-color);
+    padding-bottom: 25px; text-align: left;
+}
+.article-title { font-size: 2.2rem; font-weight: 800; margin: 15px 0; line-height: 1.3; color: #fff; }
+.article-meta {
+    color: var(--gray-400); font-size: 0.95rem;
+    display: flex; gap: 10px; align-items: center;
+}
+.article-content {
+    line-height: 1.9; font-size: 1.15rem; color: #e5e7eb;
+    text-align: justify; word-break: keep-all;
+}
+.article-content p { margin-bottom: 25px; }
+
+/* Right Sidebar (Sticky) */
+.sidebar-right {
+    position: sticky; top: 30px;
+    display: flex; flex-direction: column; gap: 40px;
+}
+
+/* Level Buttons */
+.level-box { display: flex; flex-direction: column; gap: 12px; align-items: flex-end; }
+.btn-level-link {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; max-width: 200px; padding: 14px 0; border-radius: 50px;
+    background-color: transparent; border: 2px solid var(--mustard);
+    color: var(--mustard); font-weight: 800; font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2); transition: all 0.2s ease;
+}
+.btn-level-link:hover {
+    background-color: var(--mustard); color: var(--navy);
+    transform: translateX(-5px); box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);
+}
+
+/* Term Dictionary */
+.term-box {
+    background-color: #f1f3f5; color: #333;
+    border-radius: 16px; padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.term-header {
+    font-size: 1.1rem; font-weight: 800; margin-bottom: 20px;
+    border-bottom: 2px solid #ddd; padding-bottom: 10px; color: #14213E;
+}
+.term-item { margin-bottom: 18px; }
+.term-name { display: block; font-weight: 800; color: #0d47a1; margin-bottom: 4px; font-size: 1rem; }
+.term-desc { color: #555; font-size: 0.9rem; line-height: 1.4; }
+
+@media (max-width: 960px) {
+    .detail-container { grid-template-columns: 1fr; }
+    .sidebar-right { position: static; margin-top: 40px; }
+    .level-box { align-items: stretch; }
+    .btn-level-link { max-width: 100%; }
+}   

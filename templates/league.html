@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 800px; margin: 0 auto;">
+
+    <div style="text-align: center; margin-bottom: 50px;">
+        <span class="league-season-badge">SEASON 1</span>
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 10px;">
+            명예의 전당 <span style="color:var(--mustard);">🏆</span>
+        </h1>
+        <p style="color:var(--gray-400);">금융 마스터를 향한 치열한 경쟁, 당신의 순위는?</p>
+    </div>
+
+    <div class="podium-container">
+        {% if top_rankers.1 %}
+        <div class="podium-item rank-2">
+            <div class="podium-avatar">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ top_rankers.1.username }}" alt="2nd">
+                <span class="rank-badge silver">2</span>
+            </div>
+            <div class="podium-user">
+                <div class="user-name">{{ top_rankers.1.nickname }}</div>
+                <div class="user-exp">{{ top_rankers.1.exp }} XP</div>
+            </div>
+            <div class="podium-bar silver-bar"></div>
+        </div>
+        {% endif %}
+
+        {% if top_rankers.0 %}
+        <div class="podium-item rank-1">
+            <div class="crown-icon">👑</div>
+            <div class="podium-avatar">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ top_rankers.0.username }}" alt="1st">
+                <span class="rank-badge gold">1</span>
+            </div>
+            <div class="podium-user">
+                <div class="user-name">{{ top_rankers.0.nickname }}</div>
+                <div class="user-level-tag">Lv.{{ top_rankers.0.level }}</div>
+                <div class="user-exp text-mustard">{{ top_rankers.0.exp }} XP</div>
+            </div>
+            <div class="podium-bar gold-bar"></div>
+        </div>
+        {% endif %}
+
+        {% if top_rankers.2 %}
+        <div class="podium-item rank-3">
+            <div class="podium-avatar">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ top_rankers.2.username }}" alt="3rd">
+                <span class="rank-badge bronze">3</span>
+            </div>
+            <div class="podium-user">
+                <div class="user-name">{{ top_rankers.2.nickname }}</div>
+                <div class="user-exp">{{ top_rankers.2.exp }} XP</div>
+            </div>
+            <div class="podium-bar bronze-bar"></div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="ranking-list">
+        {% for user in other_rankers %}
+            <div class="ranking-row">
+                <div class="rank-num">{{ forloop.counter|add:3 }}</div> <div class="rank-user">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}" class="list-avatar">
+                    <div>
+                        <div style="font-weight: 700;">{{ user.nickname }}</div>
+                        <span class="badge badge-orange" style="font-size: 0.7rem; padding: 2px 6px;">Lv.{{ user.level }}</span>
+                    </div>
+                </div>
+                <div class="rank-exp">{{ user.exp }} XP</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="my-rank-bar">
+        <div class="ranking-row my-row">
+            <div class="rank-num text-mustard">{{ my_rank }}</div>
+            <div class="rank-user">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ user.username }}" class="list-avatar">
+                <div>
+                    <div style="font-weight: 700; color: var(--mustard);">나 (Me)</div>
+                    <span class="badge badge-orange" style="font-size: 0.7rem; padding: 2px 6px;">Lv.{{ user.level }}</span>
+                </div>
+            </div>
+            <div class="rank-exp">{{ user.exp }} XP</div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}
