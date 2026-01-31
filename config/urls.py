@@ -22,10 +22,6 @@ urlpatterns = [
     path('', include("core.urls")), 
     path('api/accounts/', include('accounts.urls')),
     path('api/articles/', include('articles.urls')),
-    
-    # 시현
-    path('api/accounts/social/', include('allauth.urls')),
-
     path('api/explanations/', include('explanations.urls')),
     path('api/terms/', include('terms.urls')),
     path('api/quizzes/', include('quizzes.urls')),
