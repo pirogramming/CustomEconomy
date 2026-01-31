@@ -8,7 +8,7 @@ tzdata==2025.3
 
 feedparser
 newspaper3k
-google-generativeai
-PyJWT
-cryptography
+requests
+beautifulsoup4
+python-dateutil
 lxml_html_clean
