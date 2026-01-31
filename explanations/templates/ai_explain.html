@@ -58,14 +58,14 @@
             <div id="tab-lv{{ expl.level }}" class="tab-pane" style="display: none;">
                 
                 <div class="ai-section">
-                    <h3 class="ai-header text-orange">AI 재풀이????</h3>
+                    <h3 class="ai-header text-orange">AI 재풀이</h3>
                     <div class="ai-box">
                         <p>{{ expl.article_explanation|linebreaksbr }}</p>
                     </div>
                 </div>
 
                 <div class="ai-section">
-                    <h3 class="ai-header text-green">용어 설명??</h3>
+                    <h3 class="ai-header text-green">용어 설명</h3>
                     <div class="ai-box">
                         <p>{{ expl.term_explanation|linebreaksbr }}</p>
                     </div>
@@ -80,13 +80,8 @@
 
             </div>
             {% endfor %}
-
-            <div class="quiz-btn-area">
-                <a href="{% url 'quizzes:detail' article.id %}" class="quiz-floating-btn">
-                    🚀 지금 바로 퀴즈 풀어보기 🚀
-                </a>
-            </div>
-
+            
+             
         </div> </div> </div>
 
 <script>

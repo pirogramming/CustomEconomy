@@ -7,14 +7,13 @@ from django.conf import settings
 
 class GeminiFinancialTutor:
     def __init__(self):
-        # settings.py 또는 .env에서 API 키 로드
+        # .env 또는 환경변수에서 API KEY 로드
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
-            # 로컬 테스트용 하드코딩 (배포 시 삭제 요망) 또는 에러 처리
-            print("⚠️ GEMINI_API_KEY가 설정되지 않았습니다.")
+            print("⚠️ API Key가 설정되지 않았습니다.")
         
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-3-flash-preview') # 최신 모델 사용 권장
+        self.model = genai.GenerativeModel('gemini-3-flash-preview')
         self.safety_settings = {
             HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
