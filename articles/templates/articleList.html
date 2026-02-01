@@ -7,15 +7,23 @@
 
 {% block content %}
 <div class="articleListBody">
-    <h2> 기사 목록 페이지 </h2>
 
     <!-- ✅ 카테고리 메뉴: category 쿼리스트링으로 이동 -->
     <div class="articleMenuBar">
-        <a class="ecoBtn" href="?category=경제&sort={{ current_sort }}&page=1">경제</a>
-        <a class="financeBtn" href="?category=금융&sort={{ current_sort }}&page=1">금융</a>
-        <a class="stockBtn" href="?category=증권&sort={{ current_sort }}&page=1">증권</a>
-        <a class="entreBtn" href="?category=기업&sort={{ current_sort }}&page=1">기업</a>
-        <a class="reBtn" href="?category=부동산&sort={{ current_sort }}&page=1">부동산</a>
+        <a class="ecoBtn {% if current_category == '경제' %}active{% endif %}"
+        href="?category=경제&sort={{ current_sort }}&page=1">경제</a>
+
+        <a class="financeBtn {% if current_category == '금융' %}active{% endif %}"
+        href="?category=금융&sort={{ current_sort }}&page=1">금융</a>
+
+        <a class="stockBtn {% if current_category == '증권' %}active{% endif %}"
+        href="?category=증권&sort={{ current_sort }}&page=1">증권</a>
+
+        <a class="entreBtn {% if current_category == '기업' %}active{% endif %}"
+        href="?category=기업&sort={{ current_sort }}&page=1">기업</a>
+
+        <a class="reBtn {% if current_category == '부동산' %}active{% endif %}"
+        href="?category=부동산&sort={{ current_sort }}&page=1">부동산</a>
     </div>
 
     <div class="middleFloat">
@@ -29,19 +37,18 @@
         <!-- ✅ 현재 카테고리 표시 (선택) -->
         <p style="margin-top:10px;">현재 카테고리: {{ current_category }}</p>
 
-        <!-- ✅ 기사 카드 리스트 -->
         <div class="articleCards">
             {% for article in articles %}
                 <div class="article-card">
                     {% if article.image_url %}
-                        <img class="thumb" src="{{ article.image_url }}" alt="">
+                    <img class="thumb" src="{{ article.image_url }}" alt="">
                     {% endif %}
 
                     <div class="article-info">
                         <h3 class="title">{{ article.title }}</h3>
 
                         {% if article.description %}
-                            <p class="desc">{{ article.description }}</p>
+                        <p class="desc">{{ article.description }}</p>
                         {% endif %}
 
                         <div class="meta">

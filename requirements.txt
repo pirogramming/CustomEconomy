@@ -12,3 +12,5 @@ requests
 beautifulsoup4
 python-dateutil
 lxml_html_clean
+
+google-generativeai
