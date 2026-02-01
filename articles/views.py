@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import render, get_object_or_404
 from .models import Article
 from django.core.paginator import Paginator
 
@@ -26,6 +26,17 @@ def articleList_view(request):
         'current_sort' : sort
 	}
     return render(request, 'articleList.html', context)
+
+
+def article_detail_view(request, pk):
+    article = get_object_or_404(Article, pk=pk)
+    current_mode = request.GET.get('mode', '기사원문')
+    context = {
+        'article': article,
+        'current_mode': current_mode
+    }
+    return render(request, 'articleRead.html', context)
+
 
 # <a href="?category=부동산">부동산</a>
 # <option value="?category={{ current_category }}&sort=title" {% if current_sort == 'title' %}selected{% endif %}>이름순</option>
