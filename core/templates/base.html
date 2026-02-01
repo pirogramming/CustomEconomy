@@ -1,37 +1,135 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>{% block title %}Custom Economy{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Custom Economy{% endblock %}</title>
+
     <link rel="stylesheet" href="{% static 'base.css' %}">
     <link rel="stylesheet" href="{% static 'main.css' %}">
 
-    <script src="{% static 'articleList.js' %}"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
+        rel="stylesheet">
     {% block extra_css %}{% endblock %}
-    <link href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
-	<nav class="sidebar_hs">
-        <div class="sidebar_profile_hs"></div>
-        <div class="sidebar_btns_hs">
-            <div class="main-btn-hs"><a href="{% url 'main' %}" class="{% if request.resolver_match.url_name == 'main' %}active{% endif %}">홈</a></div>
-            <div class="articleList-btn-hs"><a href="{% url 'articleList' %}" class="{% if request.resolver_match.url_name == 'articleList' %}active{% endif %}">기사</a></div>
-            <div class="terms-btn-hs"><a href="{% url 'terms' %}" class="{% if request.resolver_match.url_name == 'terms' %}active{% endif %}">경제 단어</a></div>
-            <div class="league-btn-hs"><a href="{% url 'league' %}" class="{% if request.resolver_match.url_name == 'league' %}active{% endif %}">리그</a></div>
-            <div class="mypage-btn-hs"><a href="{% url 'mypage' %}" class="{% if request.resolver_match.url_name == 'mypage' %}active{% endif %}">마이페이지</a></div>
-        </div>
-        <div class="sidebar_btns_user_hs">
-            <a href="{% url 'login' %}" class="login-btn-hs">로그인</a>
-            <a href="{% url 'signup' %}" class="signup-btn-hs">회원가입</a>
-        </div>
-	</nav>
 
-	<main>
-		{% block content %}{% endblock %}
-	</main>
+    <nav class="sidebar">
+        <button id="sidebarToggle" class="toggle-btn">
+            <span class="arrow-icon">◀</span>
+        </button>
+
+        <div class="sidebar-profile">
+            <div class="profile-level hide-on-collapse">Lv.3</div>
+
+            <div class="profile-avatar">
+                <img src="{% static 'img/fox-avatar.png' %}" alt="프로필">
+            </div>
+
+            <div class="profile-text-group hide-on-collapse">
+                <div class="profile-greeting">반가워요,</div>
+                <div class="profile-name">
+                    주식으로 <span class="highlight">인생역전</span>님!
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-menu">
+            <a href="{% url 'articleList' %}"
+                class="menu-item {% if request.resolver_match.url_name == 'articleList' %}active{% endif %}">
+                <span class="menu-icon">📰</span>
+                <span class="menu-text hide-on-collapse">경제 뉴스</span>
+            </a>
+            <a href="{% url 'terms' %}"
+                class="menu-item {% if request.resolver_match.url_name == 'terms' %}active{% endif %}">
+                <span class="menu-icon">✏️</span>
+                <span class="menu-text hide-on-collapse">경제 단어</span>
+            </a>
+            <a href="{% url 'league' %}"
+                class="menu-item {% if request.resolver_match.url_name == 'league' %}active{% endif %}">
+                <span class="menu-icon">🏆</span>
+                <span class="menu-text hide-on-collapse">리그</span>
+            </a>
+            <a href="{% url 'mypage' %}"
+                class="menu-item {% if request.resolver_match.url_name == 'mypage' %}active{% endif %}">
+                <span class="menu-icon">😊</span>
+                <span class="menu-text hide-on-collapse">마이페이지</span>
+            </a>
+        </div>
+
+        <div class="sidebar-progress hide-on-collapse">
+            <svg class="progress-ring" width="120" height="120">
+                <circle class="progress-ring-circle-bg" stroke="#3a4458" stroke-width="8" fill="transparent" r="52"
+                    cx="60" cy="60" />
+                <circle class="progress-ring-circle" stroke="url(#gradient)" stroke-width="8" fill="transparent" r="52"
+                    cx="60" cy="60" stroke-dasharray="326.73" stroke-dashoffset="65.35" />
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#4dd0e1;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#81c784;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+            </svg>
+            <div class="progress-text">80%</div>
+        </div>
+
+        <div class="sidebar-footer hide-on-collapse">
+            <div class="footer-item">
+                <span class="footer-label">KOSPI</span>
+                <span class="footer-value">5000</span>
+            </div>
+        </div>
+
+        <div class="sidebar-auth hide-on-collapse">
+            {% if user.is_authenticated %}
+            <div class="auth-text-group">
+                <span class="user-name-small">{{ user.username }}님</span>
+                <a href="{% url 'logout' %}" class="auth-link">로그아웃</a>
+            </div>
+            {% else %}
+            <div class="auth-text-group">
+                <a href="{% url 'login' %}" class="auth-link">로그인</a>
+                <span class="divider">|</span>
+                <a href="{% url 'signup' %}" class="auth-link">회원가입</a>
+            </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <script>
+        const toggleBtn = document.getElementById('sidebarToggle');
+        const arrowIcon = toggleBtn.querySelector('.arrow-icon');
+        const body = document.body;
+
+        // 1. 저장된 상태 불러오기 (새로고침 대응)
+        const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+        if (isCollapsed) {
+            body.classList.add('collapsed');
+            arrowIcon.innerText = '▶';
+        }
+
+        // 2. 버튼 클릭 이벤트
+        toggleBtn.addEventListener('click', () => {
+            body.classList.toggle('collapsed');
+
+            // 상태 저장 및 아이콘 변경
+            if (body.classList.contains('collapsed')) {
+                localStorage.setItem('sidebar-collapsed', 'true');
+                arrowIcon.innerText = '▶';
+            } else {
+                localStorage.setItem('sidebar-collapsed', 'false');
+                arrowIcon.innerText = '◀';
+            }
+        });
+    </script>
 </body>
-</html>
 
+</html>
