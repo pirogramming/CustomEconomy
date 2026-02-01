@@ -8,7 +8,6 @@
 
 {% block content %}
 <div class="articleListBody">
-    <h2> 기사 목록 페이지 </h2>
     <div class="articleMenuBar">
         <div class="ecoBtn">경제</div>
         <div class="financeBtn">금융</div>
@@ -17,12 +16,31 @@
         <div class="reBtn">부동산</div>
     </div>
     <div class="middleFloat">
-        <select>
-            <option value="current">최신순</option> 
-            <option value="popular">인기순</option> 
+        <select id="sortSelect">
+            <option value="current">최신순</option>
+            <option value="popular">인기순</option>
         </select>
 
-        <div class="article-card"></div>
+
+        <div id="articleCards">
+            {% for article in articles %}
+            <div class="article-card">
+                {% if article.image_url %}
+                    <img src="{{ article.image_url }}" class="thumb">
+                {% endif %}
+
+                <div class="article-info">
+                    <a href="{% url 'article_detail' article.id %}">
+                        <h3>{{ article.title }}</h3>
+                    </a>
+                    <p>{{ article.description|truncatechars:80 }}</p>
+                </div>
+            </div>
+
+            {% empty %}
+                <p>기사가 없습니다 🥲</p>
+            {% endfor %}
+        </div> 
     </div>
 </div>
 {% endblock %}
