@@ -15,4 +15,3 @@ lxml
 Pillow
 python-dateutil
 lxml_html_clean
-
