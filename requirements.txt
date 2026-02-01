@@ -13,3 +13,6 @@ newspaper3k
 feedparser
 lxml
 Pillow
+python-dateutil
+lxml_html_clean
+

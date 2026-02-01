@@ -3,12 +3,15 @@ from .models import Article, Category
 
 # 1. 카테고리 관리 등록
 @admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):  # 👈 [수정] admin.site.ModelAdmin (X) -> admin.ModelAdmin (O)
+class CategoryAdmin(admin.ModelAdmin):  
     list_display = ['id', 'name']
 
 # 2. 기사 관리 등록
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):   # 👈 [수정] 여기도 admin.ModelAdmin으로!
+class ArticleAdmin(admin.ModelAdmin):  
     list_display = ['id', 'category', 'title', 'source', 'published_at']
     search_fields = ['title', 'content']
     list_filter = ['category', 'source']
+    
+admin.site.register(Article)
+admin.site.register(Category)
