@@ -1,16 +1,16 @@
 # explanations/views.py
 from django.shortcuts import render, get_object_or_404
 from django.db import transaction
-from articles.models import Article  # 팀원 앱의 모델 import
+from articles.models import Article
 from .models import ArticleExplanation
 from .utils import GeminiFinancialTutor
 
 def explanation_detail(request, article_id):
-    # 1. 기사 가져오기 (팀원 앱의 Article 모델 사용)
+    # 1. 기사 가져오기
     article = get_object_or_404(Article, pk=article_id)
     
     # 2. URL 파라미터에서 레벨 가져오기 (?level=1)
-    selected_level = int(request.GET.get('level', 1))
+    selected_level = int(request.GET.get('level', 0))  # 0이면 원문
     
     # 3. 사용자 정보
     if request.user.is_authenticated:
@@ -63,17 +63,12 @@ def explanation_detail(request, article_id):
                     )
                 
                 print("✅ AI 분석 완료")
-                # 다시 조회
                 explanations = ArticleExplanation.objects.filter(article=article).order_by('level')
-    
-    # 6. 선택된 레벨의 해설 가져오기
-    current_explanation = explanations.filter(level=selected_level).first()
     
     context = {
         'article': article,
         'explanations': explanations,
-        'current_explanation': current_explanation,
-        'selected_level': selected_level,
+        'selected_level': selected_level,  # 이게 중요! JavaScript에서 사용
         'user_level': user_level,
     }
     
