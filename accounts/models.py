@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser # 커스텀 유저 사용 시
+from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 
 class User(models.Model):
     email = models.EmailField(max_length=40, unique=True)
