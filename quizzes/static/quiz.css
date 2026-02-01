@@ -12,8 +12,6 @@ body {
 
 /* --- 메인 콘텐츠 스타일 --- */
 .main-content {
-    margin-left: 258px;
-    width: calc(100% - 258px);
     flex-grow: 1;
     background-color: #eeefee;
     padding: 40px 50px;
@@ -34,14 +32,6 @@ body {
     color: #192237;
 }
 
-.logout-link {
-    position: absolute;
-    right: 0;
-    top: 0;
-    color: #000;
-    text-decoration: none;
-    font-family: "Kadwa-Regular", serif;
-}
 
 /* 퀴즈 컨테이너 */
 .quiz-container {

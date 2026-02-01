@@ -12,8 +12,6 @@ body { font-family: 'Noto Sans KR', sans-serif; background-color: #eeefee; min-h
 
 /* --- 레이아웃 (Main) --- */
 main {
-    margin-left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
     min-height: 100vh;
     transition: all var(--transition-speed) ease; /* 애니메이션 핵심 */
 }
