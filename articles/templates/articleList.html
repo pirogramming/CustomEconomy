@@ -8,7 +8,6 @@
 {% block content %}
 <div class="articleListBody">
 
-    <!-- ✅ 카테고리 메뉴: category 쿼리스트링으로 이동 -->
     <div class="articleMenuBar">
         <a class="ecoBtn {% if current_category == '경제' %}active{% endif %}"
         href="?category=경제&sort={{ current_sort }}&page=1">경제</a>
@@ -27,19 +26,17 @@
     </div>
 
     <div class="middleFloat">
-        <!-- ✅ 정렬 select: 값은 sort 값만 들고, 변경 시 JS로 쿼리스트링 갱신 -->
         <select id="sortSelect">
             <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>최신순</option>
             <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>오래된순</option>
             <option value="title"  {% if current_sort == 'title' %}selected{% endif %}>이름순</option>
         </select>
 
-        <!-- ✅ 현재 카테고리 표시 (선택) -->
         <p style="margin-top:10px;">현재 카테고리: {{ current_category }}</p>
 
         <div class="articleCards">
             {% for article in articles %}
-                <div class="article-card">
+                <div class="article-card" onclick="location.href='{% url 'article_detail' article.id %}'" style="cursor:pointer">
                     {% if article.image_url %}
                     <img class="thumb" src="{{ article.image_url }}" alt="">
                     {% endif %}
@@ -65,6 +62,8 @@
                 <p>해당 카테고리에 기사가 없습니다 🥲</p>
             {% endfor %}
         </div>
+
+        <br><br>
 
         <!-- ✅ 페이지네이션 -->
         <div class="pagination">
