@@ -1,1 +1,111 @@
-<h2> 퀴즈 페이지 </h2>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}퀴즈 | Custom Economy{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <header class="main-header">
+        <h1 class="page-title">Custom Economy</h1>
+        <a href="#" class="logout-link">로그아웃</a>
+    </header>
+
+    <div class="quiz-container">
+        <!-- Quiz 배지 -->
+        <div class="quiz-badge">Quiz</div>
+        
+        <!-- 기사 제목 -->
+        <h2 class="quiz-article-title">
+            '환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론'환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론
+        </h2>
+        
+        <!-- 태그 섹션 -->
+        <div class="tags-wrapper">
+            <div class="tag">
+                <span class="tag-text">#경제</span>
+            </div>
+            <div class="tag tag-green">
+                <span class="tag-text">#국내증시</span>
+            </div>
+        </div>
+        
+        <!-- 문제 1 - 정답 맞춤 -->
+        <div class="question-card">
+            <div class="question-header">
+                <h3 class="question-number">Q1. 어떠고 저떠고 쑐라쑐라?</h3>
+            </div>
+            <div class="answers-grid">
+                <div class="answer-option">
+                    <span class="answer-text">1. dkdkdkkd</span>
+                </div>
+                <div class="answer-option correct">
+                    <span class="answer-text">2. dkdkdkkd</span>
+                </div>
+                <div class="answer-option">
+                    <span class="answer-text">3. dkdkdkkd</span>
+                </div>
+                <div class="answer-option">
+                    <span class="answer-text">4. dkdkdkkd</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 문제 2 - 오답 (빨간색) + 해설 표시 -->
+        <div class="question-card with-explanation">
+            <div class="question-header">
+                <h3 class="question-number">Q2. 어떠고 저떠고 쑐라쑐라?</h3>
+            </div>
+            <div class="answers-grid">
+                <div class="answer-option">
+                    <span class="answer-text">1. dkdkdkkd</span>
+                </div>
+                <div class="answer-option correct">
+                    <span class="answer-text">2. dkdkdkkd</span>
+                </div>
+                <div class="answer-option wrong">
+                    <span class="answer-text">3. dkdkdkkd</span>
+                </div>
+                <div class="answer-option">
+                    <span class="answer-text">4. dkdkdkkd</span>
+                </div>
+            </div>
+            <div class="explanation-box">
+                <p class="explanation-text">
+                    💡 해설 어떠고 저떠고기 때문에 답은 어떠고에용 왜냐면 이렇게 이렇게 되겠죵?
+                </p>
+            </div>
+        </div>
+        
+        <!-- 문제 3 - 정답 맞춤 -->
+        <div class="question-card">
+            <div class="question-header">
+                <h3 class="question-number">Q3. 어떠고 저떠고 쑐라쑐라?</h3>
+            </div>
+            <div class="answers-grid">
+                <div class="answer-option">
+                    <span class="answer-text">1. dkdkdkkd</span>
+                </div>
+                <div class="answer-option correct">
+                    <span class="answer-text">2. dkdkdkkd</span>
+                </div>
+                <div class="answer-option">
+                    <span class="answer-text">3. dkdkdkkd</span>
+                </div>
+                <div class="answer-option">
+                    <span class="answer-text">4. dkdkdkkd</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 결과 요약 박스 -->
+        <div class="result-summary">
+            <p class="result-text">
+                3문제 중 2문제를 맞히셨습니다!<br /><br />마이페이지에서 틀린문제를<br />다시 복습할 수 있습니다!
+            </p>
+        </div>
+    </div>
+</main>
+{% endblock %}

@@ -1,0 +1,214 @@
+/* 기본 초기화 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #eeefee;
+    font-family: "Roboto-Regular", Helvetica, sans-serif;
+}
+
+/* --- 메인 콘텐츠 스타일 --- */
+.main-content {
+    margin-left: 258px;
+    width: calc(100% - 258px);
+    flex-grow: 1;
+    background-color: #eeefee;
+    padding: 40px 50px;
+    position: relative;
+}
+
+.main-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.page-title {
+    font-family: "Kadwa-Regular", serif;
+    font-size: 50px;
+    color: #192237;
+}
+
+.logout-link {
+    position: absolute;
+    right: 0;
+    top: 0;
+    color: #000;
+    text-decoration: none;
+    font-family: "Kadwa-Regular", serif;
+}
+
+/* 퀴즈 컨테이너 */
+.quiz-container {
+    max-width: 935px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    background-color: #192237;
+    border-radius: 20px;
+    overflow: hidden;
+    padding: 30px 48px 30px 48px;
+    position: relative;
+}
+
+/* Quiz 배지 */
+.quiz-badge {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    background-color: #ffffff;
+    color: #192237;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-family: "Roboto-Bold", Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+/* 기사 제목 */
+.quiz-article-title {
+    width: 100%;
+    max-width: 857px;
+    margin: 50px auto 0;
+    font-family: "Roboto-Bold", Helvetica, sans-serif;
+    font-weight: 700;
+    color: #ffffff;
+    font-size: 28px;
+    letter-spacing: 0;
+    line-height: 1.4;
+    text-align: center;
+}
+
+/* 태그 섹션 */
+.tags-wrapper {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.tag {
+    padding: 5px 20px;
+    background-color: #f4f4f4;
+    border-radius: 40px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.tag-text {
+    color: #ef9160;
+    font-size: 16px;
+    font-family: "Roboto-Bold", Helvetica, sans-serif;
+    font-weight: 700;
+}
+
+.tag.tag-green .tag-text {
+    color: #80b27f;
+}
+
+/* 문제 카드 */
+.question-card {
+    width: 100%;
+    background-color: #fffbf5;
+    border-radius: 20px;
+    padding: 25px 10px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.question-card.with-explanation {
+    padding-bottom: 30px;
+}
+
+/* 질문 헤더 */
+.question-header {
+    margin-bottom: 20px;
+}
+
+.question-number {
+    font-family: "Roboto-Bold", Helvetica, sans-serif;
+    font-weight: 700;
+    color: #000000;
+    font-size: 20px;
+    margin: 0;
+}
+
+/* 답안 그리드 */
+.answers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.answer-option {
+    background-color: #ffffff;
+    border-radius: 20px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.answer-text {
+    font-family: "Roboto-Bold", Helvetica, sans-serif;
+    font-weight: 700;
+    color: #000000;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* 정답 스타일 */
+.answer-option.correct {
+    background-color: #d2edd1;
+    border-color: #80b27f;
+}
+
+/* 오답 스타일 */
+.answer-option.wrong {
+    background-color: #fbbeb0;
+    border-color: #ff0303;
+}
+
+/* 해설 박스 */
+.explanation-box {
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 15px;
+}
+
+.explanation-text {
+    color: #000000;
+    font-size: 16px;
+    font-family: "Roboto-Bold", Helvetica, sans-serif;
+    font-weight: 700;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* 결과 요약 */
+.result-summary {
+    width: 100%;
+    max-width: 450px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.55);
+    border-radius: 20px;
+    text-align: center;
+}
+
+.result-text {
+    color: #ffffff;
+    font-size: 20px;
+    font-family: "Roboto-Bold", Helvetica, sans-serif;
+    font-weight: 700;
+    line-height: 1.6;
+    margin: 0;
+}
