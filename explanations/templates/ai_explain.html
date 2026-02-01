@@ -16,13 +16,14 @@
     <div class="card-ui-container">
         
         <div class="tabs-header">
-            <button class="tab-item active" onclick="openTab(event, 'tab-origin')">
+            <button class="tab-item {% if selected_level == 0 %}active{% endif %}" onclick="openTab(event, 'tab-origin')">
                 기사 원문
             </button>
 
             {% for i in "12345" %}
-                {% with current_level=i|add:"0" %} {% if current_level <= user_level %}
-                        <button class="tab-item" onclick="openTab(event, 'tab-lv{{ i }}')">
+                {% with current_level=i|add:"0" %}
+                    {% if current_level <= user_level %}
+                        <button class="tab-item {% if selected_level == current_level %}active{% endif %}" onclick="openTab(event, 'tab-lv{{ i }}')">
                             Lv{{ i }}
                         </button>
                     {% else %}
@@ -48,24 +49,26 @@
             </div>
             {% endif %}
 
-            <div id="tab-origin" class="tab-pane" style="display: block;">
+            <!-- 기사 원문 -->
+            <div id="tab-origin" class="tab-pane" style="{% if selected_level == 0 %}display: block;{% else %}display: none;{% endif %}">
                 <div class="text-content origin">
                     {{ article.content|linebreaksbr }}
                 </div>
             </div>
 
+            <!-- AI 해석 레벨별 -->
             {% for expl in explanations %}
-            <div id="tab-lv{{ expl.level }}" class="tab-pane" style="display: none;">
+            <div id="tab-lv{{ expl.level }}" class="tab-pane" style="{% if selected_level == expl.level %}display: block;{% else %}display: none;{% endif %}">
                 
                 <div class="ai-section">
-                    <h3 class="ai-header text-orange">AI 재풀이????</h3>
+                    <h3 class="ai-header text-orange">AI 재풀이</h3>
                     <div class="ai-box">
                         <p>{{ expl.article_explanation|linebreaksbr }}</p>
                     </div>
                 </div>
 
                 <div class="ai-section">
-                    <h3 class="ai-header text-green">용어 설명??</h3>
+                    <h3 class="ai-header text-green">용어 설명</h3>
                     <div class="ai-box">
                         <p>{{ expl.term_explanation|linebreaksbr }}</p>
                     </div>
@@ -80,14 +83,10 @@
 
             </div>
             {% endfor %}
-
-            <div class="quiz-btn-area">
-                <a href="{% url 'quizzes:detail' article.id %}" class="quiz-floating-btn">
-                    🚀 지금 바로 퀴즈 풀어보기 🚀
-                </a>
-            </div>
-
-        </div> </div> </div>
+            
+        </div>
+    </div>
+</div>
 
 <script>
     function openTab(evt, tabName) {
@@ -108,12 +107,25 @@
         if (selectedPane) {
             selectedPane.style.display = "block";
         } else {
-            // 데이터가 없을 경우 (예: 아직 AI 분석 전)
             alert("해당 레벨의 분석 데이터가 준비되지 않았습니다.");
         }
 
         // 4. 클릭한 버튼 활성화
         evt.currentTarget.className += " active";
     }
+
+    // 페이지 로드 시 URL 파라미터에 따라 자동 탭 선택
+    window.addEventListener('DOMContentLoaded', function() {
+        var selectedLevel = {{ selected_level }};
+        
+        if (selectedLevel > 0) {
+            // Lv1~5인 경우
+            var targetTab = document.getElementById('tab-lv' + selectedLevel);
+            if (targetTab) {
+                targetTab.style.display = 'block';
+            }
+        }
+        // selectedLevel이 0이면 기본적으로 원문(tab-origin)이 보임
+    });
 </script>
 {% endblock %}
