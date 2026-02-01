@@ -13,5 +13,3 @@ class ArticleAdmin(admin.ModelAdmin):
     search_fields = ['title', 'content']
     list_filter = ['category', 'source']
     
-admin.site.register(Article)
-admin.site.register(Category)

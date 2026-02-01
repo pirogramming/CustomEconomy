@@ -15,13 +15,13 @@ def explanation_detail(request, article_id):
             
         # [TEST] 관리자는 레벨 5로 설정
         if request.user.is_superuser:
-            print(f"📢 [Test] 관리자('{request.user}') 접속: 레벨 5(최고 레벨)로 간주합니다.")
+            print(f"[Test] 관리자('{request.user}') 접속: 레벨 5(최고 레벨)로 간주")
             user_level = 5
         else:
             user_level = request.user.level
     else:
         # [비로그인 유저 - TEST MODE]
-        print("📢 [Test] 비로그인 유저 접속: 관심사(부동산, 주식), 레벨(5)로 설정됨")
+        print("[Test] 비로그인 유저 접속: 관심사(부동산, 주식), 레벨(5)로 설정됨")
         user_interests = ["부동산", "주식"]
         user_level = 5
 
@@ -36,7 +36,7 @@ def explanation_detail(request, article_id):
         except AttributeError:
             category_name = "경제"
 
-        print(f"🤖 '{article.title}' AI 분석 시작 (카테고리: {category_name})...")
+        print(f"'{article.title}' AI 분석 시작 (카테고리: {category_name})...")
         
         # AI 호출
         tutor = GeminiFinancialTutor()
