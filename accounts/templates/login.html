@@ -1,10 +1,137 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
+{% block title %}로그인 | Custom Economy{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'login.css' %}">
+<style>
+    /* 화면 중앙 정렬을 위한 컨테이너 */
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh; /* 화면 높이의 80% 사용 */
+    }
+
+    /* 흰색 카드 박스 */
+    .auth-card {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05); /* 부드러운 그림자 */
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+    }
+
+    /* 제목 스타일 */
+    .auth-title {
+        font-family: 'Kadwa', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #192237;
+        margin-bottom: 30px;
+    }
+
+    /* 폼 내부 스타일 (Django form.as_p 대응) */
+    .auth-form {
+        text-align: left;
+    }
+    
+    .auth-form p {
+        margin-bottom: 20px;
+    }
+
+    .auth-form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+        font-size: 14px;
+    }
+
+    /* 입력창 디자인 */
+    .auth-form input {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+        box-sizing: border-box; /* 패딩 포함 너비 계산 */
+    }
+
+    .auth-form input:focus {
+        border-color: #ef9160; /* 포인트 컬러 */
+        outline: none;
+    }
+
+    /* 로그인 버튼 */
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background-color: #ef9160;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #e67e4d;
+    }
+
+    /* 하단 링크 (회원가입 등) */
+    .auth-footer {
+        margin-top: 25px;
+        font-size: 14px;
+        color: #888;
+    }
+
+    .auth-footer a {
+        color: #192237;
+        text-decoration: none;
+        font-weight: 700;
+        margin-left: 5px;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+        color: #ef9160;
+    }
+    
+    /* 에러 메시지 스타일 (로그인 실패 시) */
+    .errorlist {
+        color: #ff4d4d;
+        list-style: none;
+        padding: 0;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="login"><h2> 로그인 페이지 </h2>
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">로그인</h2>
+        
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            
+            {{ form.as_p }}
+            
+            <button type="submit" class="submit-btn">로그인</button>
+        </form>
+
+        <div class="auth-footer">
+            아직 계정이 없으신가요? 
+            <a href="{% url 'signup' %}">회원가입 하기</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

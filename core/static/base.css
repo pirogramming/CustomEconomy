@@ -81,12 +81,59 @@ main {
 .footer-value { font-weight: 700; font-size: 16px; }
 
 /* 로그인 버튼 */
-.sidebar-auth { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-.auth-btn { display: block; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 14px; white-space: nowrap; transition: 0.3s; }
-.login-btn { background-color: rgba(255, 255, 255, 0.1); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.3); }
-.login-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
-.signup-btn { background-color: #ef9160; color: #ffffff; }
-.signup-btn:hover { background-color: #e67e4d; }
+/* --- 로그인/회원가입/로그아웃 (텍스트 링크 스타일) --- */
+
+.sidebar-auth {
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* 위쪽 구분선 (선택사항) */
+    text-align: center;
+}
+
+.auth-text-group {
+    font-size: 14px;
+    color: #b8c1d9;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* 글자 사이 간격 */
+}
+
+/* 링크 기본 스타일 (회색, 밑줄 없음) */
+.auth-link {
+    color: #b8c1d9;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative; /* 밑줄 애니메이션용 */
+}
+
+/* 마우스 올렸을 때 (흰색, 밑줄 생김) */
+.auth-link:hover {
+    color: #ffffff;
+    text-decoration: underline; /* 심플한 밑줄 */
+    text-underline-offset: 4px; /* 밑줄과 글자 사이 간격 */
+}
+
+/* 구분선 (|) */
+.divider {
+    color: #555;
+    font-size: 12px;
+}
+
+/* 로그인한 유저 이름 작게 표시 */
+.user-name-small {
+    color: #ef9160; /* 포인트 컬러 */
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+/* (반응형/접기 대응) 접혔을 때는 숨김 처리 */
+body.collapsed .sidebar-auth {
+    display: none !important;
+}
 
 
 /* =========================================
