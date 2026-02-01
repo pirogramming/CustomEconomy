@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="tag-badge">Today's Insight 🚀</div>
+        <h1 class="hero-title">
+            오늘의 경제 뉴스,<br>
+            <span class="text-mustard">AI 1타 강사</span>가<br>떠먹여 드려요.
+        </h1>
+        <p class="hero-desc">
+            어려운 용어는 쉽게, 핵심은 명확하게. <br>
+            지금 바로 AI에게 1:1 경제 과외를 받아보세요.
+        </p>
+        <form method="post" class="search-form">
+            {% csrf_token %}
+            <input type="url" name="news_url" class="search-input" placeholder="뉴스 기사 URL을 입력하세요..." required>
+            <button type="submit" class="btn-search">분석하기</button>
+        </form>
+    </div>
+</section>
+
+<div class="section-header">
+    <h2 class="section-title" style="display:flex; align-items:center; gap:10px;">
+        📢 최신 뉴스 피드
+        <span style="font-size:0.9rem; font-weight:400; color:var(--gray-400);">AI가 분석할 준비가 된 기사들입니다.</span>
+    </h2>
+    
+    <div class="tabs">
+        <button class="tab-btn active">전체</button>
+        <button class="tab-btn">주식</button>
+        <button class="tab-btn">부동산</button>
+    </div>
+</div>
+
+<div class="news-grid" style="margin-bottom: 60px;">
+    {% for article in articles %}
+        <a href="{% url 'news:detail' article.id %}" class="news-card">
+            <div>
+                <div class="card-header">
+                    <div class="badge-group">
+                        <span class="badge badge-blue">{{ article.category }}</span>
+                        <span class="badge badge-orange">Lv.{{ article.difficulty }}</span>
+                    </div>
+                    <span style="font-size:0.85rem; color:var(--gray-400);">{{ article.created_at|date:"m월 d일" }}</span>
+                </div>
+                
+                <h3 class="news-title">{{ article.title }}</h3>
+                <p class="news-desc">{{ article.content|truncatechars:120 }}</p>
+            </div>
+
+            <div style="margin-top:20px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.05); display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:6px; font-size:0.85rem; color:var(--mustard); font-weight:700;">
+                    <span style="width:8px; height:8px; background:var(--mustard); border-radius:50%; box-shadow:0 0 8px var(--mustard);"></span>
+                    AI 학습 가능
+                </div>
+                <span style="font-size:0.85rem; color:var(--gray-400);">읽기 3분</span>
+            </div>
+        </a>
+    {% empty %}
+        <div style="grid-column: 1/-1; padding: 60px; text-align: center; border: 1px dashed var(--border-color); border-radius: 20px;">
+            <p style="font-size:1.2rem; color:var(--gray-400); margin-bottom:20px;">아직 등록된 기사가 없습니다 😅</p>
+            <p style="color:#666;">관리자 페이지에서 기사를 추가해주세요.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

@@ -1,10 +1,12 @@
 .sidebar_hs{
     background-color: #192237;
-    width: 258px;
+    width: 200px;
     height: 100vh;
     position: fixed;
+
+    margin: 0;
 }
-.sidebar_hs .sidebar_profile_hs{width: 258px; height: 258px; background-color: pink;}
+.sidebar_hs .sidebar_profile_hs{width: 200px; height: 200px; background-color: pink;}
 .sidebar_hs .sidebar_btns_hs{
 
 }

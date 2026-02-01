@@ -1,85 +1,119 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}AI 설명 | Custom Economy{% endblock %}
+
+{% block title %}AI 상세 해설 - {{ article.title }}{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'ai_explain.css' %}">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/explanation.css' %}">
 {% endblock %}
 
 {% block content %}
-<main class="main-content">
-    <header class="main-header">
-        <h1 class="page-title">Custom Economy</h1>
-        <a href="#" class="logout-link">로그아웃</a>
-    </header>
+<div class="explanation-wrapper">
+    
+    <h1 class="page-main-title">Custom Economy</h1>
 
-    <div class="content-card">
-        <div class="tab-menu">
-            <div class="tab-item active">기사 원문</div>
-            <div class="tab-item">Lv1</div>
-            <div class="tab-item">Lv2</div>
-            <div class="tab-item">Lv3</div>
-            <div class="tab-item locked">🔒 Lv4 🔒</div>
-            <div class="tab-item locked">🔒 Lv5 🔒</div>
+    <div class="card-ui-container">
+        
+        <div class="tabs-header">
+            <button class="tab-item active" onclick="openTab(event, 'tab-origin')">
+                기사 원문
+            </button>
+
+            {% for i in "12345" %}
+                {% with current_level=i|add:"0" %} {% if current_level <= user_level %}
+                        <button class="tab-item" onclick="openTab(event, 'tab-lv{{ i }}')">
+                            Lv{{ i }}
+                        </button>
+                    {% else %}
+                        <button class="tab-item locked" disabled>
+                            🔒 Lv{{ i }}
+                        </button>
+                    {% endif %}
+                {% endwith %}
+            {% endfor %}
         </div>
 
-        <article class="article-body">
-            <div class="article-date-top">2026.01.29</div>
+        <div class="white-card-body">
+            
+            <div class="article-date-badge">
+                {{ article.published_at|date:"Y.m.d" }}
+            </div>
 
-            <div class="article-content">
-                <h2 class="article-title">
-                    '환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론<br>
-                    본'환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론
-                </h2>
-                <div class="article-image-wrapper">
-                    <img src="{% static 'img/image-7.png' %}" alt="News Image">
-                    <div class="image-label"></div>
+            <h2 class="content-title">{{ article.title }}</h2>
+
+            {% if article.image_url %}
+            <div class="article-hero-image">
+                <img src="{{ article.image_url }}" alt="기사 대표 이미지">
+            </div>
+            {% endif %}
+
+            <div id="tab-origin" class="tab-pane" style="display: block;">
+                <div class="text-content origin">
+                    {{ article.content|linebreaksbr }}
+                </div>
+            </div>
+
+            {% for expl in explanations %}
+            <div id="tab-lv{{ expl.level }}" class="tab-pane" style="display: none;">
+                
+                <div class="ai-section">
+                    <h3 class="ai-header text-orange">AI 재풀이????</h3>
+                    <div class="ai-box">
+                        <p>{{ expl.article_explanation|linebreaksbr }}</p>
+                    </div>
                 </div>
 
                 <div class="ai-section">
-                    <h3 class="ai-title">AI 재풀이</h3>
-                    <div class="ai-explanation-box">
-                        <p>
-                            "국민연금 기금운용본부가 작업 진행형 환헤지 규제 조치 대외민간
-                            때, 지금도 빠다 더 까지 있는 상황입니다." 이상용 한국은행 총재는 지
-                            난해 말 금융통화위원회에서 이같이 말한 뒤 "환율 수준이 크게 벗어날
-                        </p>
+                    <h3 class="ai-header text-green">용어 설명??</h3>
+                    <div class="ai-box">
+                        <p>{{ expl.term_explanation|linebreaksbr }}</p>
                     </div>
                 </div>
 
-                <!-- 용어 설명 섹션 -->
-                <div class="term-section">
-                    <h3 class="section-title">용어 설명</h3>
-                    <div class="term-box">
-                        <p class="term-content">
-                            어려운 용어 : 어렵다
-                        </p>
+                <div class="ai-section">
+                    <h3 class="ai-header text-yellow">관심분야 전망</h3>
+                    <div class="ai-box">
+                        <p>{{ expl.prediction|linebreaksbr }}</p>
                     </div>
                 </div>
 
-                <!-- 관심분야 전망 섹션 -->
-                <div class="outlook-section">
-                    <h3 class="section-title outlook-title">관심분야 전망</h3>
-                    <div class="outlook-box">
-                        <p class="outlook-content">
-                            "국민연금 기금운용본부가 작업 진행형 환헤지 규제 조치 대외민간
-                            때, 지금도 빠다 더 까지 있는 상황입니다." 이상용 한국은행 총재는 지
-                            난해 말 금융통화위원회에서 이같이 말한 뒤 "환율 수준이 크게 벗어날
-                            것으로 보지는 않지만 앞으로도 시장추이를 면밀히 모니터링하며 외환
-                            정책을 신축적으로 운영해 나가겠다"고 강조했습니다. 지난해 일시적으로
-                            심화됐던 환율 변동성이 다소 안정을 찾으며 시장의 불안감이 해소되고
-                            있습니다. 특히 국민연금의 환헤지 전략이 원화 안정에 기여하면서 앞으로
-                            국민연금의 역할이 더욱 중요해질 것으로 전망됩니다.
-                        </p>
-                    </div>
-                </div>
+            </div>
+            {% endfor %}
 
-                <!-- 퀴즈 풀러가기 버튼 -->
-                <a href="#" class="quiz-button">
-                    ✏️ 지금 바로 퀴즈 풀러가기 ✏️
+            <div class="quiz-btn-area">
+                <a href="{% url 'quizzes:detail' article.id %}" class="quiz-floating-btn">
+                    🚀 지금 바로 퀴즈 풀어보기 🚀
                 </a>
             </div>
-        </article>
-    </div>
-</main>
+
+        </div> </div> </div>
+
+<script>
+    function openTab(evt, tabName) {
+        // 1. 모든 탭 내용 숨기기
+        var tabPanes = document.getElementsByClassName("tab-pane");
+        for (var i = 0; i < tabPanes.length; i++) {
+            tabPanes[i].style.display = "none";
+        }
+
+        // 2. 모든 탭 버튼 활성화 스타일 제거
+        var tabBtns = document.getElementsByClassName("tab-item");
+        for (var i = 0; i < tabBtns.length; i++) {
+            tabBtns[i].className = tabBtns[i].className.replace(" active", "");
+        }
+
+        // 3. 선택된 탭 내용 보이기
+        var selectedPane = document.getElementById(tabName);
+        if (selectedPane) {
+            selectedPane.style.display = "block";
+        } else {
+            // 데이터가 없을 경우 (예: 아직 AI 분석 전)
+            alert("해당 레벨의 분석 데이터가 준비되지 않았습니다.");
+        }
+
+        // 4. 클릭한 버튼 활성화
+        evt.currentTarget.className += " active";
+    }
+</script>
 {% endblock %}
