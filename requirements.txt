@@ -15,4 +15,4 @@ lxml
 Pillow
 python-dateutil
 lxml_html_clean
-python-dotenv
+pdfplumber==0.11.4
