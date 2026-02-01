@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="max-width: 1000px; margin: 0 auto;">
+
+    <header class="explore-header">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 10px;">
+                뉴스 탐색 <span style="color:var(--mustard);">.</span>
+            </h1>
+            <p style="color:var(--gray-400);">관심 있는 경제 키워드를 검색해보세요.</p>
+        </div>
+
+        <form method="get" class="explore-search-bar">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="예: 엔비디아, 금리, 부동산..." class="explore-input">
+            <button type="submit" class="explore-btn">검색</button>
+        </form>
+
+        <div class="filter-scroll">
+            <button class="filter-chip active">전체</button>
+            <button class="filter-chip">🇺🇸 미국주식</button>
+            <button class="filter-chip">🇰🇷 국내주식</button>
+            <button class="filter-chip">🏠 부동산</button>
+            <button class="filter-chip">🪙 코인/토큰</button>
+            <button class="filter-chip">🏦 거시경제</button>
+        </div>
+    </header>
+
+    {% if query %}
+        <div style="margin-bottom: 20px; font-size: 0.95rem; color: #ddd;">
+            🔍 <span style="color:var(--mustard); font-weight:700;">'{{ query }}'</span> 검색 결과: {{ articles|length }}건
+        </div>
+    {% endif %}
+
+    <div class="news-grid-compact">
+        {% for article in articles %}
+            <a href="{% url 'news:detail' article.id %}" class="news-card">
+                <div class="card-header">
+                    <div class="badge-group">
+                        <span class="badge badge-blue">{{ article.category }}</span>
+                        <span class="badge badge-orange">Lv.{{ article.difficulty }}</span>
+                    </div>
+                    <span style="font-size:0.8rem; color:var(--gray-400);">{{ article.created_at|date:"Y.m.d" }}</span>
+                </div>
+                
+                <h3 class="news-title" style="font-size: 1.15rem; margin: 12px 0;">{{ article.title }}</h3>
+                
+                <p class="news-desc" style="-webkit-line-clamp: 2; line-clamp: 2; margin-bottom: 0;">
+                    {{ article.content|truncatechars:80 }}
+                </p>
+            </a>
+        {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px; border: 1px dashed var(--border-color); border-radius: 16px;">
+                <p style="color: var(--gray-400); font-size: 1.1rem;">조건에 맞는 기사가 없습니다 😢</p>
+                {% if query %}
+                    <a href="{% url 'news:explore' %}" style="color: var(--mustard); text-decoration: underline; margin-top: 10px; display: inline-block;">전체 목록으로 돌아가기</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
