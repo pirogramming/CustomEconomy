@@ -36,7 +36,7 @@
 
         <div class="articleCards">
             {% for article in articles %}
-                <div class="article-card" onclick="location.href='{% url 'article_detail' article.id %}'" style="cursor:pointer">
+                <div class="article-card" onclick="location.href='{% url 'explanations:detail' article.pk %}'" style="cursor:pointer">
                     {% if article.image_url %}
                     <img class="thumb" src="{{ article.image_url }}" alt="">
                     {% endif %}

@@ -15,7 +15,3 @@ lxml
 Pillow
 python-dateutil
 lxml_html_clean
-<<<<<<< HEAD
-
-=======
->>>>>>> 9e229ed6fe42404ff9f3f69d1ea24542ccfcef8b
