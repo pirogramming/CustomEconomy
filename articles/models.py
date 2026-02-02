@@ -18,6 +18,7 @@ class Article(models.Model):
     published_at = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
     is_popular = models.BooleanField(default=False)
+    sub_category_names = models.JSONField(default=list, blank=True)
 
     # User와의 Bookmark 관계를 ManyToMany로 정의할 수 있습니다.
     bookmarked_by = models.ManyToManyField(User, through='UserBookmark', related_name='bookmarked_articles')
