@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 from newspaper import Article as NewsArticle
 from django.utils import timezone
 
-# 프로젝트 환경 설정
+# 1. 프로젝트 환경 설정
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
 django.setup()
 
@@ -28,7 +28,7 @@ class MKNewsFetcher:
         self.popular_rss = 'https://www.mk.co.kr/rss/30000001/'
         self.seoul_tz = pytz.timezone('Asia/Seoul')
         
-        # 시현님의 소분류 맵
+        # 소분류 맵
         self.category_map = {
             "물가/인플레": ["물가", "인플레이션", "CPI", "소비자물가", "생산자물가", "공공요금", "장바구니", "신선식품", "유가", "기름값", "공급망", "기대인플레이션", "디플레이션", "스태그플레이션", "근원물가"],
             "고용/지표": ["고용", "실업률", "취업자", "경제성장률", "GDP", "GNI", "경기지수", "불황", "경기침체", "R의공포", "비농업고용", "신규실업수당", "OECD성장률", "잠재성장률", "경기선행지수"],
@@ -50,38 +50,36 @@ class MKNewsFetcher:
             "임대차/전세": ["전세", "월세", "전세금", "임대차법", "역전세", "깡통전세", "전세사기", "보증금", "확정일자", "전입신고", "임차인", "임대인", "복비", "중개수수료"]
         }
 
-    def _analyze_sub_categories(self, content):
-        """본문 키워드 빈도 분석 로직"""
-        if not content: return []
+    def _get_category_by_url(self, url):
+        url = url.lower()
+        name = None
+        if 'stock' in url: name = '증권'
+        elif 'business' in url: name = '기업'
+        elif 'estate' in url: name = '부동산'
+        elif 'finance' in url: name = '금융'
+        elif 'economy' in url: name = '경제'
         
+        if name:
+            category, _ = Category.objects.get_or_create(name=name)
+            return category
+        return None
+
+    def _analyze_sub_categories(self, content):
+        if not content: return []
         counts = {}
         for sub_cat, keywords in self.category_map.items():
-            # 대소문자 무시하고 개수 합산
             count = sum(content.count(kw) for kw in keywords)
-            if count > 0:
-                counts[sub_cat] = count
-        
+            if count > 0: counts[sub_cat] = count
         if not counts: return []
-        
-        # 최빈값 추출
         max_val = max(counts.values())
         return [cat for cat, count in counts.items() if count == max_val]
 
     def _clean_content(self, text):
         if not text: return ""
+        if text.strip().startswith("Key Points"): return None
         lines = text.split('\n')
         cleaned = [l for l in lines if not (l.strip().startswith("사진 확대") or l.strip().startswith("▶") or ("@" in l and "mk.co.kr" in l))]
         return re.sub(r'\n{3,}', '\n\n', '\n'.join(cleaned)).strip()
-
-    def _get_category_by_url(self, url):
-        url = url.lower()
-        if 'economy' in url: name = '경제'
-        elif 'business' in url: name = '기업'
-        elif 'stock' in url: name = '증권'
-        elif 'estate' in url: name = '부동산'
-        else: name = '경제'
-        category, _ = Category.objects.get_or_create(name=name)
-        return category
 
     def _extract_article_date(self, url):
         try:
@@ -90,8 +88,7 @@ class MKNewsFetcher:
             soup = BeautifulSoup(res.text, 'html.parser')
             meta = soup.find("meta", {"property": "article:published_time"})
             if meta and meta.get("content"): return parser.parse(meta["content"]).date()
-            text = soup.get_text()
-            m = re.search(r'(\d{4})\.(\d{2})\.(\d{2})', text)
+            m = re.search(r'(\d{4})\.(\d{2})\.(\d{2})', soup.get_text())
             if m: return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3))).date()
         except: pass
         return None
@@ -99,11 +96,92 @@ class MKNewsFetcher:
     def _build_published_at(self, article_date):
         return self.seoul_tz.localize(datetime.combine(article_date, datetime.min.time())) + timedelta(hours=12)
 
+    def update_popular_news(self, limit=5):
+        print(f"\n--- [인기뉴스] 최신 {limit}개 갱신 시작 ---")
+        Article.objects.filter(is_popular=True).update(is_popular=False)
+        feed = feedparser.parse(self.popular_rss)
+        success = 0
+        skip_reasons = {"중복": 0, "분류불가": 0, "에러": 0, "키포인트제외": 0}
+
+        for entry in feed.entries:
+            if success >= limit: break
+            actual_category = self._get_category_by_url(entry.link)
+            if not actual_category:
+                skip_reasons["분류불가"] += 1
+                continue
+            existing_article = Article.objects.filter(url=entry.link).first()
+            if existing_article:
+                existing_article.is_popular = True
+                existing_article.save()
+                success += 1
+                print(f"  🔥 [인기 갱신] {existing_article.title[:20]}...")
+                continue
+            try:
+                news = NewsArticle(entry.link, language='ko')
+                news.download(); news.parse()
+                content = self._clean_content(news.text)
+                if content is None:
+                    skip_reasons["키포인트제외"] += 1
+                    continue
+                sub_cats = self._analyze_sub_categories(content)
+                article_date = self._extract_article_date(entry.link) or parser.parse(entry.published).date()
+                Article.objects.create(
+                    category=actual_category, sub_category_names=sub_cats,
+                    title=entry.title, 
+                    description=entry.description[:200] if entry.description else (news.meta_description[:200] if news.meta_description else ""),
+                    content=content, image_url=news.top_image, url=entry.link,
+                    source="매일경제", published_at=self._build_published_at(article_date),
+                    is_popular=True
+                )
+                success += 1
+                print(f"  🔥 [인기 신규] {entry.title[:20]}...")
+                time.sleep(0.3)
+            except: skip_reasons["에러"] += 1
+        print(f"✨ 인기 완료: {success}/{limit} (스킵이유: {skip_reasons})")
+
+    def run_import(self, category_name, limit=3):
+        target_url = self.rss_map.get(category_name)
+        feed = feedparser.parse(target_url)
+        success = 0
+        skip_reasons = {"중복": 0, "분류불가": 0, "에러": 0, "키포인트제외": 0}
+        print(f"\n--- [{category_name}] 수집 시작 (목표: {limit}개) ---")
+
+        for entry in feed.entries:
+            if success >= limit: break
+            actual_category = self._get_category_by_url(entry.link)
+            if not actual_category:
+                skip_reasons["분류불가"] += 1
+                continue
+            if Article.objects.filter(url=entry.link).exists():
+                skip_reasons["중복"] += 1
+                continue
+            try:
+                news = NewsArticle(entry.link, language='ko')
+                news.download(); news.parse()
+                content = self._clean_content(news.text)
+                if content is None:
+                    skip_reasons["키포인트제외"] += 1
+                    continue
+                sub_cats = self._analyze_sub_categories(content)
+                article_date = self._extract_article_date(entry.link) or parser.parse(entry.published).date()
+                Article.objects.create(
+                    category=actual_category, sub_category_names=sub_cats,
+                    title=entry.title, 
+                    description=entry.description[:200] if entry.description else (news.meta_description[:200] if news.meta_description else ""),
+                    content=content, image_url=news.top_image,
+                    url=entry.link, source="매일경제", is_popular=False,
+                    published_at=self._build_published_at(article_date)
+                )
+                success += 1
+                print(f"  ✅ [일반][{actual_category.name}] 소분류:{sub_cats} | {entry.title[:15]}...")
+                time.sleep(0.3)
+            except: skip_reasons["에러"] += 1
+        print(f"  ⚠️ 요약: {success}/{limit} 저장 (스킵이유: {skip_reasons})")
+
     def fetch_financial_links(self, limit=15):
         url = "https://www.mk.co.kr/news/financial/"
-        headers = {'User-Agent': 'Mozilla/5.0'}
         try:
-            res = requests.get(url, headers=headers)
+            res = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'})
             soup = BeautifulSoup(res.text, 'html.parser')
             tags = soup.select("a.link_style4, a.link_style_list, a.link_style2, a.link_style1")
             links = []
@@ -113,103 +191,53 @@ class MKNewsFetcher:
                 if link and link not in links: links.append(link)
                 if len(links) >= limit: break
             return links
-        except Exception as e:
-            print(f"❌ 금융 링크 실패: {e}"); return []
-
-    def run_import(self, category_name, limit=3, is_popular=False):
-        target_url = self.rss_map.get(category_name, self.popular_rss)
-        feed = feedparser.parse(target_url)
-        base_category = None
-        if category_name != '인기뉴스':
-            base_category, _ = Category.objects.get_or_create(name=category_name)
-
-        success = 0
-        for entry in feed.entries:
-            if success >= limit: break
-            existing_article = Article.objects.filter(url=entry.link).first()
-            if existing_article:
-                if is_popular and not existing_article.is_popular:
-                    existing_article.is_popular = True
-                    existing_article.save()
-                    print(f"🔼 업데이트: [🔥인기][{category_name}] {entry.title[:15]}...")
-                continue
-
-            try:
-                news = NewsArticle(entry.link, language='ko')
-                news.download(); news.parse()
-                content = self._clean_content(news.text)
-                
-                # 소분류 분석
-                sub_cats = self._analyze_sub_categories(content)
-                category = base_category if base_category else self._get_category_by_url(entry.link)
-                
-                article_date = self._extract_article_date(entry.link)
-                if not article_date: article_date = parser.parse(entry.published).date()
-
-                Article.objects.create(
-                    category=category, 
-                    sub_category_names=sub_cats, # JSON 리스트 저장
-                    title=entry.title,
-                    description=entry.description[:200] if entry.description else "",
-                    content=content,
-                    image_url=news.top_image, url=entry.link,
-                    source="매일경제", published_at=self._build_published_at(article_date),
-                    is_popular=is_popular
-                )
-                success += 1
-                pop_tag = "[🔥인기]" if is_popular else ""
-                print(f"✅ 저장: {pop_tag}[{category.name}][소분류:{sub_cats}] {entry.title[:15]}...")
-                time.sleep(0.3)
-            except Exception as e:
-                print(f"❌ 에러: {e}")
-        return success
+        except: return []
 
     def run_import_from_links(self, category_name, links, limit=5):
         category, _ = Category.objects.get_or_create(name=category_name)
         success = 0
+        skip_reasons = {"중복": 0, "키포인트제외": 0, "에러": 0}
+        print(f"\n--- [{category_name}] 수집 시작 (목표: {limit}개) ---")
+
         for link in links:
             if success >= limit: break
-            if Article.objects.filter(url=link).exists(): continue
+            if Article.objects.filter(url=link).exists():
+                skip_reasons["중복"] += 1
+                continue
             try:
                 news = NewsArticle(link, language='ko')
                 news.download(); news.parse()
                 content = self._clean_content(news.text)
-                
-                # 소분류 분석
+                if content is None:
+                    skip_reasons["키포인트제외"] += 1
+                    continue
                 sub_cats = self._analyze_sub_categories(content)
-                
-                article_date = self._extract_article_date(link)
-                if not article_date: article_date = timezone.now().date()
-
+                article_date = self._extract_article_date(link) or timezone.now().date()
                 Article.objects.create(
-                    category=category,
-                    sub_category_names=sub_cats,
-                    title=news.title,
+                    category=category, sub_category_names=sub_cats,
+                    title=news.title, 
                     description=news.meta_description[:200] if news.meta_description else "",
-                    content=content,
-                    image_url=news.top_image, url=link,
-                    source="매일경제", published_at=self._build_published_at(article_date),
-                    is_popular=False
+                    content=content, image_url=news.top_image,
+                    url=link, source="매일경제", published_at=self._build_published_at(article_date)
                 )
                 success += 1
-                print(f"✅ 금융 저장: [{category.name}][소분류:{sub_cats}] {news.title[:15]}...")
+                print(f"  ✅ [금융][{category_name}] 소분류:{sub_cats} | {news.title[:15]}...")
                 time.sleep(0.3)
-            except Exception as e:
-                print(f"❌ 금융 에러: {e}")
-        return success
+            except: skip_reasons["에러"] += 1
+        print(f"  ⚠️ 요약: {success}/{limit} 저장 (스킵이유: {skip_reasons})")
 
 def start_forever():
     fetcher = MKNewsFetcher()
     interval = 3 * 60 * 60 
     while True:
         try:
-            print(f"\n--- [ {datetime.now().strftime('%H:%M:%S')} ] 수집 시작 ---")
-            fetcher.run_import('인기뉴스', limit=10, is_popular=True)
+            print(f"\n--- [ {datetime.now().strftime('%H:%M:%S')} ] 사이클 시작 ---")
+            fetcher.update_popular_news(limit=5)
             for cat in fetcher.rss_map.keys():
                 fetcher.run_import(cat, limit=5)
-            finance_links = fetcher.fetch_financial_links(limit=15)
-            fetcher.run_import_from_links('금융', finance_links, limit=5)
-            print(f"✨ 완료! 3시간 뒤에 뵙겠습니다.")
+            f_links = fetcher.fetch_financial_links(limit=15)
+            fetcher.run_import_from_links('금융', f_links, limit=5)
+            print(f"\n✨ 모든 수집 완료! {interval//3600}시간 대기...")
         except Exception as e:
             print(f"🚨 오류: {e}")
         time.sleep(interval)
