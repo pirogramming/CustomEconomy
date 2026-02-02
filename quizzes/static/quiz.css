@@ -214,3 +214,28 @@ body {
     line-height: 1.6;
     margin: 0;
 }
+
+.answer-option:hover{
+    background-color: #fcbe9c;
+}
+/* 선택한 답(클릭된 보기) 강조 */
+.answer-option.selected {
+  border: 3px solid #14213E;   /* 짙은 남색 띠 */
+  border-radius: 12px;         /* 카드 느낌 유지 */
+  box-sizing: border-box;
+}
+
+/* 선택했을 때 살짝 떠 보이게(선택) */
+.answer-option.selected {
+  box-shadow: 0 0 0 2px rgba(20, 33, 62, 0.15);
+}
+
+.answer-option.correct {
+  border: 3px solid #2E7D32;
+  background: #e8f5e9;
+}
+
+.answer-option.wrong {
+  border: 3px solid #c62828;
+  background: #ffebee;
+}
