@@ -32,8 +32,7 @@ class Migration(migrations.Migration):
             name='QuizResult',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('attempt_no', models.IntegerField(default=1)),
-                ('selected_answer', models.CharField(help_text='객관식 선택값, OX', max_length=50)),
+                ('selected_answer', models.CharField(help_text='객관식 선택값', max_length=50)),
                 ('is_correct', models.BooleanField()),
                 ('earned_score', models.IntegerField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),

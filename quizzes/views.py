@@ -1,114 +1,109 @@
-# quizzes/views.py
 from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
-
-from .models import Quiz, QuizChoice, QuizResult
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from articles.models import Article
+from accounts.models import Interest, UserInterest
+from .models import Quiz, QuizResult, QuizChoice
+from .services import get_quiz_session_set # 작성하신 함수 임포트
 
-QUIZ_COUNT = 3  # 한 번에 보여줄 문제 수
+@login_required
+def quiz_view(request, article_id):
+    """
+    1. 기사 상세 페이지 아래에 퀴즈 3문제를 보여주는 뷰
+    """
+    article = get_object_or_404(Article, id=article_id)
+    
+    # [Service 호출] A, B, C 유형 섞인 3문제 가져오기
+    quiz_set = get_quiz_session_set(article)
+    
+    return render(request, 'quiz.html', {
+        'article': article,
+        'quiz_set': quiz_set
+    })
 
-
-def quiz_view(request):
-    article_id = request.GET.get("article_id") if request.method == "GET" else request.POST.get("article_id")
-    level = request.GET.get("level") if request.method == "GET" else request.POST.get("level")
-    level = int(level or 1)
-
-    article = None
-    if article_id:
-        article = get_object_or_404(Article, id=article_id)
-
-    # -------------------------
-    # POST: 제출 처리 (⭐ quiz_ids로 동일 세트 유지)
-    # -------------------------
+@login_required
+@transaction.atomic
+def submit_quiz_session(request, article_id):
+    """
+    2. 퀴즈 제출 처리: 점수, 리그, 약점/공백 업데이트
+    """
     if request.method == "POST":
-        if not request.user.is_authenticated:
-            return redirect("login")  # 너희 로그인 url name
-
-        quiz_ids_str = request.POST.get("quiz_ids", "")
-        quiz_ids = [int(x) for x in quiz_ids_str.split(",") if x.strip().isdigit()]
-
-        quizzes_list = list(
-            Quiz.objects.filter(id__in=quiz_ids).prefetch_related("choices")
-        )
-        quiz_map = {q.id: q for q in quizzes_list}
-        quizzes = [quiz_map[qid] for qid in quiz_ids if qid in quiz_map]
-
-        if not quizzes:
-            return render(request, "quiz_empty.html", {"article": article, "level": level})
-
-        total = len(quizzes)
+        user = request.user
+        article = get_object_or_404(Article, id=article_id)
+        quiz_ids = request.POST.getlist('quiz_ids')
+        
+        # 상세 결과를 담을 리스트
+        results_detail = []
         correct_count = 0
-        earned_total_score = 0
-        results = []
+        
+        for q_id in quiz_ids:
+            quiz = Quiz.objects.get(id=q_id)
+            selected_choice_id = request.POST.get(f'quiz_{q_id}')
+            choice = QuizChoice.objects.get(id=selected_choice_id)
+            
+            is_correct = choice.is_correct
+            if is_correct: correct_count += 1
 
-        for quiz in quizzes:
-            picked_choice_id = request.POST.get(f"q_{quiz.id}")
-
-            if not picked_choice_id:
-                picked_choice = None
-                selected_answer_text = ""
-                is_correct = False
-                picked_choice_id_int = None
-            else:
-                picked_choice = QuizChoice.objects.filter(id=picked_choice_id, quiz=quiz).first()
-                selected_answer_text = picked_choice.choice_text if picked_choice else ""
-                is_correct = bool(picked_choice and picked_choice.is_correct)
-                picked_choice_id_int = int(picked_choice_id)
-
-            earned = 10 if is_correct else 0
-            if is_correct:
-                correct_count += 1
-            earned_total_score += earned
-
-            attempt_no = QuizResult.objects.filter(user=request.user, quiz=quiz).count() + 1
-
+			# [핵심 1] DB에 퀴즈 결과 저장
             QuizResult.objects.create(
-                user=request.user,
+                user=user,
                 quiz=quiz,
-                attempt_no=attempt_no,
-                selected_answer=selected_answer_text,
+                selected_answer=choice.choice_text,
                 is_correct=is_correct,
-                earned_score=earned,
-                created_at=timezone.now(),
+                earned_score=10 if is_correct else 0
             )
-
-            results.append({
-                "quiz": quiz,
-                "picked_choice_id": picked_choice_id_int,
-                "is_correct": is_correct,
-                "earned": earned,
+            
+            # [상세 정보 저장] 템플릿에서 보여줄 용도
+            results_detail.append({
+                'question': quiz.question,
+                'selected': choice.choice_text,
+                'is_correct': is_correct,
+                'explanation': quiz.explanation,
+                'correct_answer': quiz.choices.filter(is_correct=True).first().choice_text
             })
 
-        return render(request, "quiz_result.html", {
-            "article": article,
-            "level": level,
-            "results": results,
-            "correct_count": correct_count,
-            "total": total,
-            "earned_total_score": earned_total_score,
+            # [핵심 2] 약점/공백 점수 업데이트 (추천 엔진용)
+            # 기사의 모든 소분류에 대해 점수 가감
+            for cat_name in article.sub_category_names:
+                interest_obj, _ = Interest.objects.get_or_create(name=cat_name)
+                ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
+                
+                if is_correct:
+                    ui.weakness_score = max(0, ui.weakness_score - 2) # 아는 분야
+                else:
+                    ui.weakness_score += 4 # 약점 분야
+                ui.save()
+
+        # [핵심 3] 리그 점수 및 레벨업 로직
+        total_session_points = correct_count * 10
+        user.total_score += total_session_points
+        user.level_score += total_session_points
+        
+        is_levelup = False
+        if user.level_score >= 100: # 레벨업 문턱
+            user.level += 1
+            user.level_score = 0 # 리그 경쟁용 점수 리셋
+            is_levelup = True
+        
+        user.save()
+        
+        return render(request, 'session_result.html', {
+            'results_detail': results_detail,
+            'correct_count': correct_count,
+            'is_levelup': is_levelup,
+            'points': total_session_points
         })
 
-    # -------------------------
-    # GET: 문제 출제
-    # -------------------------
-    quizzes_qs = Quiz.objects.none()
-
-    if article:
-        quizzes_qs = Quiz.objects.filter(article=article, level=level, type="A")
-
-    if not quizzes_qs.exists():
-        if article:
-            quizzes_qs = Quiz.objects.filter(category=article.category, type="C")
-        else:
-            quizzes_qs = Quiz.objects.filter(type="C")
-
-    quizzes = list(quizzes_qs.prefetch_related("choices").order_by("?")[:QUIZ_COUNT])
-
-    if not quizzes:
-        return render(request, "quiz_empty.html", {"article": article, "level": level})
-
-    return render(request, "quiz.html", {
-        "article": article,
-        "level": level,
-        "quizzes": quizzes
+@login_required
+def my_wrong_note(request):
+    """
+    3. 마이페이지: 틀린 문제 보여주기
+    """
+    wrong_results = QuizResult.objects.filter(
+        user=request.user, 
+        is_correct=False
+    ).select_related('quiz', 'quiz__article').order_by('-created_at')
+    
+    return render(request, 'wrong_note.html', {
+        'wrong_results': wrong_results
     })
