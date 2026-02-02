@@ -28,16 +28,6 @@ def articleList_view(request):
     return render(request, 'articleList.html', context)
 
 
-def article_detail_view(request, pk):
-    article = get_object_or_404(Article, pk=pk)
-    current_mode = request.GET.get('mode', '기사원문')
-    context = {
-        'article': article,
-        'current_mode': current_mode
-    }
-    return render(request, 'articleRead.html', context)
-
-
 # <a href="?category=부동산">부동산</a>
 # <option value="?category={{ current_category }}&sort=title" {% if current_sort == 'title' %}selected{% endif %}>이름순</option>
 # <p>{{ article.published_at | date:"Y.m.d"}}</p>
