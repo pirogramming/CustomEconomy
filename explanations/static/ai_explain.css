@@ -22,15 +22,17 @@ body {
 
 /* 1. 레이아웃 래퍼 - 사이드바 고려한 메인 콘텐츠 */
 .explanation-wrapper {
-    margin-left: 258px; /* 사이드바 너비 */
-    width: calc(100% - 258px);
     background-color: var(--c-bg-gray);
-    min-height: 100vh;
-    padding: 40px 50px;
+    font-family: 'Noto Sans KR', sans-serif;
+    width: 100%;             /* 부모(main) 영역을 가득 채움 */
+    max-width: 1200px;       /* 하지만 1200px 이상은 커지지 않게 제한 */
+    margin: 0 auto;          /* 남은 공간에서 자동으로 중앙 정렬 */
+    min-height: 100vh;       /* 높이 유지 */
+    padding: 40px 50px;      /* 내부 여백 */
+    box-sizing: border-box;  /* padding이 너비에 포함되도록 설정 (중요) */
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: 'Noto Sans KR', sans-serif;
 }
 
 /* 2. 메인 타이틀 (Custom Economy) */
@@ -99,6 +101,57 @@ body {
     position: relative;
     z-index: 5;
     min-height: 600px;
+}
+
+/* 기사 원문 링크 영역 */
+.external-link-area {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.original-link {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.original-link:hover {
+    color: #212529;
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+/* 하단 구분선 */
+.section-divider {
+    border: 0;
+    border-top: 1px solid #eeeeee;
+    margin: 40px auto 25px;
+    width: 90%;
+}
+
+/* 목록으로 돌아가기 영역 */
+.back-to-list-area {
+    text-align: center;
+    padding-bottom: 30px;
+}
+
+.back-btn {
+    color: #888888;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+    display: inline-block;
+}
+
+.back-btn:hover {
+    color: #333333;
+    text-decoration: underline;
 }
 
 /* 날짜 뱃지 */
@@ -214,6 +267,8 @@ body {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(239, 145, 96, 0.6);
 }
+
+
 
 /* 반응형 - 태블릿 이하 */
 @media (max-width: 768px) {

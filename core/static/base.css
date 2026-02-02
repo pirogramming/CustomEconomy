@@ -12,8 +12,26 @@ body { font-family: 'Noto Sans KR', sans-serif; background-color: #eeefee; min-h
 
 /* --- 레이아웃 (Main) --- */
 main {
+    /* 1. 사이드바 너비만큼 공간 확보 */
+    margin-left: var(--sidebar-width);
+    
+    /* 2. 전체 화면에서 사이드바 너비를 뺀 나머지 공간을 꽉 채움 */
+    width: calc(100% - var(--sidebar-width));
     min-height: 100vh;
-    transition: all var(--transition-speed) ease; /* 애니메이션 핵심 */
+    
+    /* 3. [핵심] 내부 콘텐츠(explanation-wrapper)를 정중앙에 배치 */
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: flex-start; /* 세로 시작점 정렬 (필요 시 center로 변경 가능) */
+    
+    /* 4. 애니메이션: 너비와 여백이 변할 때 부드럽게 이동 */
+    transition: all var(--transition-speed) ease;
+}
+
+/* [수정] 접혔을 때 메인 레이아웃 */
+body.collapsed main {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
 }
 
 /* --- 사이드바 기본 --- */

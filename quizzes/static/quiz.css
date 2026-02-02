@@ -12,10 +12,17 @@ body {
 
 /* --- 메인 콘텐츠 스타일 --- */
 .main-content {
-    flex-grow: 1;
-    background-color: #eeefee;
-    padding: 40px 50px;
-    position: relative;
+    background-color: var(--c-bg-gray);
+    font-family: 'Noto Sans KR', sans-serif;
+    width: 100%;             /* 부모(main) 영역을 가득 채움 */
+    max-width: 1200px;       /* 하지만 1200px 이상은 커지지 않게 제한 */
+    margin: 0 auto;          /* 남은 공간에서 자동으로 중앙 정렬 */
+    min-height: 100vh;       /* 높이 유지 */
+    padding: 40px 50px;      /* 내부 여백 */
+    box-sizing: border-box;  /* padding이 너비에 포함되도록 설정 (중요) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .main-header {
