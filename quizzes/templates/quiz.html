@@ -4,6 +4,13 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'quiz.css' %}">
+<style>
+    /* 간단한 상태 제어용 CSS 추가 */
+    .answer-option { cursor: pointer; transition: 0.2s; }
+    .answer-option.disabled { pointer-events: none; opacity: 0.8; }
+    .explanation-box { display: none; } /* 처음엔 숨김 */
+    .result-summary { display: none; margin-top: 40px; }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -13,98 +20,106 @@
     </header>
 
     <div class="quiz-container">
-        <!-- Quiz 배지 -->
         <div class="quiz-badge">Quiz</div>
         
-        <!-- 기사 제목 -->
-        <h2 class="quiz-article-title">
-            '환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론'환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론
-        </h2>
+        <h2 class="quiz-article-title">{{ article.title }}</h2>
         
-        <!-- 태그 섹션 -->
         <div class="tags-wrapper">
             <div class="tag">
-                <span class="tag-text">#경제</span>
+                <span class="tag-text">#{{ article.category.name|default:"경제" }}</span>
             </div>
+            {% if level %}
             <div class="tag tag-green">
-                <span class="tag-text">#국내증시</span>
+                <span class="tag-text">#Lv.{{ level }}</span>
             </div>
+            {% endif %}
         </div>
         
-        <!-- 문제 1 - 정답 맞춤 -->
-        <div class="question-card">
+        {% for quiz in quiz_set %}
+        <div class="question-card" id="card-{{ forloop.counter }}" data-quiz-id="{{ quiz.id }}">
             <div class="question-header">
-                <h3 class="question-number">Q1. 어떠고 저떠고 쑐라쑐라?</h3>
+                <h3 class="question-number">Q{{ forloop.counter }}. {{ quiz.question|linebreaksbr }}</h3>
             </div>
+            
             <div class="answers-grid">
-                <div class="answer-option">
-                    <span class="answer-text">1. dkdkdkkd</span>
+                {% for choice in quiz.choices.all %}
+                <div class="answer-option" 
+                     data-is-correct="{{ choice.is_correct|yesno:'true,false' }}"
+                     onclick="checkAnswer(this, {{ forloop.parentloop.counter }})">
+                    <span class="answer-text">{{ forloop.counter }}. {{ choice.choice_text }}</span>
                 </div>
-                <div class="answer-option correct">
-                    <span class="answer-text">2. dkdkdkkd</span>
-                </div>
-                <div class="answer-option">
-                    <span class="answer-text">3. dkdkdkkd</span>
-                </div>
-                <div class="answer-option">
-                    <span class="answer-text">4. dkdkdkkd</span>
-                </div>
+                {% endfor %}
             </div>
-        </div>
-        
-        <!-- 문제 2 - 오답 (빨간색) + 해설 표시 -->
-        <div class="question-card with-explanation">
-            <div class="question-header">
-                <h3 class="question-number">Q2. 어떠고 저떠고 쑐라쑐라?</h3>
-            </div>
-            <div class="answers-grid">
-                <div class="answer-option">
-                    <span class="answer-text">1. dkdkdkkd</span>
-                </div>
-                <div class="answer-option correct">
-                    <span class="answer-text">2. dkdkdkkd</span>
-                </div>
-                <div class="answer-option wrong">
-                    <span class="answer-text">3. dkdkdkkd</span>
-                </div>
-                <div class="answer-option">
-                    <span class="answer-text">4. dkdkdkkd</span>
-                </div>
-            </div>
-            <div class="explanation-box">
+
+            <div class="explanation-box" id="expl-{{ forloop.counter }}">
                 <p class="explanation-text">
-                    💡 해설 어떠고 저떠고기 때문에 답은 어떠고에용 왜냐면 이렇게 이렇게 되겠죵?
+                    💡 {{ quiz.explanation|linebreaksbr }}
                 </p>
             </div>
         </div>
+        {% endfor %}
         
-        <!-- 문제 3 - 정답 맞춤 -->
-        <div class="question-card">
-            <div class="question-header">
-                <h3 class="question-number">Q3. 어떠고 저떠고 쑐라쑐라?</h3>
-            </div>
-            <div class="answers-grid">
-                <div class="answer-option">
-                    <span class="answer-text">1. dkdkdkkd</span>
-                </div>
-                <div class="answer-option correct">
-                    <span class="answer-text">2. dkdkdkkd</span>
-                </div>
-                <div class="answer-option">
-                    <span class="answer-text">3. dkdkdkkd</span>
-                </div>
-                <div class="answer-option">
-                    <span class="answer-text">4. dkdkdkkd</span>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 결과 요약 박스 -->
-        <div class="result-summary">
+        <div class="result-summary" id="final-result">
             <p class="result-text">
-                3문제 중 2문제를 맞히셨습니다!<br /><br />마이페이지에서 틀린문제를<br />다시 복습할 수 있습니다!
+                <span id="total-questions">{{ quiz_set|length }}</span>문제 중 
+                <span id="correct-count">0</span>문제를 맞히셨습니다!<br /><br />
+                마이페이지에서 틀린문제를<br />다시 복습할 수 있습니다!
             </p>
+            <div style="margin-top: 20px;">
+                <a href="{% url 'articleList' %}" class="btn-back" style="text-decoration: none; color: #666;">목록으로 돌아가기</a>
+            </div>
         </div>
     </div>
 </main>
+
+<script>
+    let correctTotal = 0;
+    let answeredCount = 0;
+    const totalQuizzes = {{ quiz_set|length }};
+
+    function checkAnswer(element, qNum) {
+        const card = document.getElementById(`card-${qNum}`);
+        const options = card.querySelectorAll('.answer-option');
+        const isCorrect = element.getAttribute('data-is-correct') === 'true';
+        const explBox = document.getElementById(`expl-${qNum}`);
+
+        // 1. 중복 클릭 방지
+        options.forEach(opt => opt.classList.add('disabled'));
+
+        // 2. 정답/오답 비주얼 처리
+        if (isCorrect) {
+            element.classList.add('correct');
+            correctTotal++;
+        } else {
+            element.classList.add('wrong');
+            // 오답일 때 정답인 항목도 같이 표시해주기
+            options.forEach(opt => {
+                if (opt.getAttribute('data-is-correct') === 'true') {
+                    opt.classList.add('correct');
+                }
+            });
+        }
+
+        // 3. 해설 박스 노출
+        explBox.style.display = 'block';
+        card.classList.add('with-explanation');
+
+        // 4. 전체 결과 정산
+        answeredCount++;
+        if (answeredCount === totalQuizzes) {
+            showFinalResult();
+        }
+    }
+
+    function showFinalResult() {
+        const resultBox = document.getElementById('final-result');
+        document.getElementById('correct-count').innerText = correctTotal;
+        resultBox.style.display = 'block';
+        
+        // 스크롤을 결과창으로 부드럽게 이동
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+
+        // (선택사항) 여기서 포인트 지급을 위해 서버에 AJAX 요청을 보낼 수 있습니다.
+    }
+</script>
 {% endblock %}
