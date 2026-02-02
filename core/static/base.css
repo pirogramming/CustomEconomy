@@ -1,66 +1,198 @@
-.sidebar_hs{
-    background-color: #192237;
-    width: 200px;
-    height: 100vh;
+/* --- 변수 설정 --- */
+:root {
+    --sidebar-width: 258px;
+    --sidebar-collapsed-width: 80px;
+    --transition-speed: 0.3s;
+    --sidebar-bg: linear-gradient(180deg, #1a2137 0%, #2d3a52 100%);
+}
+
+/* 기본 리셋 */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Noto Sans KR', sans-serif; background-color: #eeefee; min-height: 100vh; }
+
+/* --- 레이아웃 (Main) --- */
+main {
+    /* 1. 사이드바 너비만큼 공간 확보 */
+    margin-left: var(--sidebar-width);
+    
+    /* 2. 전체 화면에서 사이드바 너비를 뺀 나머지 공간을 꽉 채움 */
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+    
+    /* 3. [핵심] 내부 콘텐츠(explanation-wrapper)를 정중앙에 배치 */
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: flex-start; /* 세로 시작점 정렬 (필요 시 center로 변경 가능) */
+    
+    /* 4. 애니메이션: 너비와 여백이 변할 때 부드럽게 이동 */
+    transition: all var(--transition-speed) ease;
+}
+
+/* [수정] 접혔을 때 메인 레이아웃 */
+body.collapsed main {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
+}
+
+/* --- 사이드바 기본 --- */
+.sidebar {
     position: fixed;
-
-    margin: 0;
+    left: 0;
+    top: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px 20px;
+    z-index: 1000;
+    transition: width var(--transition-speed) ease;
+    overflow-x: hidden; /* 내용이 넘치면 잘라냄 */
 }
-.sidebar_hs .sidebar_profile_hs{width: 200px; height: 200px; background-color: pink;}
-.sidebar_hs .sidebar_btns_hs{
 
+/* 토글 버튼 스타일 */
+.toggle-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: #b8c1d9;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 1001;
+    transition: 0.2s;
 }
-.sidebar_hs .sidebar_btns_hs .main-btn-hs {
-    color: white; padding: 12px;
+.toggle-btn:hover { color: #fff; transform: scale(1.1); }
+
+/* --- 프로필 섹션 --- */
+.sidebar-profile { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; transition: 0.3s; }
+.profile-level { background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 700; margin-bottom: 15px; white-space: nowrap; }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; background-color: #ffffff; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; overflow: hidden; transition: all 0.3s; }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-text-group { text-align: center; transition: opacity 0.2s; } /* 텍스트 그룹화 */
+.profile-greeting { color: #ffffff; font-size: 14px; margin-bottom: 5px; white-space: nowrap; }
+.profile-name { color: #ffffff; font-size: 15px; font-weight: 700; line-height: 1.4; white-space: nowrap; }
+.profile-name .highlight { color: #ffd700; }
+
+/* --- 메뉴 --- */
+.sidebar-menu { width: 100%; margin-bottom: 30px; }
+.menu-item { display: flex; align-items: center; padding: 14px 20px; color: #b8c1d9; text-decoration: none; border-radius: 10px; margin-bottom: 8px; transition: all 0.3s ease; font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; }
+.menu-item:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
+.menu-item.active { background-color: rgba(239, 145, 96, 0.15); color: #ef9160; font-weight: 700; }
+.menu-icon { font-size: 20px; margin-right: 12px; min-width: 24px; text-align: center; }
+.menu-text { opacity: 1; transition: opacity 0.2s; }
+
+/* --- 진행도 & 하단 (기존 유지) --- */
+.sidebar-progress { position: relative; width: 120px; height: 120px; margin: 20px 0; transition: 0.2s; }
+.progress-ring { transform: rotate(-90deg); }
+.progress-ring-circle-bg { stroke: #3a4458; }
+.progress-ring-circle { stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
+.progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: 800; color: #ffffff; }
+
+.sidebar-footer { width: 100%; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); white-space: nowrap; }
+.footer-item { display: flex; justify-content: space-between; align-items: center; color: #ffffff; font-size: 14px; }
+.footer-label { font-weight: 500; color: #b8c1d9; }
+.footer-value { font-weight: 700; font-size: 16px; }
+
+/* 로그인 버튼 */
+/* --- 로그인/회원가입/로그아웃 (텍스트 링크 스타일) --- */
+
+.sidebar-auth {
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* 위쪽 구분선 (선택사항) */
     text-align: center;
 }
-.sidebar_hs .sidebar_btns_hs .articleList-btn-hs {
-    color: white; padding: 12px;
-    text-align: center;
+
+.auth-text-group {
+    font-size: 14px;
+    color: #b8c1d9;
+    font-family: 'Noto Sans KR', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px; /* 글자 사이 간격 */
 }
-.sidebar_hs .sidebar_btns_hs .terms-btn-hs {
-    color: white; padding: 12px;
-    text-align: center;
+
+/* 링크 기본 스타일 (회색, 밑줄 없음) */
+.auth-link {
+    color: #b8c1d9;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative; /* 밑줄 애니메이션용 */
 }
-.sidebar_hs .sidebar_btns_hs .league-btn-hs {
-    color: white; padding: 12px;
-    text-align: center;
+
+/* 마우스 올렸을 때 (흰색, 밑줄 생김) */
+.auth-link:hover {
+    color: #ffffff;
+    text-decoration: underline; /* 심플한 밑줄 */
+    text-underline-offset: 4px; /* 밑줄과 글자 사이 간격 */
 }
-.sidebar_hs .sidebar_btns_hs .mypage-btn-hs {
-    color: white; padding: 12px;
-    text-align: center;
+
+/* 구분선 (|) */
+.divider {
+    color: #555;
+    font-size: 12px;
+}
+
+/* 로그인한 유저 이름 작게 표시 */
+.user-name-small {
+    color: #ef9160; /* 포인트 컬러 */
+    font-weight: 700;
+    margin-right: 5px;
+}
+
+/* (반응형/접기 대응) 접혔을 때는 숨김 처리 */
+body.collapsed .sidebar-auth {
+    display: none !important;
 }
 
 
-.sidebar_hs .sidebar_btns_hs .main-btn-hs a{
-    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
-}
-.sidebar_hs .sidebar_btns_hs .articleList-btn-hs a{
-    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
-}
-.sidebar_hs .sidebar_btns_hs .terms-btn-hs a{
-    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
-}
-.sidebar_hs .sidebar_btns_hs .league-btn-hs a{
-    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
-}
-.sidebar_hs .sidebar_btns_hs .mypage-btn-hs a{
-    color: white; font-family: 'Kadwa'; font-size: 20px; text-decoration: none;
+/* =========================================
+   [핵심] 접혔을 때 (Collapsed) 스타일 오버라이딩
+   ========================================= */
+
+/* 1. 레이아웃 변화 */
+body.collapsed main {
+    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width));
 }
 
-
-.sidebar_hs .sidebar_btns_hs .main-btn-hs a:hover{color: #80B27F;}
-.sidebar_hs .sidebar_btns_hs .articleList-btn-hs a:hover{color: #80B27F;}
-.sidebar_hs .sidebar_btns_hs .terms-btn-hs a:hover{color: #80B27F;}
-.sidebar_hs .sidebar_btns_hs .league-btn-hs a:hover{color: #80B27F;}
-.sidebar_hs .sidebar_btns_hs .mypage-btn-hs a:hover{color: #80B27F;}
-
-.sidebar_hs .sidebar_btns_hs a.active{
-    color: #80B27F;
-    font-weight: 700; /* 선택: 살짝 강조 */
+body.collapsed .sidebar {
+    width: var(--sidebar-collapsed-width);
+    padding: 30px 10px; /* 좌우 패딩 줄임 */
 }
 
+/* 2. 숨길 요소들 처리 */
+body.collapsed .hide-on-collapse {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+}
 
+/* 3. 프로필 이미지 크기 축소 */
+body.collapsed .profile-avatar {
+    width: 45px;
+    height: 45px;
+    margin-top: 20px; /* 버튼과 간격 */
+}
 
-.sidebar_hs .sidebar_btns_user_hs .login-btn-hs{color: white;}
-.sidebar_hs .sidebar_btns_user_hs .signup-btn-hs{color: white;}
+/* 4. 메뉴 아이템 중앙 정렬 (아이콘만 보임) */
+body.collapsed .menu-item {
+    justify-content: center;
+    padding: 15px 0;
+}
+body.collapsed .menu-icon {
+    margin-right: 0;
+    font-size: 24px;
+}
+
+/* 5. 토글 버튼 위치 조정 */
+body.collapsed .toggle-btn {
+    right: 50%;
+    transform: translateX(50%);
+}

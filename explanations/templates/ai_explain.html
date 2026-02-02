@@ -5,12 +5,11 @@
 
 {% block extra_css %}
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{% static 'css/explanation.css' %}">
+<link rel="stylesheet" href="{% static 'ai_explain.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="explanation-wrapper">
-    
     <h1 class="page-main-title">Custom Economy</h1>
 
     <div class="card-ui-container">
@@ -43,20 +42,24 @@
 
             <h2 class="content-title">{{ article.title }}</h2>
 
+            <div class="external-link-area">
+                <a href="{{ article.url }}" target="_blank" class="original-link">
+                    🔗 기사 원문 보러가기 (공식 홈페이지)
+                </a>
+            </div>
+
             {% if article.image_url %}
             <div class="article-hero-image">
                 <img src="{{ article.image_url }}" alt="기사 대표 이미지">
             </div>
             {% endif %}
 
-            <!-- 기사 원문 -->
             <div id="tab-origin" class="tab-pane" style="{% if selected_level == 0 %}display: block;{% else %}display: none;{% endif %}">
                 <div class="text-content origin">
                     {{ article.content|linebreaksbr }}
                 </div>
             </div>
 
-            <!-- AI 해석 레벨별 -->
             {% for expl in explanations %}
             <div id="tab-lv{{ expl.level }}" class="tab-pane" style="{% if selected_level == expl.level %}display: block;{% else %}display: none;{% endif %}">
                 
@@ -81,8 +84,22 @@
                     </div>
                 </div>
 
+                <div class="quiz-btn-area">
+                    <a href="{% url 'quiz' %}?article_id={{ article.id }}&level={{ expl.level }}" class="quiz-floating-btn">
+                        ✏️ 지금 바로 퀴즈 풀러가기 ✏️
+                    </a>
+                </div>
+
             </div>
             {% endfor %}
+
+            <hr class="section-divider">
+            <div class="back-to-list-area">
+                <a href="{% url 'articleList' %}" class="back-btn">
+                    ← 목록으로 돌아가기
+                </a>
+            </div>
+
         </div>
     </div>
 </div>
@@ -90,41 +107,63 @@
 <script>
     function openTab(evt, tabName) {
         // 1. 모든 탭 내용 숨기기
-        var tabPanes = document.getElementsByClassName("tab-pane");
-        for (var i = 0; i < tabPanes.length; i++) {
-            tabPanes[i].style.display = "none";
-        }
+        var tabPanes = document.querySelectorAll(".tab-pane");
+        tabPanes.forEach(function(pane) {
+            pane.style.display = "none";
+        });
 
         // 2. 모든 탭 버튼 활성화 스타일 제거
-        var tabBtns = document.getElementsByClassName("tab-item");
-        for (var i = 0; i < tabBtns.length; i++) {
-            tabBtns[i].className = tabBtns[i].className.replace(" active", "");
-        }
+        var tabBtns = document.querySelectorAll(".tab-item");
+        tabBtns.forEach(function(btn) {
+            btn.classList.remove("active");
+        });
 
         // 3. 선택된 탭 내용 보이기
         var selectedPane = document.getElementById(tabName);
+        
         if (selectedPane) {
             selectedPane.style.display = "block";
+            // 4. 클릭한 버튼 활성화
+            evt.currentTarget.classList.add("active");
         } else {
-            alert("해당 레벨의 분석 데이터가 준비되지 않았습니다.");
+            // 데이터가 없을 경우 (DB에 해당 레벨 데이터가 없을 때)
+            alert("선택하신 Lv." + tabName.replace('tab-lv', '') + "의 분석 데이터가 아직 준비되지 않았습니다.");
+            
+            // 다시 원문 탭 활성화 (에러 상황 방지)
+            document.getElementById('tab-origin').style.display = "block";
+            // 첫 번째 버튼(원문)을 활성화 상태로 되돌림
+            var firstBtn = document.querySelector(".tab-item"); 
+            if(firstBtn) firstBtn.classList.add("active");
         }
-
-        // 4. 클릭한 버튼 활성화
-        evt.currentTarget.className += " active";
     }
 
-    // 페이지 로드 시 URL 파라미터에 따라 자동 탭 선택
+    // 페이지 로드 시 초기 세팅
     window.addEventListener('DOMContentLoaded', function() {
-        var selectedLevel = {{ selected_level }};
+        // Django 변수를 JS로 가져올 때 안전하게 처리 (기본값 0)
+        var selectedLevel = {{ selected_level|default:0 }};
         
+        // 레벨이 선택된 상태라면 해당 탭 활성화 시도
         if (selectedLevel > 0) {
-            // Lv1~5인 경우
-            var targetTab = document.getElementById('tab-lv' + selectedLevel);
-            if (targetTab) {
-                targetTab.style.display = 'block';
+            var targetTabId = 'tab-lv' + selectedLevel;
+            var targetPane = document.getElementById(targetTabId);
+            
+            if (targetPane) {
+                // 기존 활성화(원문) 끄기
+                document.getElementById('tab-origin').style.display = 'none';
+                document.querySelector('.tab-item.active').classList.remove('active');
+
+                // 타겟 탭 켜기
+                targetPane.style.display = 'block';
+
+                // 해당 레벨 버튼 찾아서 active 클래스 추가
+                var buttons = document.querySelectorAll(".tab-item");
+                buttons.forEach(function(btn) {
+                    if (btn.textContent.trim() === 'Lv' + selectedLevel) {
+                        btn.classList.add('active');
+                    }
+                });
             }
         }
-        // selectedLevel이 0이면 기본적으로 원문(tab-origin)이 보임
     });
 </script>
 {% endblock %}

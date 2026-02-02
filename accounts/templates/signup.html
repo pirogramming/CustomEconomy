@@ -1,10 +1,75 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 
+{% block title %}회원가입 | Custom Economy{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'signup.css' %}">
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+    .auth-card {
+        background: white;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+    }
+    .auth-title {
+        font-family: 'Kadwa', sans-serif;
+        font-size: 28px;
+        color: #192237;
+        margin-bottom: 20px;
+    }
+    /* 폼 내부 스타일링 */
+    .auth-form p {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+    .auth-form input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-top: 5px;
+    }
+    .submit-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: #ef9160;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+    .submit-btn:hover { background-color: #e67e4d; }
+    .help-text { margin-top: 20px; font-size: 14px; color: #888; }
+    .help-text a { color: #192237; text-decoration: none; font-weight: bold; }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="signup"><h2> 회원가입 페이지 </h2>
+<div class="auth-container">
+    <div class="auth-card">
+        <h2 class="auth-title">회원가입</h2>
+        
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="submit-btn">가입하기</button>
+        </form>
+
+        <p class="help-text">
+            이미 계정이 있으신가요? <a href="{% url 'login' %}">로그인</a>
+        </p>
+    </div>
+</div>
 {% endblock %}
