@@ -44,4 +44,4 @@ def articleList_view(request):
 #         <a href="?category={{ current_category }}&sort={{ current_sort }}&page={{ articles.next_page_number }}">다음</a>
 #         <a href="?category={{ current_category }}&sort={{ current_sort }}&page={{ articles.paginator.num_pages }}">마지막으로</a>
 #     {% endif %}
-# </div>
+# </div> 
