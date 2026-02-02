@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}퀴즈 결과 | Custom Economy{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'quiz.css' %}">
+{% endblock %}
+
+{% block content %}
+<main class="main-content">
+  <header class="main-header">
+    <a class="page-title" href="{% url 'main' %}">Custom Economy</a>
+  </header>
+
+  <div class="quiz-container">
+    <div class="quiz-badge">Result</div>
+
+    <h2 class="quiz-article-title">
+      {% if article %}{{ article.title }}{% else %}기초 퀴즈{% endif %}
+    </h2>
+
+    <div class="result-summary">
+      <p class="result-text">
+        {{ total }}문제 중 {{ correct_count }}문제를 맞히셨습니다!<br><br>
+        획득 점수: {{ earned_total_score }} XP
+      </p>
+    </div>
+
+    {% for r in results %}
+      <div class="question-card {% if not r.is_correct %}with-explanation{% endif %}">
+        <div class="question-header">
+          <h3 class="question-number">Q{{ forloop.counter }}. {{ r.quiz.question }}</h3>
+        </div>
+
+        <div class="answers-grid">
+          {% for choice in r.quiz.choices.all %}
+            <div class="answer-option
+              {% if choice.is_correct %}correct
+              {% elif r.picked_choice_id == choice.id %}wrong
+              {% endif %}
+            ">
+              <span class="answer-text">{{ forloop.counter }}. {{ choice.choice_text }}</span>
+            </div>
+          {% endfor %}
+        </div>
+
+        {% if not r.is_correct %}
+          <div class="explanation-box">
+            <p class="explanation-text">💡 {{ r.quiz.explanation }}</p>
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <div class="back-to-list-area" style="margin-top:24px;">
+      {% comment %} {% if article %}
+        <a class="back-btn" href="{% url 'explanation_detail' article.id %}?level={{ level }}">← 해설로 돌아가기</a>
+      {% endif %} {% endcomment %}
+      <a class="back-btn" href="{% url 'articleList' %}">← 기사 목록으로</a>
+    </div>
+
+  </div>
+</main>
+{% endblock %}
