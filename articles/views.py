@@ -27,6 +27,11 @@ def articleList_view(request):
 	}
     return render(request, 'articleList.html', context)
 
+def article_detail_view(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    return render(request, 'articles/article_detail.html', {
+        'article': article
+    })
 
 # <a href="?category=부동산">부동산</a>
 # <option value="?category={{ current_category }}&sort=title" {% if current_sort == 'title' %}selected{% endif %}>이름순</option>

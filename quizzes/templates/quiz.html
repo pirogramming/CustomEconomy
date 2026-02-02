@@ -1,125 +1,66 @@
 {% extends 'base.html' %}
-{% load static %}
-{% block title %}퀴즈 | Custom Economy{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'quiz.css' %}">
-<style>
-    /* 간단한 상태 제어용 CSS 추가 */
-    .answer-option { cursor: pointer; transition: 0.2s; }
-    .answer-option.disabled { pointer-events: none; opacity: 0.8; }
-    .explanation-box { display: none; } /* 처음엔 숨김 */
-    .result-summary { display: none; margin-top: 40px; }
-</style>
-{% endblock %}
 
 {% block content %}
-<main class="main-content">
-    <header class="main-header">
-        <h1 class="page-title">Custom Economy</h1>
-    </header>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="mb-4 text-center">
+                <span class="badge bg-primary mb-2">{{ article.category.name }}</span>
+                <h2 class="fw-bold">📰 퀴즈 타임!</h2>
+                <p class="text-muted">기사 내용과 관련된 3문제를 풀어보세요.</p>
+            </div>
 
-    <div class="quiz-container">
-        <div class="quiz-badge">Quiz</div>
-        
-        <h2 class="quiz-article-title">{{ article.title }}</h2>
-        
-        <div class="tags-wrapper">
-            <div class="tag">
-                <span class="tag-text">#{{ article.category.name|default:"경제" }}</span>
-            </div>
-            {% if level %}
-            <div class="tag tag-green">
-                <span class="tag-text">#Lv.{{ level }}</span>
-            </div>
-            {% endif %}
-        </div>
-        
-        {% for quiz in quiz_set %}
-        <div class="question-card" id="card-{{ forloop.counter }}" data-quiz-id="{{ quiz.id }}">
-            <div class="question-header">
-                <h3 class="question-number">Q{{ forloop.counter }}. {{ quiz.question|linebreaksbr }}</h3>
-            </div>
-            
-            <div class="answers-grid">
-                {% for choice in quiz.choices.all %}
-                <div class="answer-option" 
-                     data-is-correct="{{ choice.is_correct|yesno:'true,false' }}"
-                     onclick="checkAnswer(this, {{ forloop.parentloop.counter }})">
-                    <span class="answer-text">{{ forloop.counter }}. {{ choice.choice_text }}</span>
+            <form action="{% url 'submit_quiz_session' article.id %}" method="POST">
+                {% csrf_token %}
+                
+                {% for quiz in quiz_set %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <span class="text-primary fw-bold">Q{{ forloop.counter }}.</span> 
+                            {{ quiz.question }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
+                        
+                        <div class="list-group">
+                            {% for choice in quiz.choices.all %}
+                            <label class="list-group-item list-group-item-action py-3">
+                                <input class="form-check-input me-2" type="radio" 
+                                       name="quiz_{{ quiz.id }}" 
+                                       value="{{ choice.id }}" required>
+                                {{ choice.choice_text }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
                 {% endfor %}
-            </div>
 
-            <div class="explanation-box" id="expl-{{ forloop.counter }}">
-                <p class="explanation-text">
-                    💡 {{ quiz.explanation|linebreaksbr }}
-                </p>
-            </div>
-        </div>
-        {% endfor %}
-        
-        <div class="result-summary" id="final-result">
-            <p class="result-text">
-                <span id="total-questions">{{ quiz_set|length }}</span>문제 중 
-                <span id="correct-count">0</span>문제를 맞히셨습니다!<br /><br />
-                마이페이지에서 틀린문제를<br />다시 복습할 수 있습니다!
-            </p>
-            <div style="margin-top: 20px;">
-                <a href="{% url 'articleList' %}" class="btn-back" style="text-decoration: none; color: #666;">목록으로 돌아가기</a>
-            </div>
+                <div class="d-grid gap-2 mt-5 mb-5">
+                    <button type="submit" class="btn btn-primary btn-lg shadow">
+                        제출하고 결과 확인하기
+                    </button>
+                    <a href="{% url 'detail' article.id %}" class="btn btn-outline-secondary">
+                        기사로 돌아가기
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
-</main>
+</div>
 
-<script>
-    let correctTotal = 0;
-    let answeredCount = 0;
-    const totalQuizzes = {{ quiz_set|length }};
-
-    function checkAnswer(element, qNum) {
-        const card = document.getElementById(`card-${qNum}`);
-        const options = card.querySelectorAll('.answer-option');
-        const isCorrect = element.getAttribute('data-is-correct') === 'true';
-        const explBox = document.getElementById(`expl-${qNum}`);
-
-        // 1. 중복 클릭 방지
-        options.forEach(opt => opt.classList.add('disabled'));
-
-        // 2. 정답/오답 비주얼 처리
-        if (isCorrect) {
-            element.classList.add('correct');
-            correctTotal++;
-        } else {
-            element.classList.add('wrong');
-            // 오답일 때 정답인 항목도 같이 표시해주기
-            options.forEach(opt => {
-                if (opt.getAttribute('data-is-correct') === 'true') {
-                    opt.classList.add('correct');
-                }
-            });
-        }
-
-        // 3. 해설 박스 노출
-        explBox.style.display = 'block';
-        card.classList.add('with-explanation');
-
-        // 4. 전체 결과 정산
-        answeredCount++;
-        if (answeredCount === totalQuizzes) {
-            showFinalResult();
-        }
+<style>
+    .list-group-item-action:hover {
+        background-color: #f8f9fa;
+        cursor: pointer;
     }
-
-    function showFinalResult() {
-        const resultBox = document.getElementById('final-result');
-        document.getElementById('correct-count').innerText = correctTotal;
-        resultBox.style.display = 'block';
-        
-        // 스크롤을 결과창으로 부드럽게 이동
-        resultBox.scrollIntoView({ behavior: 'smooth' });
-
-        // (선택사항) 여기서 포인트 지급을 위해 서버에 AJAX 요청을 보낼 수 있습니다.
+    /* 라디오 버튼 선택 시 카드 내부 아이템 강조 */
+    .form-check-input:checked + .list-group-item {
+        background-color: #e7f1ff;
+        border-color: #0d6efd;
     }
-</script>
+    .card { border-radius: 15px; }
+</style>
 {% endblock %}

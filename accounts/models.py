@@ -47,9 +47,14 @@ class Interest(models.Model):
 class UserInterest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
-    score = models.IntegerField()
+    interest_score = models.IntegerField(default=0, help_text="관심 점수 (상한 30점)")
+    weakness_score = models.IntegerField(default=0, help_text="약점/공백 점수 (하한 0점)")
+    is_selected = models.BooleanField(default=False, help_text="유저가 직접 선택한 관심사 여부")
     last_viewed_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = (('user', 'interest'),)
+
+    def __str__(self):
+        return f"{self.user.nickname} - {self.interest.name} (I: {self.interest_score}, W: {self.weakness_score})"
