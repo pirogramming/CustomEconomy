@@ -15,8 +15,4 @@ lxml
 Pillow
 python-dateutil
 lxml_html_clean
-<<<<<<< HEAD
 pdfplumber==0.11.4
-=======
-pdfplumber==0.11.4
->>>>>>> develop2
