@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.naver',
+    'allauth.socialaccount.providers.kakao',
 ]
 
 MIDDLEWARE = [
@@ -164,3 +165,9 @@ ACCOUNT_USERNAME_REQUIRED = False # 닉네임을 따로 묻지 않음
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+# 소셜에서 받은 이메일을 그대로 사용함
+SOCIALACCOUNT_QUERY_EMAIL = True
+
+# 가입 시 이메일 인증 절차 생략 (로컬 개발 시 편함)
+ACCOUNT_EMAIL_VERIFICATION = 'none'
