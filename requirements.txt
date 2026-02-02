@@ -16,3 +16,4 @@ Pillow
 python-dateutil
 lxml_html_clean
 pdfplumber==0.11.4
+pytz
