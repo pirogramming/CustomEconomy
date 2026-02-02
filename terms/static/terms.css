@@ -1,4 +1,310 @@
-.terms {
-  margin-left: 258px;
-  padding: 20px;      
+/* ==================== */
+/* Economic Terms Page Styles */
+/* ==================== */
+
+:root {
+    /* 색상 변수 */
+    --c-orange: #EF9160;
+    --c-navy: #1A2137;
+    --c-bg-gray: #E8E9E8;
+    --c-white: #FFFFFF;
+    --c-text-dark: #333333;
+    --c-text-light: #666666;
+    --c-border-light: #E0E0E0;
+}
+
+/* 기본 초기화 */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--c-bg-gray);
+    font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+}
+
+/* 메인 래퍼 */
+.terms-wrapper {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    background-color: var(--c-bg-gray);
+}
+
+/* ==================== */
+/* 헤더 영역 */
+/* ==================== */
+
+.terms-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.page-title {
+    font-family: 'Merriweather', serif;
+    color: var(--c-navy);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    text-align: center;
+    flex: 1;
+    text-decoration: none;
+}
+
+.logout-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--c-text-dark);
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: var(--c-white);
+    transition: all 0.2s ease;
+    position: absolute;
+    right: 0;
+}
+
+.logout-link:hover {
+    border-color: var(--c-orange);
+    color: var(--c-orange);
+}
+
+/* ==================== */
+/* 검색바 */
+/* ==================== */
+
+.search-bar-container {
+    margin-bottom: 32px;
+}
+
+.search-bar {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 48px 12px 20px;
+    font-size: 14px;
+    color: var(--c-text-dark);
+    background-color: var(--c-white);
+    border: 1px solid var(--c-border-light);
+    border-radius: 25px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+    color: #999;
+}
+
+.search-input:focus {
+    border-color: var(--c-orange);
+    box-shadow: 0 2px 8px rgba(239, 145, 96, 0.15);
+}
+
+.search-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.search-button:hover {
+    background-color: rgba(239, 145, 96, 0.1);
+}
+
+.search-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--c-text-light);
+}
+
+/* ==================== */
+/* 용어 리스트 */
+/* ==================== */
+
+.terms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ==================== */
+/* 용어 카드 */
+/* ==================== */
+
+.term-card {
+    background-color: var(--c-white);
+    border-radius: 16px;
+    padding: 20px 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+.term-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.term-header {
+    margin-bottom: 12px;
+}
+
+.term-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--c-orange);
+    line-height: 1.4;
+}
+
+.term-content {
+    margin-bottom: 16px;
+}
+
+.term-description {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--c-text-dark);
+    word-break: keep-all;
+}
+
+.term-divider {
+    border: none;
+    border-top: 1px solid var(--c-border-light);
+    margin: 0;
+}
+
+/* ==================== */
+/* 반응형 디자인 */
+/* ==================== */
+
+@media (max-width: 480px) {
+    .terms-wrapper {
+        padding: 16px 12px 32px;
+    }
+    
+    .page-title {
+        font-size: 26px;
+    }
+    
+    .search-bar {
+        max-width: 100%;
+    }
+    
+    .term-card {
+        padding: 16px 20px;
+    }
+    
+    .term-title {
+        font-size: 16px;
+    }
+    
+    .term-description {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 768px) {
+    .terms-wrapper {
+        max-width: 800px;
+        padding: 40px 60px 60px;
+    }
+    
+    .terms-header {
+        margin-bottom: 36px;
+    }
+    
+    .page-title {
+        font-size: 48px;
+    }
+    
+    .logout-link {
+        font-size: 15px;
+        padding: 8px 16px;
+    }
+    
+    .search-bar-container {
+        margin-bottom: 48px;
+    }
+    
+    .search-input {
+        padding: 14px 52px 14px 24px;
+        font-size: 15px;
+    }
+    
+    .search-button {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .search-icon {
+        width: 22px;
+        height: 22px;
+    }
+    
+    .terms-list {
+        gap: 20px;
+    }
+    
+    .term-card {
+        padding: 24px 32px;
+    }
+    
+    .term-title {
+        font-size: 20px;
+    }
+    
+    .term-description {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .terms-wrapper {
+        max-width: 1000px;
+        padding: 50px 80px 80px;
+    }
+    
+    .page-title {
+        font-size: 56px;
+    }
+    
+    .search-bar {
+        max-width: 500px;
+    }
+    
+    .term-card {
+        padding: 28px 36px;
+    }
+    
+    .term-title {
+        font-size: 22px;
+    }
+    
+    .term-description {
+        font-size: 15px;
+        line-height: 1.8;
+    }
 }
