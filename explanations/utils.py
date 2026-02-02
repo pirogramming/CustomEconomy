@@ -116,24 +116,24 @@ class GeminiFinancialTutor:
             # 프롬프트 생성
             prompt = f"""당신은 금융/경제 뉴스 해설 전문 AI입니다.
 
-뉴스 카테고리: {category}
+카테고리: {category}
 사용자 관심사: {interests_str}
 
 [기사 원문]
-{text}
+{text[:1500]}  # 기사가 너무 길면 앞부분만 사용
 
-[페르소나 정보]
-{json.dumps(cat_info['personas'], ensure_ascii=False, indent=2)}
+[페르소나]
+{json.dumps(cat_info['personas'], ensure_ascii=False)}
 
-[용어 선정 기준]
+[용어 기준]
 {cat_info['terms']}
 
-[작성 규칙]
-1. storytelling: 400~500자 분량으로 자연스러운 구어체 해설
-2. terms: 레벨에 맞는 용어 2~3개 선정하여 설명 (어려운 용어가 없으면 "특별히 참고할 용어 없음")
-3. advice: 사용자 관심사와 연결한 조언 + "단, 해당 전망은 AI 기반 추천이므로 책임은 본인에게 있습니다." 문구 필수
+[출력 규칙]
+1. storytelling: 각 레벨당 300~400자
+2. terms: 레벨별 핵심 용어 2개만 선정
+3. advice: 관심사 연결 조언 + "단, AI 기반 추천이므로 책임은 본인에게 있습니다."
 
-**아래 JSON 형식으로만 출력하세요. 마크다운이나 추가 설명 금지:**
+**JSON만 출력:**
 
 [
   {{
@@ -188,13 +188,18 @@ class GeminiFinancialTutor:
                     "temperature": 0.7,
                     "top_p": 0.95,
                     "top_k": 40,
-                    "max_output_tokens": 8192,
+                    "max_output_tokens": 16384,  # 토큰 제한 증가
                 }
             )
             
             # 응답 확인
             print(f"✅ AI 응답 수신")
             print(f"   finish_reason: {response.candidates[0].finish_reason}")
+            
+            # finish_reason 체크 (2 = MAX_TOKENS, 응답이 잘림)
+            if response.candidates[0].finish_reason == 2:
+                print("⚠️ 응답이 토큰 제한으로 잘렸습니다. 프롬프트를 줄이거나 max_output_tokens를 늘리세요.")
+                return []
             
             if response.prompt_feedback.block_reason:
                 print(f"⚠️ 차단됨: {response.prompt_feedback.block_reason}")
