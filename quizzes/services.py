@@ -97,13 +97,24 @@ def create_ai_quiz_from_article(article_obj):
         return 0
 
 def create_type_b_quiz(article_obj):
-    terms = article_obj.terms.all()
-    if not terms.exists(): return 0
-
-    created_count = 0
-    # 이미 생성된 B유형 퀴즈가 있다면 새로 만들지 않고 중단 (중복 방지 가장 확실한 방법)
+    # 이미 B유형이 있다면 중단
     if Quiz.objects.filter(article=article_obj, type='B').exists():
         return 0
+
+    # 우선 기사와 연결된 용어를 가져옴
+    terms = article_obj.terms.all()
+    
+    # 연결된 용어가 없다면? 전체 용어 중 랜덤으로 2개 선택
+    if not terms.exists():
+        print(f"ℹ️ 기사 관련 용어 없음 -> 랜덤 용어로 B유형 생성 시도")
+        terms = Term.objects.order_by('?')[:2]
+    
+    # 만약 DB에 Term 자체가 하나도 없다면 생성 불가
+    if not terms.exists():
+        print(f"⚠️ 시스템에 등록된 Term(용어) 데이터가 아예 없습니다.")
+        return 0
+
+    created_count = 0
 
     for term_obj in terms.order_by('?')[:2]:
         question_text = f"다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
