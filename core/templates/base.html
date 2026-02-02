@@ -23,16 +23,33 @@
         </button>
 
         <div class="sidebar-profile">
-            <div class="profile-level hide-on-collapse">Lv.3</div>
-
-            <div class="profile-avatar">
-                <img src="{% static 'img/fox-avatar.png' %}" alt="프로필">
+            <!-- 유저 레벨 표시 -->
+            <div class="profile-level hide-on-collapse">                
+                {% if user.is_authenticated %}
+                    Lv.{{ user.level }}
+                {% else %}
+                    Lv.1 (비로그인)
+                {% endif %}
             </div>
 
+            <!-- 유저 프로필 이미지 -->
+            <div class="profile-avatar">
+                {% if user.is_authenticated and user.image_url %}
+                    <img src="{{ user.image_url }}" alt="프로필">
+                {% else %}
+                    <img src="{% static 'img/fox-avatar.png' %}" alt="기본 프로필">
+                {% endif %}
+            </div>
+
+            <!-- 유저 이름 표시 -->
             <div class="profile-text-group hide-on-collapse">
                 <div class="profile-greeting">반가워요,</div>
                 <div class="profile-name">
-                    주식으로 <span class="highlight">인생역전</span>님!
+                    {% if user.is_authenticated %}
+                        {{ user.nickname }} <span class="highlight">님!</span>
+                    {% else %}
+                        <span class="highlight">게스트</span>님!
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -60,12 +77,22 @@
             </a>
         </div>
 
+        <!-- 레벨 진행도 표시 -->
         <div class="sidebar-progress hide-on-collapse">
+            {% if user.is_authenticated %}
+                {% widthratio user.level_score 100 100 as progress_percent %}
+                {% widthratio progress_percent 100 326.73 as dash_offset %}
+            {% else %}
+                {% widthratio 0 100 100 as progress_percent %}
+                {% widthratio 0 100 326.73 as dash_offset %}
+            {% endif %}
+            
             <svg class="progress-ring" width="120" height="120">
                 <circle class="progress-ring-circle-bg" stroke="#3a4458" stroke-width="8" fill="transparent" r="52"
                     cx="60" cy="60" />
                 <circle class="progress-ring-circle" stroke="url(#gradient)" stroke-width="8" fill="transparent" r="52"
-                    cx="60" cy="60" stroke-dasharray="326.73" stroke-dashoffset="65.35" />
+                    cx="60" cy="60" stroke-dasharray="326.73" 
+                    stroke-dashoffset="{% if user.is_authenticated %}{{ dash_offset|default:326.73 }}{% else %}326.73{% endif %}" />
                 <defs>
                     <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" style="stop-color:#4dd0e1;stop-opacity:1" />
@@ -73,7 +100,13 @@
                     </linearGradient>
                 </defs>
             </svg>
-            <div class="progress-text">80%</div>
+            <div class="progress-text">
+                {% if user.is_authenticated %}
+                    {{ progress_percent|default:0 }}%
+                {% else %}
+                    0%
+                {% endif %}
+            </div>
         </div>
 
         <div class="sidebar-footer hide-on-collapse">
@@ -86,7 +119,7 @@
         <div class="sidebar-auth hide-on-collapse">
             {% if user.is_authenticated %}
             <div class="auth-text-group">
-                <span class="user-name-small">{{ user.username }}님</span>
+                <span class="user-name-small">{{ user.nickname }}님</span>
                 <a href="{% url 'logout' %}" class="auth-link">로그아웃</a>
             </div>
             {% else %}
