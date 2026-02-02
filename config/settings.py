@@ -43,6 +43,13 @@ INSTALLED_APPS = [
     "explanations",
     "quizzes",
     "terms",
+
+    "django.contrib.sites",
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.naver',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +60,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -131,3 +139,28 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 AUTH_USER_MODEL = 'accounts.User'
+
+SITE_ID = 1
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+# settings.py
+
+# 커스텀 유저 모델 설정
+AUTH_USER_MODEL = 'accounts.User'
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'nickname'
+
+# 가입 하이패스 설정 (이게 있어야 창이 안 뜹니다)
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_ADAPTER = 'accounts.adapters.MySocialAccountAdapter'
+
+# 로그인/로그아웃 설정
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False # 닉네임을 따로 묻지 않음
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
