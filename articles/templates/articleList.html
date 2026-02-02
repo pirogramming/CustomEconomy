@@ -36,7 +36,7 @@
 
         <div class="articleCards">
             {% for article in articles %}
-            <div class="article-card" onclick="location.href='{% url 'explanations:detail' article.pk %}'"
+            <div class="article-card" onclick="location.href='{% url 'detail' article.pk %}'"
                 style="cursor:pointer">
                 <div class="meta">
                     <span class="date">{{ article.published_at|date:"Y.m.d" }}</span>

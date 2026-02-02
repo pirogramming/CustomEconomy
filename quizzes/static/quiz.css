@@ -34,9 +34,14 @@ body {
 }
 
 .page-title {
-    font-family: "Kadwa-Regular", serif;
-    font-size: 50px;
-    color: #192237;
+    font-family: 'Merriweather', serif;
+    color: #1A2137;
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 40px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    text-decoration: none;
 }
 
 
