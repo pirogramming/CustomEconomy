@@ -7,9 +7,10 @@
 <style>
     .auth-container {
         display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 80vh;
+        justify-content: center; /* 가로 중앙 */
+        align-items: center;     /* 세로 중앙 */
+        min-height: 100vh;       /* 높이를 화면 꽉 차게(80vh -> 100vh) */
+        width: 100%;             /* 800px 대신 100%로 변경해서 중앙 정렬 확보 */
     }
     .auth-card {
         background: white;
@@ -17,8 +18,9 @@
         border-radius: 20px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         width: 100%;
-        max-width: 400px;
+        max-width: 500px;        /* 카드 자체의 최대 넓이를 살짝 키움 (400px -> 500px) */
         text-align: center;
+        /* margin-top: 70px; */  /* 수직 중앙 정렬을 위해 마진 제거 */
     }
     .auth-title {
         font-family: 'Kadwa', sans-serif;
@@ -37,6 +39,28 @@
         border: 1px solid #ddd;
         border-radius: 8px;
         margin-top: 5px;
+        transition: border-color 0.3s;
+    }
+    
+    .auth-form input:focus {
+        border-color: #ef9160;
+        outline: none; 
+    }
+    .auth-form .helptext {
+        display: none;
+    }
+    .auth-form ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        color: #ef9160; 
+        font-size: 13px;
+        text-align: left;
+        display: none;
+    }
+    .auth-form .errorlist {
+        display: block;
+        margin-bottom: 10px;
     }
     .submit-btn {
         width: 100%;

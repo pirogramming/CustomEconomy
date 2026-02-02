@@ -32,12 +32,17 @@
             <option value="title" {% if current_sort == 'title' %}selected{% endif %}>이름순</option>
         </select>
 
-        <p style="margin-top:10px;">현재 카테고리: {{ current_category }}</p>
+        {% comment %} <p style="margin-top:10px;">현재 카테고리: {{ current_category }}</p> {% endcomment %}
 
         <div class="articleCards">
             {% for article in articles %}
-            <div class="article-card" onclick="location.href='{% url 'explanations:detail' article.pk %}'"
+            <div class="article-card" onclick="location.href='{% url 'detail' article.pk %}'"
                 style="cursor:pointer">
+                <div class="meta">
+                    <span class="date">{{ article.published_at|date:"Y.m.d" }}</span>
+                    <span class="source">{{ article.source }}</span>
+                    <span class="category">{{ article.category.name }}</span>
+                </div>
                 {% if article.image_url %}
                 <img class="thumb" src="{{ article.image_url }}" alt="">
                 {% endif %}
@@ -45,18 +50,11 @@
                 <div class="article-info">
                     <h3 class="title">{{ article.title }}</h3>
 
-                    {% if article.description %}
-                    <p class="desc">{{ article.description }}</p>
-                    {% endif %}
-
-                    <div class="meta">
-                        <span class="date">{{ article.published_at|date:"Y.m.d" }}</span>
-                        <span class="source">{{ article.source }}</span>
-                        <span class="category">{{ article.category.name }}</span>
+                    <div class="smallTag">
+                    {% for tag in article.sub_category_names %}
+                        <span class="tag">#{{ tag }}</span>
+                    {% endfor %}
                     </div>
-
-                    <!-- 원문 링크 (선택) -->
-                    <a class="origin" href="{{ article.url }}" target="_blank" rel="noopener noreferrer">원문 보기</a>
                 </div>
             </div>
             {% empty %}
@@ -66,7 +64,7 @@
 
         <br><br>
 
-        <!-- ✅ 페이지네이션 -->
+        
         <div class="pagination">
             {% if articles.has_previous %}
             <a href="?category={{ current_category }}&sort={{ current_sort }}&page=1">처음</a>

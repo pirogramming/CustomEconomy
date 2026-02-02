@@ -17,7 +17,7 @@ def articleList_view(request):
     elif sort == 'title':
         articles_all = articles_all.order_by('title')
     
-    paginator = Paginator(articles_all, 2)
+    paginator = Paginator(articles_all, 9)
     page_obj = paginator.get_page(page_number)
 
     context = { 

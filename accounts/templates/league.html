@@ -1,12 +1,94 @@
-
-
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
+
+{% block title %}리그 순위{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'league.css' %}">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 {% endblock %}
 
 {% block content %}
-<div class="league"><h2> 리그 페이지 </h2>
+<div class="league-wrapper">
+    
+    <h1 class="page-title">Custom Economy League</h1>
+
+    <div class="level-tabs">
+        {% for i in "12345" %}
+        <a href="?level={{ i }}" class="tab-item {% if current_level == i|add:'0' %}active{% endif %}">
+            Lv{{ i }}
+        </a>
+        {% endfor %}
+    </div>
+
+    <div class="podium-container">
+        {% for user in top_users %}
+        <div class="podium-item rank-{{ user.rank_position }}">
+            <div class="medal-icon">
+                {% if user.rank_position == 1 %}🥇{% elif user.rank_position == 2 %}🥈{% else %}🥉{% endif %}
+            </div>
+            
+            <div class="profile-img-box">
+                {% if user.image_url %}
+                    <img src="{{ user.image_url }}" alt="{{ user.nickname }}">
+                {% else %}
+                    <img src="{% static 'img/fox-avatar.png' %}" alt="기본">
+                {% endif %}
+            </div>
+
+            <div class="user-info">
+                <div class="nickname">{{ user.nickname }}</div>
+                <div class="score">{{ user.total_score }}점</div>
+            </div>
+            <div class="rank-badge">{{ user.rank }}위</div>
+        </div>
+        {% empty %}
+        <p class="no-data">아직 랭킹 데이터가 없습니다.</p>
+        {% endfor %}
+    </div>
+
+    <div class="rank-list-container">
+        {% for user in rest_users %}
+        <div class="rank-row">
+            <div class="rank-num">{{ user.rank }}위</div>
+            <div class="rank-profile">
+                {% if user.image_url %}
+                    <img src="{{ user.image_url }}" alt="프로필">
+                {% else %}
+                    <img src="{% static 'img/fox-avatar.png' %}" alt="기본">
+                {% endif %}
+                <span class="nickname">{{ user.nickname }}</span>
+            </div>
+            <div class="rank-score">{{ user.total_score }}점</div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    // 페이지 로드 시 컨페티 효과 실행
+    window.onload = function() {
+        var duration = 3 * 1000;
+        var animationEnd = Date.now() + duration;
+        var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        var interval = setInterval(function() {
+            var timeLeft = animationEnd - Date.now();
+
+            if (timeLeft <= 0) {
+                return clearInterval(interval);
+            }
+
+            var particleCount = 50 * (timeLeft / duration);
+            // 화면 중앙 상단에서 터짐
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+            confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+    };
+</script>
 {% endblock %}
