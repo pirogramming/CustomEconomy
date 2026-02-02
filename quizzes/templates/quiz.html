@@ -1,70 +1,66 @@
 {% extends 'base.html' %}
-{% load static %}
-{% block title %}퀴즈 | Custom Economy{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'quiz.css' %}">
-{% endblock %}
 
 {% block content %}
-<main class="main-content">
-  <header class="main-header">
-    <a class="page-title" href="{% url 'main' %}">Custom Economy</a>
-  </header>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="mb-4 text-center">
+                <span class="badge bg-primary mb-2">{{ article.category.name }}</span>
+                <h2 class="fw-bold">📰 퀴즈 타임!</h2>
+                <p class="text-muted">기사 내용과 관련된 3문제를 풀어보세요.</p>
+            </div>
 
-  <div class="quiz-container">
-    <div class="quiz-badge">Quiz</div>
+            <form action="{% url 'submit_quiz_session' article.id %}" method="POST">
+                {% csrf_token %}
+                
+                {% for quiz in quiz_set %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="card-title mb-0">
+                            <span class="text-primary fw-bold">Q{{ forloop.counter }}.</span> 
+                            {{ quiz.question }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
+                        
+                        <div class="list-group">
+                            {% for choice in quiz.choices.all %}
+                            <label class="list-group-item list-group-item-action py-3">
+                                <input class="form-check-input me-2" type="radio" 
+                                       name="quiz_{{ quiz.id }}" 
+                                       value="{{ choice.id }}" required>
+                                {{ choice.choice_text }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
 
-    <h2 class="quiz-article-title">
-      {% if article %}{{ article.title }}{% else %}기초 퀴즈{% endif %}
-    </h2>
-
-    <div class="tags-wrapper">
-      {% if article %}
-        <div class="tag"><span class="tag-text">#{{ article.category.name }}</span></div>
-        {% for tag in article.sub_category_names %}
-          <div class="tag tag-green"><span class="tag-text">#{{ tag }}</span></div>
-        {% endfor %}
-      {% endif %}
-    </div>
-
-    <form method="post">
-      {% csrf_token %}
-
-      {# ⭐ 이게 핵심: 이번 문제 세트 유지용 #}
-      <input type="hidden" name="quiz_ids"
-             value="{% for q in quizzes %}{{ q.id }}{% if not forloop.last %},{% endif %}{% endfor %}">
-
-      {% if article %}
-        <input type="hidden" name="article_id" value="{{ article.id }}">
-        <input type="hidden" name="level" value="{{ level }}">
-      {% endif %}
-
-      {% for quiz in quizzes %}
-        <div class="question-card">
-          <div class="question-header">
-            <h3 class="question-number">Q{{ forloop.counter }}. {{ quiz.question }}</h3>
-          </div>
-
-          <div class="answers-grid">
-            {% for choice in quiz.choices.all %}
-              <label class="answer-option" style="cursor:pointer;">
-                <input type="radio"
-                       name="q_{{ quiz.id }}"
-                       value="{{ choice.id }}"
-                       required
-                       style="display:none;">
-                <span class="answer-text">{{ forloop.counter }}. {{ choice.choice_text }}</span>
-              </label>
-            {% endfor %}
-          </div>
+                <div class="d-grid gap-2 mt-5 mb-5">
+                    <button type="submit" class="btn btn-primary btn-lg shadow">
+                        제출하고 결과 확인하기
+                    </button>
+                    <a href="{% url 'detail' article.id %}" class="btn btn-outline-secondary">
+                        기사로 돌아가기
+                    </a>
+                </div>
+            </form>
         </div>
-      {% endfor %}
+    </div>
+</div>
 
-      <button type="submit" class="submit-btn">제출하기</button>
-    </form>
-  </div>
-</main>
-
-<script src="{% static 'quiz.js' %}"></script>
+<style>
+    .list-group-item-action:hover {
+        background-color: #f8f9fa;
+        cursor: pointer;
+    }
+    /* 라디오 버튼 선택 시 카드 내부 아이템 강조 */
+    .form-check-input:checked + .list-group-item {
+        background-color: #e7f1ff;
+        border-color: #0d6efd;
+    }
+    .card { border-radius: 15px; }
+</style>
 {% endblock %}

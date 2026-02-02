@@ -51,7 +51,9 @@ class Migration(migrations.Migration):
             name='UserInterest',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('score', models.IntegerField()),
+                ('interest_score', models.IntegerField(default=0, help_text='관심 점수 (상한 30점)')),
+                ('weakness_score', models.IntegerField(default=0, help_text='약점/공백 점수 (하한 0점)')),
+                ('is_selected', models.BooleanField(default=False, help_text='유저가 직접 선택한 관심사 여부')),
                 ('last_viewed_at', models.DateTimeField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('interest', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.interest')),

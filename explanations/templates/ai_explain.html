@@ -85,7 +85,7 @@
                 </div>
 
                 <div class="quiz-btn-area">
-                    <a href="{% url 'quiz' %}?article_id={{ article.id }}&level={{ expl.level }}" class="quiz-floating-btn">
+                    <a href="{% url 'quiz' article.id %}?level={{ expl.level }}" class="quiz-floating-btn">
                         ✏️ 지금 바로 퀴즈 풀러가기 ✏️
                     </a>
                 </div>

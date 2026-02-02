@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">📊 퀴즈 결과 리포트</h2>
+        <p class="fs-4 text-primary">3문제 중 {{ correct_count }}문제를 맞혔습니다! (+{{ points }} LP)</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-9">
+            {% for res in results_detail %}
+            <div class="card mb-4 border-0 shadow-sm">
+                <div class="card-header {% if res.is_correct %}bg-success-subtle{% else %}bg-danger-subtle{% endif %}">
+                    <h5 class="mb-0 fw-bold">
+                        {% if res.is_correct %}✅{% else %}❌{% endif %} Q. {{ res.question }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>선택한 답:</strong> <span class="{% if res.is_correct %}text-success{% else %}text-danger{% endif %}">{{ res.selected }}</span></p>
+                    {% if not res.is_correct %}
+                    <p class="mb-1"><strong>정답:</strong> <span class="text-success fw-bold">{{ res.correct_answer }}</span></p>
+                    {% endif %}
+                    
+                    <hr>
+                    <div class="bg-light p-3 rounded">
+                        <p class="mb-0 text-muted"><strong>💡 해설:</strong> {{ res.explanation }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+
+            <div class="d-grid gap-2 mt-5 mb-5">
+                <a href="{% url 'articleList' %}" class="btn btn-primary btn-lg">새로운 기사 보러가기</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
