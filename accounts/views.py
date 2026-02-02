@@ -3,18 +3,23 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CustomUserCreationForm 
 
-# 1. 회원가입
+
 def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)  # 가입 후 자동 로그인
-            return redirect('articleList')  # 메인 페이지 이름 (urls.py 확인 필요)
+            # 1. 로그인할 때 백엔드를 명시해서 한 번에 처리합니다.
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+            # 2. 로그인 성공 후 바로 리다이렉트!
+            return redirect('articleList') 
     else:
         form = CustomUserCreationForm()
-    return render(request, 'signup.html', {'form': form})
 
+    # 아래에 있던 "if user:" 부분은 아예 지워버려야 합니다!
+    # 유저가 생성되지 않은 상태(GET 방식 등)에서 실행되면 에러가 나기 때문이죠.
+        
+    return render(request, 'signup.html', {'form': form})
 # 2. 로그인
 def login_view(request):
     if request.method == 'POST':
