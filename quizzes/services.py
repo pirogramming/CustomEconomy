@@ -6,6 +6,7 @@ import re
 from django.conf import settings
 from django.db import models
 from articles.models import Article
+from accounts.models import Interest, UserInterest
 from .models import Quiz, QuizChoice
 from terms.models import Term 
 from dotenv import load_dotenv
@@ -97,41 +98,47 @@ def create_ai_quiz_from_article(article_obj):
         return 0
 
 def create_type_b_quiz(article_obj):
-    # 이미 B유형이 있다면 중단
     if Quiz.objects.filter(article=article_obj, type='B').exists():
         return 0
 
-    # 우선 기사와 연결된 용어를 가져옴
-    terms = article_obj.terms.all()
+    # 1. 기사 본문에 포함된 용어(Term)들 가져오기 (link_terms_to_article에서 이미 add됨)
+    terms_qs = article_obj.terms.all()
     
-    # 연결된 용어가 없다면? 전체 용어 중 랜덤으로 2개 선택
-    if not terms.exists():
-        print(f"ℹ️ 기사 관련 용어 없음 -> 랜덤 용어로 B유형 생성 시도")
-        terms = Term.objects.order_by('?')[:2]
+    # 2. 본문에 등록된 용어가 하나도 없다면, DB 전체 용어 중 랜덤 선택
+    if not terms_qs.exists():
+        terms_qs = Term.objects.all()
     
-    # 만약 DB에 Term 자체가 하나도 없다면 생성 불가
-    if not terms.exists():
-        print(f"⚠️ 시스템에 등록된 Term(용어) 데이터가 아예 없습니다.")
+    if not terms_qs.exists():
         return 0
 
     created_count = 0
+    # 정렬 후 슬라이싱!
+    selected_terms = terms_qs.order_by('?')[:2]
 
-    for term_obj in terms.order_by('?')[:2]:
+    for term_obj in selected_terms:
         question_text = f"다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
         
-        # [수정] get_or_create 대신 필터링 후 생성 로직으로 변경 (안전)
         if not Quiz.objects.filter(article=article_obj, type='B', question=question_text).exists():
+            # [핵심] 기사의 18개 소분류 중 첫 번째를 이 퀴즈의 '관심사'로 연결
+            target_interest = None
+            if article_obj.sub_category_names:
+                target_interest = Interest.objects.filter(
+                    name=article_obj.sub_category_names[0], 
+                    category_type='SUB'
+                ).first()
+
             quiz = Quiz.objects.create(
                 article=article_obj,
                 type='B',
-                category=article_obj.category,
+                category=article_obj.category, # 대분류는 기사 따라감
+                interest=target_interest,      # 소분류도 기사 첫 번째 키워드 따라감
                 question=question_text,
                 explanation=f"정답은 '{term_obj.name}'입니다.",
                 level=1
             )
             
-            # 선택지 생성
-            other_names = list(Term.objects.exclude(id=term_obj.id).values_list('name', flat=True).order_by('?')[:3])
+            # 오답 선택지 (나머지 용어 중 랜덤 3개)
+            other_names = list(Term.objects.exclude(id=term_obj.id).order_by('?')[:3].values_list('name', flat=True))
             choices = [term_obj.name] + other_names
             random.shuffle(choices)
 

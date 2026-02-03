@@ -9,70 +9,82 @@
 
 {% block content %}
 <div class="main-wrapper">
-    <!-- 헤더 영역 -->
     <header class="main-header">
         <h1 class="page-main-title">Custom Economy</h1>
     </header>
 
-    <!-- Hot 뉴스 섹션 -->
     <section class="hot-news-section">
-        <h2 class="section-title hot-title">
-            🔥 오늘 가장 Hot한 뉴스 🔥
-        </h2>
-        
-        <article class="featured-card">
-            <div class="featured-content">
-                <div class="featured-text">
-                    <h3 class="featured-title">'환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론</h3>
-                    <p class="featured-excerpt">
-                        "국민연금 기금운용본부가 정한 전략적 환헤지 규칙은 원래 대외비인데, 지금은 패가 다 까져 있는 상황입니다." 이창용 한국은행 총재는 지난해 말 금융통화위원회에서 이같이 말한 뒤 "환율 수준이 크게 변하면 공식도 신축적으로 적용돼야 하는데, 책임을 회피하는 구조 속에서 유연성이 사라졌다"
-                    </p>
+        <h2 class="section-title hot-title">🔥 오늘 가장 Hot한 뉴스 🔥</h2>
+        {% if latest_articles %}
+            {% with latest=latest_articles.0 %}
+            <article class="featured-card" onclick="location.href='{% url 'article_detail' latest.pk %}'" style="cursor:pointer;">
+                <div class="featured-content">
+                    <div class="featured-text">
+                        <h3 class="featured-title">{{ latest.title }}</h3>
+                        <p class="featured-excerpt">{{ latest.content|truncatechars:150 }}</p>
+                    </div>
+                    <div class="featured-image">
+                        <img src="{% static 'img/default_news.png' %}" alt="뉴스 이미지" />
+                    </div>
                 </div>
-                <div class="featured-image">
-                    <img src="{% static 'img/image-5.png' %}" alt="뉴스 이미지" />
-                </div>
-            </div>
-        </article>
+            </article>
+            {% endwith %}
+        {% endif %}
     </section>
 
-    <!-- 관심 뉴스 섹션 -->
     <section class="interest-news-section">
         <h2 class="section-title interest-title">
-            주식으로 인생역전님께서 관심있어 할 뉴스들을 모아봤어요!
+            {% if user.is_authenticated %}
+                {% if user_has_interests %} {{ user.nickname|default:user.get_username }}님께서 관심있어 할 뉴스들입니다!
+                {% else %}
+                    {{ user.nickname|default:user.get_username }}님, 첫 기사를 읽고 맞춤 추천을 받아보세요!
+                {% endif %}
+            {% else %}
+                지금 핫한 경제 뉴스들을 모아봤어요!
+            {% endif %}
         </h2>
         
         <div class="news-grid">
-            {% for i in "123" %}
-            <article class="news-card interest-card">
+            {% for article in interest_articles %}
+            <article class="news-card" onclick="location.href='{% url 'article_detail' article.pk %}'" style="cursor:pointer;">
                 <div class="card-content">
-                    <h3 class="card-title">'환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론</h3>
-                    <p class="card-excerpt">
-                        "국민연금 기금운용본부가 정한 전략적 환헤지 규칙은 원래 대외비인데, 지금은 패가 다 까져 있
-                    </p>
+                    <span class="category-tag">{{ article.category.name }}</span>
+                    <h3 class="card-title">{{ article.title }}</h3>
+                    <p class="card-excerpt">{{ article.content|truncatechars:80 }}</p>
+                    <small>{{ article.published_at|date:"Y.m.d" }}</small>
                 </div>
             </article>
+            {% empty %}
+            <p class="empty-msg">추천할 관심 뉴스가 아직 없습니다.</p>
             {% endfor %}
         </div>
     </section>
 
-    <!-- 취약 분야 뉴스 섹션 -->
-    <section class="weakness-news-section">
-        <h2 class="section-title weakness-title">
-            주식으로 인생역전님께서 취약한 분야의 뉴스들을 모아봤어요!
+    {% if user.is_authenticated %}
+    <section class="weak-news-section" style="margin-top: 60px;">
+        <h2 class="section-title weak-title">
+            {% if has_weak_data %}
+                {{ user.nickname|default:user.get_username }}님이 최근 어려워하신 분야를 보완해 드릴게요!
+            {% else %}
+                {{ user.nickname|default:user.get_username }}님, 아직 취약 분야가 없네요! 이 뉴스들로 공부를 시작해볼까요?
+            {% endif %}
         </h2>
         
         <div class="news-grid">
-            {% for i in "123" %}
-            <article class="news-card weakness-card">
+            {% for article in weak_articles %}
+            <article class="news-card weak-border" onclick="location.href='{% url 'article_detail' article.pk %}'" style="cursor:pointer;">
                 <div class="card-content">
-                    <h3 class="card-title">'환헤지 전략' 유턴에 원화값 안정세…커지는 국민연금 역할론</h3>
-                    <p class="card-excerpt">
-                        "국민연금 기금운용본부가 정한 전략적 환헤지 규칙은 원래 대외비인데, 지금은 패가 다 까져 있
-                    </p>
+                    <span class="category-tag weak-tag">취약보완</span>
+                    <h3 class="card-title">{{ article.title }}</h3>
+                    <p class="card-excerpt">{{ article.content|truncatechars:80 }}</p>
+                    <small>{{ article.published_at|date:"Y.m.d" }}</small>
                 </div>
             </article>
+            {% empty %}
+            <p class="empty-msg">모든 분야를 완벽하게 마스터하셨네요! 취약 분야가 없습니다. 🎉</p>
             {% endfor %}
         </div>
     </section>
+    {% endif %}
 </div>
 {% endblock %}
