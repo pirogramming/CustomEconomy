@@ -7,6 +7,7 @@
 
 {% block content %}
 <div class="articleListBody">
+    <a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
 
     <div class="articleMenuBar">
         <a class="ecoBtn {% if current_category == '경제' %}active{% endif %}"
@@ -83,6 +84,18 @@
         </div>
     </div>
 </div>
+
+{% comment %} <footer>
+    <div class="footer-content">
+        <p>© 2024 Custom Economy. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="{% url 'main' %}">Home</a>
+            <a href="{% url 'articleList' %}">Articles</a>
+            <a href="{% url 'quiz' article.id %}">Quizzes</a>
+            <a href="{% url 'my_wrong_note' %}">Wrong Note</a>
+        </div>
+    </div>
+</footer> {% endcomment %}
 
 <!-- ✅ select 바꾸면 sort 쿼리만 바꿔서 page=1로 이동 -->
 <script>

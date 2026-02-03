@@ -1,16 +1,29 @@
 .articleListBody{
   /* margin-left: 25px; */
   padding: 20px;
-  background-color: #EEEFEE;
+  /* background-color: #EEEFEE; */
 
-  min-height: 100vh;         
+  min-height: 100vh; 
+  height: auto;        
   box-sizing: border-box;
 
   display: flex;
   flex-direction: column;  
   align-items: center;   
 }
-
+.articleListBody .page-main-title {
+    font-family: 'Merriweather', serif;
+    color: var(--c-navy);
+    font-size: 3rem;
+    font-weight: 900;
+    margin-bottom: 40px;
+    text-align: center;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    padding: 20px 10px;
+    /* background-color: pink; */
+    margin-bottom: 27px;
+}
 
 .articleListBody .articleMenuBar{
   display: flex;
@@ -61,12 +74,13 @@
   flex-direction: column;
   max-width: 1000px;  
   width: auto;   
-  height: 1300px;
+  height: auto;
   min-height: 300px; 
   
 
 }
 
+.articleListBody .middleFloat{}
 .articleListBody .middleFloat select{
   margin-left: auto;
   margin-top: 10px;
@@ -121,28 +135,64 @@
   gap: 20px;
   
 }
+
+@media(max-width: 1300px){
+    .articleListBody .middleFloat .articleCards{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .articleListBody .articleMenuBar{
+      width: 692px;
+    }
+}
+@media (max-width: 1000px){
+  .articleListBody .middleFloat .articleCards{
+    grid-template-columns: 1fr;
+  }
+
+  .articleListBody .articleMenuBar{
+      width: 392px;
+    }
+    .articleListBody .articleMenuBar > a{
+      font-size: 13px;
+    }
+}
+
 .articleListBody .middleFloat .articleCards .article-card{
   width: 280px;
   height: 330px;
-  background-color: #F4F4F4; padding: 13px;
-  box-shadow: 3px 3px 5px 1px #555555;
+  background-color: #f1f0f0; padding: 13px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.1);
   border-radius: 12px;
   overflow: hidden;
 }
 .articleListBody .middleFloat .articleCards .article-card:hover{
   cursor: pointer;
-  box-shadow: none
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+  transition: 0.2s;
 }
-
+.articleListBody .middleFloat .articleCards .article-card .meta{
+  /* background-color: yellow; */
+  font-size: 13px;
+  color: #7D7D7D;
+  margin-bottom: 7px;
+}
 .articleListBody .middleFloat .articleCards .article-card .thumb{
   width: 100%; height: 150px;
   background-color: #C4C4C4;
 }
-.articleListBody .middleFloat .articleCards .article-card .article-info{}
+.articleListBody .middleFloat .articleCards .article-card .article-info{
+  /* background-color: pink; */
+}
+.articleListBody .middleFloat .articleCards .article-card .article-info .title{
+  /* background-color: aqua; */
+  padding: 5px; margin: 5px;
+}
 .articleListBody .middleFloat .articleCards .article-card .article-info .smallTag .tag{
     background-color: white; border-radius: 10px;
-    padding: 3px; width: 100px; height: auto;
-    color: #80B27F; font-family: 'Roboto'; font-weight: 600;
+    padding: 5px; margin: 3px; width: 100px; height: auto;
+    color: #80B27F; font-family: 'Roboto'; font-weight: 600; font-size: 13px;
     text-align: center;
 }
 .articleListBody .middleFloat .articleCards .article-card .article-info .title{padding: 5px;}
