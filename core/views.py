@@ -10,46 +10,85 @@ from accounts.models import UserInterest
 def main_view(request):
     user = request.user
     now = timezone.now()
-    recommended_articles = Article.objects.none()
+    
+    # 1. 초기화 (데이터가 없을 경우를 대비)
+    interest_articles = Article.objects.none()
+    weak_articles = Article.objects.none()
+    user_sub_interests = UserInterest.objects.none()
 
     if user.is_authenticated:
+        # --- [1단계] 점수 및 가중치 계산 시간 설정 ---
         seven_days_ago = now - timedelta(days=7)
-        
-        # 18개 소분류에 대한 점수를 annotate로 계산
-        # (기사를 읽거나 퀴즈를 풀 때 이 18개 소분류에 대한 UserInterest 레코드가 생성됩니다)
-        user_interests = UserInterest.objects.filter(user=user).annotate(
-            dynamic_weakness=Case(
-                When(last_wrong_at__gte=now - timedelta(days=3), then=Value(4)),
-                When(last_wrong_at__gte=now - timedelta(days=7), then=Value(2)),
+        three_days_ago = now - timedelta(days=3)
+
+        # 소분류(SUB)만 필터링해서 가져오기
+        user_sub_interests = UserInterest.objects.filter(
+            user=user, 
+            interest__category_type='SUB'
+        )
+
+        # --- [2단계] 맞춤형 관심 뉴스 추출 ---
+        top_interests = user_sub_interests.order_by('-interest_score')[:3]
+        if top_interests.exists():
+            interest_q = Q()
+            for ui in top_interests:
+                interest_q |= Q(sub_category_names__icontains=ui.interest.name)
+            interest_articles = Article.objects.filter(interest_q).distinct().order_by('?')[:3]
+
+        # --- [3단계] 맞춤형 취약 뉴스 추출 (하은님의 새 가중치 반영) ---
+        weak_top_interests = user_sub_interests.annotate(
+            # 실시간 가중치 계산: 3일 내 오답(+4), 7일 내 오답(+2)
+            quiz_weight=Case(
+                When(last_wrong_at__gte=three_days_ago, then=Value(4)),
+                When(last_wrong_at__gte=seven_days_ago, then=Value(2)),
                 default=Value(0),
                 output_field=IntegerField(),
             ),
+            # 미학습 보너스: 7일간 안 봤으면 +5
             unlearned_bonus=Case(
-                When(Q(last_viewed_at__lt=seven_days_ago) | Q(last_viewed_at__isnull=True), then=Value(5)),
+                When(last_viewed_at__lt=seven_days_ago, then=Value(5)),
+                When(last_viewed_at__isnull=True, then=Value(5)),
                 default=Value(0),
                 output_field=IntegerField(),
             )
-        )
+        ).annotate(
+            # 최종 계산: DB점수 + 최근오답가중치 + 미학습보너스
+            final_weak_score=F('weakness_score') + F('quiz_weight') + F('unlearned_bonus')
+        ).order_by('-final_weak_score')[:3]
 
-        # 소분류 점수 합산 상위 3개 키워드 추출
-        top_weak_cats = user_interests.annotate(
-            total_priority=F('dynamic_weakness') + F('unlearned_bonus') + F('weakness_score')
-        ).filter(total_priority__gt=0).order_by('-total_priority')[:3]
-
-        if top_weak_cats.exists():
-            target_keywords = [tw.interest.name for tw in top_weak_cats]
+        if weak_top_interests.exists():
+            weak_q = Q()
+            for ui in weak_top_interests:
+                weak_q |= Q(sub_category_names__icontains=ui.interest.name)
             
-            # 기사의 sub_category_names(18개 중 해당되는 것들) 필터링
-            query = Q()
-            for kw in target_keywords:
-                query |= Q(sub_category_names__contains=kw)
-            
-            recommended_articles = Article.objects.filter(query).distinct().order_by('-published_at')[:6]
+            # 관심 뉴스와 겹치지 않게 제외하고 추출
+            interest_ids = [a.id for a in interest_articles] if hasattr(interest_articles, '__iter__') else interest_articles.values_list('id', flat=True)
+            weak_articles = Article.objects.filter(weak_q).exclude(id__in=interest_ids).distinct().order_by('?')[:3]
 
-    if not recommended_articles.exists():
-        recommended_articles = Article.objects.order_by('-published_at')[:6]
+    # --- [4단계] 데이터 부족 시 보완 (Fallback) ---
+    # 관심 기사가 3개 미만이면 랜덤으로 채움
+    if interest_articles.count() < 3:
+        needed = 3 - interest_articles.count()
+        already_picked = [a.id for a in interest_articles]
+        extra = Article.objects.exclude(id__in=already_picked).order_by('?')[:needed]
+        interest_articles = list(interest_articles) + list(extra)
+
+    # 취약 기사가 3개 미만이면 랜덤으로 채움
+    if weak_articles.count() < 3:
+        needed = 3 - weak_articles.count()
+        already_picked = [a.id for a in interest_articles] + [a.id for a in weak_articles]
+        extra_weak = Article.objects.exclude(id__in=already_picked).order_by('?')[:needed]
+        weak_articles = list(weak_articles) + list(extra_weak)
+
+    # 핫 뉴스
+    latest_articles = Article.objects.filter(is_popular=True).order_by('-published_at')[:1]
+    if not latest_articles.exists():
+        latest_articles = Article.objects.order_by('-published_at')[:1]
 
     return render(request, 'main.html', {
-        'recommended_articles': recommended_articles,
-        'latest_articles': Article.objects.order_by('-published_at')[:10],
+        'interest_articles': interest_articles,
+        'weak_articles': weak_articles,
+        'latest_articles': latest_articles,
+        'user_has_interests': user_sub_interests.filter(interest_score__gt=0).exists(),
+        'has_weak_data': user_sub_interests.filter(weakness_score__gt=0).exists(),
     })

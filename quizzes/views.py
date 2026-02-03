@@ -70,8 +70,10 @@ def submit_quiz_session(request, article_id):
                     # 정답인 경우: 약점 점수 2점 차감 (하한 0점은 모델 save에서 처리)
                     ui.weakness_score -= 2
                 else:
+                    # 오답인 경우: 약점 점수 2점 증가
                     # 오답인 경우: 마지막 오답 시각을 현재로 갱신
                     # 메인 뷰에서 이 시각을 기준으로 3일 내(+4), 7일 내(+2) 가중치 부여
+                    ui.weakness_score += 2
                     ui.last_wrong_at = timezone.now()
                 
                 ui.save()

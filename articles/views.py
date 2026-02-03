@@ -3,6 +3,9 @@ from .models import Article
 from django.core.paginator import Paginator
 from django.utils import timezone  # 조회 시각 기록용
 from accounts.models import UserInterest, Interest  # 점수 반영용
+from explanations.models import ArticleExplanation
+from explanations.utils import GeminiFinancialTutor
+from django.db import transaction
 
 def articleList_view(request):
     sort = request.GET.get('sort', 'newest')
@@ -32,26 +35,67 @@ def articleList_view(request):
 def article_detail_view(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     user = request.user
+    
+    if user.is_authenticated:
+        # 1. 유저 레벨 (마이페이지나 회원정보에 있는 값)
+        user_level = getattr(user, 'level', 1) 
+        
+        # 2. [핵심] 점수 무관! 유저가 초기에 설정/수정한 그 관심사 리스트만 가져오기
+        # UserInterest와 연결된 Interest의 'name'들을 리스트로 만듭니다.
+        user_interests = list(UserInterest.objects.filter(user=user)
+                             .values_list('interest__name', flat=True))
+        
+        # (만약 가입 때 아무것도 안 골랐을 경우를 대비한 최소한의 장치)
+        if not user_interests:
+            user_interests = ["소비"]
+    else:
+        user_level = 1
+        user_interests = ["소비"]
 
+    # 1. 유저 점수 로직 (기존 그대로 유지)
     if user.is_authenticated:
         if article.sub_category_names:
             for cat_name in article.sub_category_names:
-                # Interest 테이블에서 name이 같으면서 'SUB(소분류)'인 데이터만 찾습니다.
-                # get_or_create 보다는 이미 DB에 18개가 들어있을테니 get을 권장하지만, 
-                # 안전하게 가려면 아래처럼 작성하세요.
                 interest_obj, _ = Interest.objects.get_or_create(
                     name=cat_name, 
-                    defaults={'category_type': 'SUB'} # 새로 만들 때만 SUB로 지정
+                    defaults={'category_type': 'SUB'}
                 )
-                
                 ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
-                
                 ui.interest_score += 2
                 ui.last_viewed_at = timezone.now()
-                ui.save() # 여기서 상한 30점 처리!
+                ui.save()
 
-    return render(request, 'articles/article_detail.html', {
-        'article': article
+    # 2. AI 해설 데이터 가져오기 (탭을 채워주기 위해 필요합니다)
+    explanations = ArticleExplanation.objects.filter(article=article).order_by('level')
+
+    # 3. 템플릿 렌더링 (ai_explain.html로 연결!)
+    if not explanations.exists():
+        category_name = article.category.name if article.category else "경제"
+        tutor = GeminiFinancialTutor()
+        analysis_data = tutor.generate_analysis(
+            text=article.content,
+            category=category_name,
+            interests=user_interests
+        )
+        
+        if analysis_data:
+            with transaction.atomic():
+                for data in analysis_data:
+                    ArticleExplanation.objects.create(
+                        article=article,
+                        level=data.get('level', 1),
+                        article_explanation=data.get('storytelling', '내용 없음'),
+                        term_explanation="\n\n".join([f"📌 {i.get('term')}\n{i.get('explanation')}" for i in data.get('terms', [])]),
+                        prediction=data.get('advice', '전망 없음')
+                    )
+            explanations = ArticleExplanation.objects.filter(article=article).order_by('level')
+
+    # 4. ai_explain.html로 모든 데이터를 실어서 보냅니다!
+    return render(request, 'ai_explain.html', {
+        'article': article,
+        'explanations': explanations,
+        'selected_level': 0,
+        'user_level': user_level,
     })
 
 # <a href="?category=부동산">부동산</a>

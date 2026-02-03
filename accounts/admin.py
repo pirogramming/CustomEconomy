@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User
-
+from .models import User, Interest, UserInterest
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     # 1. 목록 화면에서 보여줄 필드 (username 제외)
@@ -28,3 +27,17 @@ class CustomUserAdmin(UserAdmin):
 
     # 이메일을 아이디로 쓰기 때문에 search_fields도 수정
     search_fields = ('email', 'nickname')
+
+@admin.register(Interest)
+class InterestAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category_type')
+    list_filter = ('category_type',)
+    search_fields = ('name',)
+
+@admin.register(UserInterest)
+class UserInterestAdmin(admin.ModelAdmin):
+    # "점수판"
+    list_display = ('user', 'interest', 'interest_score', 'weakness_score', 'last_viewed_at', 'last_wrong_at')
+    # 유저별, 혹은 소분류별로 필터링해서 보기 편하게 설정
+    list_filter = ('user', 'interest__category_type')
+    search_fields = ('user__nickname', 'interest__name')
