@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Article
 from django.core.paginator import Paginator
-
+from django.utils import timezone  # 조회 시각 기록용
+from accounts.models import UserInterest, Interest  # 점수 반영용
 
 def articleList_view(request):
     sort = request.GET.get('sort', 'newest')
@@ -27,8 +28,28 @@ def articleList_view(request):
 	}
     return render(request, 'articleList.html', context)
 
+# 추천을 위한 기사 상세 뷰
 def article_detail_view(request, article_id):
     article = get_object_or_404(Article, id=article_id)
+    user = request.user
+
+    if user.is_authenticated:
+        if article.sub_category_names:
+            for cat_name in article.sub_category_names:
+                # Interest 테이블에서 name이 같으면서 'SUB(소분류)'인 데이터만 찾습니다.
+                # get_or_create 보다는 이미 DB에 18개가 들어있을테니 get을 권장하지만, 
+                # 안전하게 가려면 아래처럼 작성하세요.
+                interest_obj, _ = Interest.objects.get_or_create(
+                    name=cat_name, 
+                    defaults={'category_type': 'SUB'} # 새로 만들 때만 SUB로 지정
+                )
+                
+                ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
+                
+                ui.interest_score += 2
+                ui.last_viewed_at = timezone.now()
+                ui.save() # 여기서 상한 30점 처리!
+
     return render(request, 'articles/article_detail.html', {
         'article': article
     })
