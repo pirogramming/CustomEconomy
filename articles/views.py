@@ -1,7 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Article
 from django.core.paginator import Paginator
-
+from django.utils import timezone  # 조회 시각 기록용
+from accounts.models import UserInterest, Interest  # 점수 반영용
+from explanations.models import ArticleExplanation
+from explanations.utils import GeminiFinancialTutor
+from django.db import transaction
 
 def articleList_view(request):
     sort = request.GET.get('sort', 'newest')
@@ -27,11 +31,6 @@ def articleList_view(request):
 	}
     return render(request, 'articleList.html', context)
 
-def article_detail_view(request, article_id):
-    article = get_object_or_404(Article, id=article_id)
-    return render(request, 'articles/article_detail.html', {
-        'article': article
-    })
 
 # <a href="?category=부동산">부동산</a>
 # <option value="?category={{ current_category }}&sort=title" {% if current_sort == 'title' %}selected{% endif %}>이름순</option>

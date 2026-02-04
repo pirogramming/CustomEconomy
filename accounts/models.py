@@ -39,22 +39,52 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.nickname
     
 class Interest(models.Model):
+    # '관심분야(MAIN)' 또는 '소분류(SUB)'
+    TYPE_CHOICES = [
+        ('MAIN', '8개 관심분야'),
+        ('SUB', '18개 소분류'),
+    ]
+    
     name = models.CharField(max_length=30, unique=True)
+    category_type = models.CharField(
+        max_length=10, 
+        choices=TYPE_CHOICES, 
+        default='MAIN'
+    )
 
     def __str__(self):
-        return self.name
+        return f"[{self.get_category_type_display()}] {self.name}"
 
 class UserInterest(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_interests')
     interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
+    
+    # [MAIN 전용] 유저 가입 시 선택 여부
+    is_selected = models.BooleanField(default=False, help_text="유저가 직접 선택한 관심사 여부")
+    
+    # [SUB 전용] 학습/조회 점수
     interest_score = models.IntegerField(default=0, help_text="관심 점수 (상한 30점)")
     weakness_score = models.IntegerField(default=0, help_text="약점/공백 점수 (하한 0점)")
-    is_selected = models.BooleanField(default=False, help_text="유저가 직접 선택한 관심사 여부")
     last_viewed_at = models.DateTimeField(null=True, blank=True)
+    last_wrong_at = models.DateTimeField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         unique_together = (('user', 'interest'),)
 
+    def save(self, *args, **kwargs):
+        # 1. 관심 점수: 0 ~ 30점 사이로 고정
+        if self.interest_score > 30:
+            self.interest_score = 30
+        elif self.interest_score < 0:
+            self.interest_score = 0
+            
+        # 2. 약점 점수: 최소 0점 보장
+        if self.weakness_score < 0:
+            self.weakness_score = 0
+            
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return f"{self.user.nickname} - {self.interest.name} (I: {self.interest_score}, W: {self.weakness_score})"
+        return f"{self.user.nickname} - {self.interest.name} (I:{self.interest_score}, W:{self.weakness_score})"

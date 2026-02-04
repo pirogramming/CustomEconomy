@@ -4,7 +4,22 @@ from accounts.models import User
 
 class Quiz(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='quizzes')
+    category = models.ForeignKey(
+        Category, 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='quizzes',
+        help_text="5개 대분류 (기사 카테고리-C유형 소분류 없는 경우)"
+    )
+    interest = models.ForeignKey(
+        'accounts.Interest', 
+        on_delete=models.CASCADE, 
+        related_name='quizzes',
+        null=True,
+        blank=True,
+        help_text="18개 소분류 (약점 분석용)"
+    )
     level = models.IntegerField()
     question = models.TextField()
     explanation = models.TextField(help_text="정답 해설")

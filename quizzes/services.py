@@ -6,6 +6,7 @@ import re
 from django.conf import settings
 from django.db import models
 from articles.models import Article
+from accounts.models import Interest, UserInterest
 from .models import Quiz, QuizChoice
 from terms.models import Term 
 from dotenv import load_dotenv
@@ -97,41 +98,48 @@ def create_ai_quiz_from_article(article_obj):
         return 0
 
 def create_type_b_quiz(article_obj):
-    # 이미 B유형이 있다면 중단
     if Quiz.objects.filter(article=article_obj, type='B').exists():
         return 0
 
-    # 우선 기사와 연결된 용어를 가져옴
-    terms = article_obj.terms.all()
+    # 1. 기사 본문에 포함된 용어(Term)들 가져오기
+    terms_qs = article_obj.terms.all()
+    is_from_article = True # 기사 용어인지 판단하는 플래그
+
+    # 2. 본문에 용어가 없다면 전체 DB에서 가져오기
+    if not terms_qs.exists():
+        terms_qs = Term.objects.all()
+        is_from_article = False # 기사 외 일반 용어
     
-    # 연결된 용어가 없다면? 전체 용어 중 랜덤으로 2개 선택
-    if not terms.exists():
-        print(f"ℹ️ 기사 관련 용어 없음 -> 랜덤 용어로 B유형 생성 시도")
-        terms = Term.objects.order_by('?')[:2]
-    
-    # 만약 DB에 Term 자체가 하나도 없다면 생성 불가
-    if not terms.exists():
-        print(f"⚠️ 시스템에 등록된 Term(용어) 데이터가 아예 없습니다.")
+    if not terms_qs.exists():
         return 0
 
     created_count = 0
+    selected_terms = terms_qs.order_by('?')[:2]
 
-    for term_obj in terms.order_by('?')[:2]:
-        question_text = f"다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
+    for term_obj in selected_terms:
+        # 질문 멘트를 조건에 따라 다르게 설정!
+        if is_from_article:
+            prefix = "📌 [기사 속 용어]"
+        else:
+            prefix = "💡 [경제 기초 단어]"
         
-        # [수정] get_or_create 대신 필터링 후 생성 로직으로 변경 (안전)
+        question_text = f"{prefix} 다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
+        
+        # 중복 생성 방지
         if not Quiz.objects.filter(article=article_obj, type='B', question=question_text).exists():
+            # B유형은 분류와 상관없으므로 interest는 None!
             quiz = Quiz.objects.create(
                 article=article_obj,
                 type='B',
-                category=article_obj.category,
+                category=article_obj.category, 
+                interest=None, # 분류 연결 안 함
                 question=question_text,
                 explanation=f"정답은 '{term_obj.name}'입니다.",
                 level=1
             )
             
-            # 선택지 생성
-            other_names = list(Term.objects.exclude(id=term_obj.id).values_list('name', flat=True).order_by('?')[:3])
+            # 오답 선택지 (나머지 용어 중 랜덤 3개)
+            other_names = list(Term.objects.exclude(id=term_obj.id).order_by('?')[:3].values_list('name', flat=True))
             choices = [term_obj.name] + other_names
             random.shuffle(choices)
 
@@ -172,8 +180,17 @@ def get_quiz_session_set(article_obj):
         final_quiz_set.append(quiz_b)
     
     # [C] 카테고리 맞춤 상식
-    # 기사의 대분류 카테고리와 일치하는 상식 퀴즈 중 하나를 가져옵니다.
-    quiz_c = Quiz.objects.filter(type='C', category=article_obj.category).order_by('?').first()
+    quiz_c = None
+    
+    # 1순위: 기사에 연결된 소분류(Interest) 중 하나를 랜덤하게 골라 C유형 퀴즈 찾기
+    sub_interest = article_obj.sub_interests.all().order_by('?').first()
+    if sub_interest:
+        quiz_c = Quiz.objects.filter(type='C', interest=sub_interest).order_by('?').first()
+
+    # 2순위: 소분류 퀴즈가 없다면, 기사의 대분류(Category) 기반 C유형 퀴즈 찾기
+    if not quiz_c:
+        quiz_c = Quiz.objects.filter(type='C', category=article_obj.category).order_by('?').first()
+
     if quiz_c:
         final_quiz_set.append(quiz_c)
     
