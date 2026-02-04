@@ -62,3 +62,154 @@
 ---
 
 ## 🧠 서비스 구조
+
+```
+CustomEconomy
+├─ accounts
+│  ├─ adapters.py
+│  ├─ admin.py
+│  ├─ apps.py
+│  ├─ forms.py
+│  ├─ migrations
+│  │  ├─ 0001_initial.py
+│  │  └─ __init__.py
+│  ├─ models.py
+│  ├─ static
+│  │  ├─ league.css
+│  │  ├─ login.css
+│  │  ├─ mypage.css
+│  │  └─ signup.css
+│  ├─ templates
+│  │  ├─ league.html
+│  │  ├─ login.html
+│  │  ├─ mypage.html
+│  │  └─ signup.html
+│  ├─ tests.py
+│  ├─ urls.py
+│  ├─ views.py
+│  └─ __init__.py
+├─ articles
+│  ├─ admin.py
+│  ├─ apps.py
+│  ├─ migrations
+│  │  ├─ 0001_initial.py
+│  │  └─ __init__.py
+│  ├─ models.py
+│  ├─ static
+│  │  ├─ articleList.css
+│  │  └─ articleList.js
+│  ├─ tasks.py
+│  ├─ templates
+│  │  └─ articleList.html
+│  ├─ tests.py
+│  ├─ urls.py
+│  ├─ views.py
+│  └─ __init__.py
+├─ config
+│  ├─ asgi.py
+│  ├─ settings.py
+│  ├─ urls.py
+│  ├─ wsgi.py
+│  └─ __init__.py
+├─ core
+│  ├─ admin.py
+│  ├─ apps.py
+│  ├─ migrations
+│  │  └─ __init__.py
+│  ├─ models.py
+│  ├─ static
+│  │  ├─ base.css
+│  │  ├─ img
+│  │  │  └─ fox-avatar.png
+│  │  └─ main.css
+│  ├─ templates
+│  │  ├─ base.html
+│  │  └─ main.html
+│  ├─ tests.py
+│  ├─ urls.py
+│  ├─ views.py
+│  └─ __init__.py
+├─ explanations
+│  ├─ admin.py
+│  ├─ apps.py
+│  ├─ migrations
+│  │  ├─ 0001_initial.py
+│  │  └─ __init__.py
+│  ├─ models.py
+│  ├─ static
+│  │  └─ ai_explain.css
+│  ├─ templates
+│  │  └─ ai_explain.html
+│  ├─ tests.py
+│  ├─ urls.py
+│  ├─ utils.py
+│  ├─ views.py
+│  └─ __init__.py
+├─ manage.py
+├─ quizzes
+│  ├─ admin.py
+│  ├─ apps.py
+│  ├─ migrations
+│  │  ├─ 0001_initial.py
+│  │  └─ __init__.py
+│  ├─ models.py
+│  ├─ services.py
+│  ├─ static
+│  │  ├─ quiz.css
+│  │  └─ quiz.js
+│  ├─ templates
+│  │  ├─ quiz.html
+│  │  ├─ quiz_result.html
+│  │  ├─ session_result.html
+│  │  └─ wrong_note.html
+│  ├─ tests.py
+│  ├─ urls.py
+│  ├─ views.py
+│  └─ __init__.py
+├─ README.md
+├─ requirements.txt
+├─ scripts
+│  ├─ b_build_term.py
+│  ├─ c_build_quiz.py
+│  ├─ data
+│  │  ├─ concept_bank.json
+│  │  ├─ master_dictionary.json
+│  │  └─ term_800.pdf
+│  └─ load_to_db.py
+├─ static
+│  └─ css
+│     ├─ auth.css
+│     ├─ base.css
+│     ├─ detail.css
+│     ├─ explore.css
+│     ├─ league.css
+│     ├─ learning.css
+│     ├─ main.css
+│     └─ mypage.css
+├─ templates
+│  ├─ base.html
+│  ├─ detail.html
+│  ├─ explore.html
+│  ├─ league.html
+│  ├─ login.html
+│  ├─ main.html
+│  ├─ mypage.html
+│  ├─ signup.html
+│  └─ summary.html
+└─ terms
+   ├─ admin.py
+   ├─ apps.py
+   ├─ migrations
+   │  ├─ 0001_initial.py
+   │  └─ __init__.py
+   ├─ models.py
+   ├─ static
+   │  └─ terms.css
+   ├─ templates
+   │  └─ terms.html
+   ├─ tests.py
+   ├─ urls.py
+   ├─ views.py
+   └─ __init__.py
+
+```
