@@ -6,9 +6,11 @@ class Quiz(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey(
         Category, 
-        on_delete=models.CASCADE, 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name='quizzes',
-        help_text="8개 대분류 (C유형 가이드용)"
+        help_text="5개 대분류 (기사 카테고리-C유형 소분류 없는 경우)"
     )
     interest = models.ForeignKey(
         'accounts.Interest', 

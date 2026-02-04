@@ -17,7 +17,7 @@
         <h2 class="section-title hot-title">🔥 오늘 가장 Hot한 뉴스 🔥</h2>
         {% if latest_articles %}
             {% with latest=latest_articles.0 %}
-            <article class="featured-card" onclick="location.href='{% url 'article_detail' latest.pk %}'" style="cursor:pointer;">
+            <article class="featured-card" onclick="location.href='{% url 'detail' latest.pk %}'" style="cursor:pointer;">
                 <div class="featured-content">
                     <div class="featured-text">
                         <h3 class="featured-title">{{ latest.title }}</h3>
@@ -46,7 +46,7 @@
         
         <div class="news-grid">
             {% for article in interest_articles %}
-            <article class="news-card" onclick="location.href='{% url 'article_detail' article.pk %}'" style="cursor:pointer;">
+            <article class="news-card" onclick="location.href='{% url 'detail' article.pk %}'" style="cursor:pointer;">
                 <div class="card-content">
                     <span class="category-tag">{{ article.category.name }}</span>
                     <h3 class="card-title">{{ article.title }}</h3>
@@ -72,7 +72,7 @@
         
         <div class="news-grid">
             {% for article in weak_articles %}
-            <article class="news-card weak-border" onclick="location.href='{% url 'article_detail' article.pk %}'" style="cursor:pointer;">
+            <article class="news-card weak-border" onclick="location.href='{% url 'detail' article.pk %}'" style="cursor:pointer;">
                 <div class="card-content">
                     <span class="category-tag weak-tag">취약보완</span>
                     <h3 class="card-title">{{ article.title }}</h3>

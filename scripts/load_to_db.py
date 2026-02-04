@@ -13,6 +13,7 @@ django.setup()
 from terms.models import Term
 from quizzes.models import Quiz, QuizChoice
 from articles.models import Article, Category
+from accounts.models import Interest
 
 def load_master_dictionary():
     """[B유형 기초 데이터] 용어 사전 데이터 로드"""
@@ -33,9 +34,9 @@ def load_master_dictionary():
         if created: count += 1
     print(f"✅ 용어 사전: {count}개의 용어 이식 완료.")
 
-def load_concept_bank():
-    """[C유형 기초 데이터] 카테고리별 기초 퀴즈 로드"""
-    file_path = 'scripts/data/concept_bank.json'
+def load_c_quiz():
+    """[C유형] 대분류와 소분류를 구분하여 DB 적재"""
+    file_path = 'scripts/data/c_quiz.json'
     if not os.path.exists(file_path):
         print(f"⚠️ 파일을 찾을 수 없습니다: {file_path}")
         return
@@ -44,25 +45,29 @@ def load_concept_bank():
         data = json.load(f)
 
     total_quiz = 0
-    for cat_name, quizzes in data.items():
-        # 1. 카테고리 가져오기
-        category, _ = Category.objects.get_or_create(name=cat_name)
+    for target_name, quizzes in data.items():
+        # 1. 소분류(Interest)인지 대분류(Category)인지 확인
+        interest = Interest.objects.filter(name=target_name).first()
+        category = Category.objects.filter(name=target_name).first()
+
+        if not interest and not category:
+            print(f"⚠️ {target_name}이(가) DB에 없습니다. 확인이 필요합니다.")
+            continue
 
         for q in quizzes:
-            # 2. Quiz 생성 (설명/해설 필드가 Quiz 모델로 통합됨)
+            # 2. Quiz 생성
             quiz, created = Quiz.objects.get_or_create(
-                category=category,
                 question=q['question'],
                 defaults={
-                    'article': None,       # C유형은 기사 연결 없이 카테고리만 연결
-                    'level': 1,
                     'type': 'C',
-                    'explanation': q['explanation'] # 모델 통합으로 여기서 바로 저장!
+                    'interest': interest,  # 소분류면 객체 저장, 아니면 None
+                    'category': category,      # 대분류면 객체 저장, 아니면 None
+                    'explanation': q['explanation'],
+                    'level': 1
                 }
             )
 
             if created:
-                # 3. QuizChoice 생성
                 for opt in q['options']:
                     QuizChoice.objects.create(
                         quiz=quiz,
@@ -77,7 +82,7 @@ if __name__ == "__main__":
     print("🚀 데이터베이스 이식을 시작합니다...")
     try:
         load_master_dictionary()
-        load_concept_bank()
+        load_c_quiz()
         print("\n✨ 모든 데이터가 통합된 Quiz 모델 구조에 맞춰 저장되었습니다.")
     except Exception as e:
         print(f"\n❌ 작업 중 오류 발생: {e}")
