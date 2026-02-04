@@ -16,6 +16,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
 django.setup()
 
 from articles.models import Article, Category
+from accounts.models import Interest
 
 class MKNewsFetcher:
     def __init__(self):
@@ -125,14 +126,24 @@ class MKNewsFetcher:
                     continue
                 sub_cats = self._analyze_sub_categories(content)
                 article_date = self._extract_article_date(entry.link) or parser.parse(entry.published).date()
-                Article.objects.create(
-                    category=actual_category, sub_category_names=sub_cats,
+                article=Article.objects.create(
+                    category=actual_category,
                     title=entry.title, 
                     description=entry.description[:200] if entry.description else (news.meta_description[:200] if news.meta_description else ""),
                     content=content, image_url=news.top_image, url=entry.link,
                     source="매일경제", published_at=self._build_published_at(article_date),
                     is_popular=True
                 )
+                # 분석된 소분류(sub_cats)를 실제 Interest 객체와 연결 (핵심 추가!)
+                if sub_cats:
+                    from accounts.models import Interest
+                    # category_map의 키값과 DB의 Interest 이름이 같아야 합니다.
+                    target_interests = Interest.objects.filter(
+                        name__in=sub_cats, 
+                        category_type='SUB'
+                    )
+                    article.sub_interests.add(*target_interests)
+
                 success += 1
                 print(f"  🔥 [인기 신규] {entry.title[:20]}...")
                 time.sleep(0.3)
@@ -164,14 +175,24 @@ class MKNewsFetcher:
                     continue
                 sub_cats = self._analyze_sub_categories(content)
                 article_date = self._extract_article_date(entry.link) or parser.parse(entry.published).date()
-                Article.objects.create(
-                    category=actual_category, sub_category_names=sub_cats,
+                article=Article.objects.create(
+                    category=actual_category,
                     title=entry.title, 
                     description=entry.description[:200] if entry.description else (news.meta_description[:200] if news.meta_description else ""),
                     content=content, image_url=news.top_image,
                     url=entry.link, source="매일경제", is_popular=False,
                     published_at=self._build_published_at(article_date)
                 )
+                # 분석된 소분류(sub_cats)를 실제 Interest 객체와 연결 (핵심 추가!)
+                if sub_cats:
+                    from accounts.models import Interest
+                    # category_map의 키값과 DB의 Interest 이름이 같아야 합니다.
+                    target_interests = Interest.objects.filter(
+                        name__in=sub_cats, 
+                        category_type='SUB'
+                    )
+                    article.sub_interests.add(*target_interests)
+
                 success += 1
                 print(f"  ✅ [일반][{actual_category.name}] 소분류:{sub_cats} | {entry.title[:15]}...")
                 time.sleep(0.3)
@@ -213,13 +234,23 @@ class MKNewsFetcher:
                     continue
                 sub_cats = self._analyze_sub_categories(content)
                 article_date = self._extract_article_date(link) or timezone.now().date()
-                Article.objects.create(
-                    category=category, sub_category_names=sub_cats,
+                article=Article.objects.create(
+                    category=category,
                     title=news.title, 
                     description=news.meta_description[:200] if news.meta_description else "",
                     content=content, image_url=news.top_image,
                     url=link, source="매일경제", published_at=self._build_published_at(article_date)
                 )
+                # 분석된 소분류(sub_cats)를 실제 Interest 객체와 연결 (핵심 추가!)
+                if sub_cats:
+                    from accounts.models import Interest
+                    # category_map의 키값과 DB의 Interest 이름이 같아야 합니다.
+                    target_interests = Interest.objects.filter(
+                        name__in=sub_cats, 
+                        category_type='SUB'
+                    )
+                    article.sub_interests.add(*target_interests)
+
                 success += 1
                 print(f"  ✅ [금융][{category_name}] 소분류:{sub_cats} | {news.title[:15]}...")
                 time.sleep(0.3)
