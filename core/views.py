@@ -25,17 +25,17 @@ def main_view(request):
         user_sub_interests = UserInterest.objects.filter(
             user=user, 
             interest__category_type='SUB'
-        )
+        ).select_related('interest')
 
         # --- [2단계] 맞춤형 관심 뉴스 추출 ---
         top_interests = user_sub_interests.order_by('-interest_score')[:3]
         if top_interests.exists():
             interest_q = Q()
             for ui in top_interests:
-                interest_q |= Q(sub_category_names__icontains=ui.interest.name)
+                interest_q |= Q(sub_interests__name=ui.interest.name)
             interest_articles = Article.objects.filter(interest_q).distinct().order_by('?')[:3]
 
-        # --- [3단계] 맞춤형 취약 뉴스 추출 (하은님의 새 가중치 반영) ---
+        # --- [3단계] 맞춤형 취약 뉴스 추출 (새 가중치 반영) ---
         weak_top_interests = user_sub_interests.annotate(
             # 실시간 가중치 계산: 3일 내 오답(+4), 7일 내 오답(+2)
             quiz_weight=Case(
@@ -59,7 +59,7 @@ def main_view(request):
         if weak_top_interests.exists():
             weak_q = Q()
             for ui in weak_top_interests:
-                weak_q |= Q(sub_category_names__icontains=ui.interest.name)
+                weak_q |= Q(sub_interests__name__icontains=ui.interest.name)
             
             # 관심 뉴스와 겹치지 않게 제외하고 추출
             interest_ids = [a.id for a in interest_articles] if hasattr(interest_articles, '__iter__') else interest_articles.values_list('id', flat=True)

@@ -15,9 +15,24 @@ def quiz_view(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     quiz_set = get_quiz_session_set(article)
     
+    # --- 분야 명칭 추출 로직 추가 ---
+    # 1. 소분류(sub_interests)가 있는지 확인
+    sub_categories = article.sub_interests.all()
+    
+    if sub_categories.exists():
+        # 소분류가 있으면 소분류 이름들을 쉼표로 연결
+        category_display = ", ".join([sc.name for sc in sub_categories])
+    elif article.category:
+        # 소분류가 없고 대분류(category)만 있으면 대분류 이름 사용
+        category_display = article.category.name
+    else:
+        # 소분류, 대분류 모두 없을 경우를 대비한 기본값
+        category_display = "경제 일반"
+
     return render(request, 'quiz.html', {
         'article': article,
-        'quiz_set': quiz_set
+        'quiz_set': quiz_set,
+        'category_display': category_display,
     })
 
 @login_required
@@ -37,9 +52,16 @@ def submit_quiz_session(request, article_id):
         for q_id in quiz_ids:
             quiz = Quiz.objects.get(id=q_id)
             selected_choice_id = request.POST.get(f'quiz_{q_id}')
-            choice = QuizChoice.objects.get(id=selected_choice_id)
             
-            is_correct = choice.is_correct
+            # 1. 답 선택 여부 확인
+            if selected_choice_id:
+                choice = QuizChoice.objects.get(id=selected_choice_id)
+                is_correct = choice.is_correct
+                selected_text = choice.choice_text # 실제 선택한 텍스트
+            else:
+                is_correct = False
+                selected_text = "(미선택)" # 선택 안 했을 때의 텍스트
+
             if is_correct: 
                 correct_count += 1
 
@@ -47,7 +69,7 @@ def submit_quiz_session(request, article_id):
             QuizResult.objects.create(
                 user=user,
                 quiz=quiz,
-                selected_answer=choice.choice_text,
+                selected_answer=selected_text,
                 is_correct=is_correct,
                 earned_score=10 if is_correct else 0
             )
@@ -55,15 +77,17 @@ def submit_quiz_session(request, article_id):
             # [템플릿용 데이터] 결과 페이지에 뿌려줄 정보
             results_detail.append({
                 'question': quiz.question,
-                'selected': choice.choice_text,
+                'selected': selected_text,
                 'is_correct': is_correct,
                 'explanation': quiz.explanation,
                 'correct_answer': quiz.choices.filter(is_correct=True).first().choice_text
             })
 
-            # [핵심 로직] 약점 점수 및 오답 시각 업데이트
-            for cat_name in article.sub_category_names:
-                interest_obj, _ = Interest.objects.get_or_create(name=cat_name)
+            # [핵심 로직] 기사에 연결된 모든 소분류(Interest)에 대해 점수 반영
+            article_interests = article.sub_interests.all() 
+            
+            for interest_obj in article_interests:
+                # get_or_create로 유저의 관심사 기록이 없으면 생성
                 ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
                 
                 if is_correct:
@@ -105,7 +129,7 @@ def my_wrong_note(request):
     wrong_results = QuizResult.objects.filter(
         user=request.user, 
         is_correct=False
-    ).select_related('quiz', 'quiz__article').order_by('-created_at')
+    ).select_related('quiz', 'quiz__article').prefetch_related('quiz__choices').order_by('-created_at')
     
     return render(request, 'wrong_note.html', {
         'wrong_results': wrong_results
