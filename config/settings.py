@@ -211,3 +211,12 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 # 이미 DB에 있는 이메일이면 자동 로그인
 SOCIALACCOUNT_EMAIL_AUTHENTICATION = True
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
+
+# 1. 로그인이 필요할 때 이동할 URL 
+LOGIN_URL = 'login'
+
+# 2. 로그인 성공 후 이동할 URL (메인 페이지 이름)
+LOGIN_REDIRECT_URL = 'articleList'
+
+# 3. 로그아웃 후 이동할 URL
+LOGOUT_REDIRECT_URL = 'login'

@@ -4,6 +4,8 @@ from django.db import transaction
 from articles.models import Article
 from .models import ArticleExplanation
 from .utils import GeminiFinancialTutor
+from accounts.models import UserInterest, Interest
+from django.utils import timezone
 
 def explanation_detail(request, article_id):
     # 1. 기사 가져오기
@@ -11,18 +13,40 @@ def explanation_detail(request, article_id):
     
     # 2. URL 파라미터에서 레벨 가져오기 (?level=1)
     selected_level = int(request.GET.get('level', 0))  # 0이면 원문
+
+    # 추천을 위한 점수 로직 추가
+    user = request.user
+    if user.is_authenticated and selected_level == 0:
+        for interest_obj in article.sub_interests.all():
+            ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
+            ui.interest_score += 2
+            ui.save()
     
     # 3. 사용자 정보
     if request.user.is_authenticated:
-        user_interests = ["부동산", "주식"]
+        user_interests = list(UserInterest.objects.filter(user=user, is_selected=True).values_list('interest__name', flat=True))
+        if not user_interests:
+            user_interests = ["소비"]
         user_level = 5 if request.user.is_superuser else getattr(request.user, 'level', 1)
     else:
-        user_interests = ["부동산", "주식"]
-        user_level = 5
+        user_interests = ["소비"]
+        user_level = 4
     
     # 4. DB에서 해설 조회
-    explanations = ArticleExplanation.objects.filter(article=article).order_by('level')
-    
+    # 모든 데이터를 다 가져오는 것이 아니라, 사용자의 레벨 이하만 조회합니다.
+    if not request.user.is_authenticated:
+        # 비로그인: 정확히 레벨 4인 해설만 가져옴
+        explanations = ArticleExplanation.objects.filter(
+            article=article, 
+            level=4
+        ).order_by('level')
+    else:
+        # 로그인 유저: 내 레벨 이하(__lte) 전부 가져옴
+        explanations = ArticleExplanation.objects.filter(
+            article=article, 
+            level__lte=user_level
+        ).order_by('level')
+        
     # 5. 해설이 없으면 AI 생성
     if not explanations.exists():
         print(f"🤖 '{article.title}' AI 분석 시작...")
@@ -63,7 +87,10 @@ def explanation_detail(request, article_id):
                     )
                 
                 print("✅ AI 분석 완료")
-                explanations = ArticleExplanation.objects.filter(article=article).order_by('level')
+                explanations = ArticleExplanation.objects.filter(
+                    article=article, 
+                    level__lte=user_level
+                ).order_by('level')
     
     context = {
         'article': article,

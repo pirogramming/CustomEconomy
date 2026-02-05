@@ -101,37 +101,38 @@ def create_type_b_quiz(article_obj):
     if Quiz.objects.filter(article=article_obj, type='B').exists():
         return 0
 
-    # 1. 기사 본문에 포함된 용어(Term)들 가져오기 (link_terms_to_article에서 이미 add됨)
+    # 1. 기사 본문에 포함된 용어(Term)들 가져오기
     terms_qs = article_obj.terms.all()
-    
-    # 2. 본문에 등록된 용어가 하나도 없다면, DB 전체 용어 중 랜덤 선택
+    is_from_article = True # 기사 용어인지 판단하는 플래그
+
+    # 2. 본문에 용어가 없다면 전체 DB에서 가져오기
     if not terms_qs.exists():
         terms_qs = Term.objects.all()
+        is_from_article = False # 기사 외 일반 용어
     
     if not terms_qs.exists():
         return 0
 
     created_count = 0
-    # 정렬 후 슬라이싱!
     selected_terms = terms_qs.order_by('?')[:2]
 
     for term_obj in selected_terms:
-        question_text = f"다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
+        # 질문 멘트를 조건에 따라 다르게 설정!
+        if is_from_article:
+            prefix = "📌 [기사 속 용어]"
+        else:
+            prefix = "💡 [경제 기초 단어]"
         
+        question_text = f"{prefix} 다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
+        
+        # 중복 생성 방지
         if not Quiz.objects.filter(article=article_obj, type='B', question=question_text).exists():
-            # [핵심] 기사의 18개 소분류 중 첫 번째를 이 퀴즈의 '관심사'로 연결
-            target_interest = None
-            if article_obj.sub_category_names:
-                target_interest = Interest.objects.filter(
-                    name=article_obj.sub_category_names[0], 
-                    category_type='SUB'
-                ).first()
-
+            # B유형은 분류와 상관없으므로 interest는 None!
             quiz = Quiz.objects.create(
                 article=article_obj,
                 type='B',
-                category=article_obj.category, # 대분류는 기사 따라감
-                interest=target_interest,      # 소분류도 기사 첫 번째 키워드 따라감
+                category=article_obj.category, 
+                interest=None, # 분류 연결 안 함
                 question=question_text,
                 explanation=f"정답은 '{term_obj.name}'입니다.",
                 level=1
@@ -179,8 +180,17 @@ def get_quiz_session_set(article_obj):
         final_quiz_set.append(quiz_b)
     
     # [C] 카테고리 맞춤 상식
-    # 기사의 대분류 카테고리와 일치하는 상식 퀴즈 중 하나를 가져옵니다.
-    quiz_c = Quiz.objects.filter(type='C', category=article_obj.category).order_by('?').first()
+    quiz_c = None
+    
+    # 1순위: 기사에 연결된 소분류(Interest) 중 하나를 랜덤하게 골라 C유형 퀴즈 찾기
+    sub_interest = article_obj.sub_interests.all().order_by('?').first()
+    if sub_interest:
+        quiz_c = Quiz.objects.filter(type='C', interest=sub_interest).order_by('?').first()
+
+    # 2순위: 소분류 퀴즈가 없다면, 기사의 대분류(Category) 기반 C유형 퀴즈 찾기
+    if not quiz_c:
+        quiz_c = Quiz.objects.filter(type='C', category=article_obj.category).order_by('?').first()
+
     if quiz_c:
         final_quiz_set.append(quiz_c)
     
