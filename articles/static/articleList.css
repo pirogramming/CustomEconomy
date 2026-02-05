@@ -25,6 +25,13 @@
     margin-bottom: 27px;
 }
 
+.articleListBody .page-main-title:hover{
+  cursor: pointer;
+  transform: translateY(-3px);
+  transition: 0.2s;
+}
+
+
 .articleListBody .articleMenuBar{
   display: flex;
   flex-direction: row;
@@ -80,7 +87,9 @@
 
 }
 
-.articleListBody .middleFloat{}
+.articleListBody .middleFloat{
+  border-radius: 0 0 35px 35px;
+}
 .articleListBody .middleFloat select{
   margin-left: auto;
   margin-top: 10px;
