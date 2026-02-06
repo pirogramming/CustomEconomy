@@ -74,14 +74,29 @@ def submit_quiz_session(request, article_id):
                 earned_score=10 if is_correct else 0
             )
             
-            # [템플릿용 데이터] 결과 페이지에 뿌려줄 정보
+            # 선택한 choice id (템플릿에서 빨강 표시용)
+            selected_choice_id_int = int(selected_choice_id) if selected_choice_id else None
+
+            # 정답 choice
+            correct_choice = quiz.choices.filter(is_correct=True).first()
+            correct_choice_id = correct_choice.id if correct_choice else None
+            correct_choice_text = correct_choice.choice_text if correct_choice else "(정답 없음)"
+
+            # 선지 전체 (id + text)
+            all_choices = list(quiz.choices.all().values("id", "choice_text"))
+
             results_detail.append({
-                'question': quiz.question,
-                'selected': selected_text,
-                'is_correct': is_correct,
-                'explanation': quiz.explanation,
-                'correct_answer': quiz.choices.filter(is_correct=True).first().choice_text
+                "quiz_id": quiz.id,
+                "question": quiz.question,
+                "selected": selected_text,
+                "selected_choice_id": selected_choice_id_int,
+                "is_correct": is_correct,
+                "explanation": quiz.explanation,
+                "correct_answer": correct_choice_text,
+                "correct_choice_id": correct_choice_id,
+                "choices": all_choices,  # ✅ 전체 보기용
             })
+
 
             # [핵심 로직] 기사에 연결된 모든 소분류(Interest)에 대해 점수 반영
             article_interests = article.sub_interests.all() 
@@ -114,11 +129,12 @@ def submit_quiz_session(request, article_id):
             is_levelup = True
         user.save()
         
-        return render(request, 'session_result.html', {
+        return render(request, 'quiz_result.html', {
             'results_detail': results_detail,
             'correct_count': correct_count,
             'is_levelup': is_levelup,
-            'points': total_session_points
+            'points': total_session_points,
+            'article': article,         
         })
 
 # 미완성 (틀린 문제 확인하기)

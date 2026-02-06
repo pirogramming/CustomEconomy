@@ -1,0 +1,268 @@
+{
+  "quizzes": [
+    {
+      "level": 2,
+      "question": "중앙은행이 기준금리를 인하했다. 다음 중 일반적으로 기대되는 흐름은?",
+      "options": [
+        {"text": "대출 감소 → 소비 감소", "isCorrect": false},
+        {"text": "대출 증가 → 소비 증가", "isCorrect": true},
+        {"text": "예금 금리 상승 → 저축 확대", "isCorrect": false},
+        {"text": "유동성 축소 → 경기 둔화", "isCorrect": false}
+      ],
+      "tags": ["통화/금리", "은행/대출"],
+      "explanation": "금리 인하는 자금 조달 비용을 낮춰 대출과 소비를 늘리는 완화 정책이다."
+    },
+    {
+      "level": 2,
+      "question": "환율이 상승해 원화가 약세가 되면 물가에 미치는 영향으로 가장 적절한 것은?",
+      "options": [
+        {"text": "수입 물가 하락 → 물가 안정", "isCorrect": false},
+        {"text": "수입 물가 상승 → 소비자물가 상승 압력", "isCorrect": true},
+        {"text": "수출 감소 → 물가 하락", "isCorrect": false},
+        {"text": "해외여행 증가 → 물가 하락", "isCorrect": false}
+      ],
+      "tags": ["환율/외환", "물가/인플레"],
+      "explanation": "원화 약세 시 수입품 가격이 올라 전체 물가 상승 압력이 커진다."
+    },
+    {
+      "level": 2,
+      "question": "정부가 대규모 재정 지출을 늘려 경기 부양에 나섰다. 단기적으로 가장 기대되는 효과는?",
+      "options": [
+        {"text": "총수요 감소", "isCorrect": false},
+        {"text": "GDP 증가 압력", "isCorrect": true},
+        {"text": "실업률 상승", "isCorrect": false},
+        {"text": "소비 급감", "isCorrect": false}
+      ],
+      "tags": ["세금/재정", "고용/지표"],
+      "explanation": "정부 지출 증가는 총수요를 늘려 생산과 GDP 증가로 이어진다."
+    },
+    {
+      "level": 2,
+      "question": "주택담보대출 금리가 상승하면 주택시장에 나타날 가능성이 가장 높은 변화는?",
+      "options": [
+        {"text": "매수 수요 증가", "isCorrect": false},
+        {"text": "거래량 감소", "isCorrect": true},
+        {"text": "집값 급등", "isCorrect": false},
+        {"text": "가계부채 급증", "isCorrect": false}
+      ],
+      "tags": ["은행/대출", "매매/분양"],
+      "explanation": "이자 부담이 커지면 주택 구매가 줄어 거래량이 감소한다."
+    },
+    {
+      "level": 2,
+      "question": "기업 실적이 전반적으로 개선되었다. 증시에 대한 설명으로 가장 적절한 것은?",
+      "options": [
+        {"text": "주가 하락 압력 확대", "isCorrect": false},
+        {"text": "투자 심리 개선으로 주가 상승 가능성", "isCorrect": true},
+        {"text": "외국인 매도 증가", "isCorrect": false},
+        {"text": "거래 중단", "isCorrect": false}
+      ],
+      "tags": ["국내증시", "실적/경영"],
+      "explanation": "실적 개선은 기업 가치 상승 기대를 높여 주가 상승 요인이 된다."
+    },
+    {
+      "level": 2,
+      "question": "유가 상승이 장기간 지속될 때 나타날 가능성이 가장 낮은 현상은?",
+      "options": [
+        {"text": "물류비 상승", "isCorrect": false},
+        {"text": "소비자물가 상승", "isCorrect": false},
+        {"text": "기업 생산비 증가", "isCorrect": false},
+        {"text": "생활비 감소", "isCorrect": true}
+      ],
+      "tags": ["물가/인플레", "채권/상품"],
+      "explanation": "유가 상승은 비용을 전반적으로 높여 생활비를 증가시킨다."
+    },
+    {
+      "level": 2,
+      "question": "고용이 개선되어 취업자가 크게 늘었다. 이에 따른 경제 흐름으로 가장 적절한 것은?",
+      "options": [
+        {"text": "가계 소득 감소 → 소비 감소", "isCorrect": false},
+        {"text": "가계 소득 증가 → 소비 증가", "isCorrect": true},
+        {"text": "세수 감소", "isCorrect": false},
+        {"text": "경기 침체 심화", "isCorrect": false}
+      ],
+      "tags": ["고용/지표"],
+      "explanation": "취업자가 늘면 소득과 소비가 함께 증가하는 선순환이 발생한다."
+    },
+    {
+      "level": 2,
+      "question": "국채 금리가 상승하면 일반적으로 주식시장에 미치는 영향은?",
+      "options": [
+        {"text": "주식 매력 증가", "isCorrect": false},
+        {"text": "채권 대비 주식 매력 감소", "isCorrect": true},
+        {"text": "투자자 유입 증가", "isCorrect": false},
+        {"text": "주가 급등", "isCorrect": false}
+      ],
+      "tags": ["채권/상품", "국내증시"],
+      "explanation": "금리가 오르면 안전한 채권 수익률이 높아져 주식 매력이 상대적으로 떨어진다."
+    },
+    {
+      "level": 2,
+      "question": "정부가 부동산 공급을 대폭 확대했다. 다음 중 기대되는 결과는?",
+      "options": [
+        {"text": "매물 증가 → 가격 안정 압력", "isCorrect": true},
+        {"text": "매물 감소 → 가격 상승", "isCorrect": false},
+        {"text": "전세 소멸", "isCorrect": false},
+        {"text": "거래 완전 중단", "isCorrect": false}
+      ],
+      "tags": ["부동산정책", "매매/분양"],
+      "explanation": "공급 확대는 가격 상승 압력을 낮춘다."
+    },
+    {
+      "level": 2,
+      "question": "연체율이 상승하자 은행들이 대출 심사를 강화했다. 이로 인해 나타날 가능성이 높은 결과는?",
+      "options": [
+        {"text": "가계 대출 증가", "isCorrect": false},
+        {"text": "대출 승인 감소", "isCorrect": true},
+        {"text": "소비 급증", "isCorrect": false},
+        {"text": "금리 급락", "isCorrect": false}
+      ],
+      "tags": ["은행/대출"],
+      "explanation": "위험 관리 차원에서 심사를 강화하면 승인 건수가 줄어든다."
+    },
+    {
+      "level": 2,
+      "question": "달러 약세가 지속될 경우 수출 기업에 기대되는 효과는?",
+      "options": [
+        {"text": "가격 경쟁력 약화", "isCorrect": true},
+        {"text": "수출 증가", "isCorrect": false},
+        {"text": "원가 하락", "isCorrect": false},
+        {"text": "매출 급증", "isCorrect": false}
+      ],
+      "tags": ["환율/외환"],
+      "explanation": "달러 약세(원화 강세)는 수출 가격 경쟁력을 낮춘다."
+    },
+    {
+      "level": 2,
+      "question": "기대인플레이션이 상승하면 소비자 행동 변화로 가장 가까운 것은?",
+      "options": [
+        {"text": "구매 연기", "isCorrect": false},
+        {"text": "선구매 증가", "isCorrect": true},
+        {"text": "저축 확대", "isCorrect": false},
+        {"text": "소비 중단", "isCorrect": false}
+      ],
+      "tags": ["물가/인플레"],
+      "explanation": "물가가 더 오르기 전에 구매하려는 심리가 강해진다."
+    },
+    {
+      "level": 2,
+      "question": "외국인이 국내 주식을 대량 순매수하면 동시에 나타나기 쉬운 현상은?",
+      "options": [
+        {"text": "원화 강세 압력", "isCorrect": true},
+        {"text": "환율 급등", "isCorrect": false},
+        {"text": "거래 위축", "isCorrect": false},
+        {"text": "소비 급감", "isCorrect": false}
+      ],
+      "tags": ["국내증시", "환율/외환"],
+      "explanation": "주식 매수를 위해 원화를 사야 하므로 원화 강세 요인이 된다."
+    },
+    {
+      "level": 2,
+      "question": "정부가 세금을 인하하면 단기적으로 기대되는 변화는?",
+      "options": [
+        {"text": "가처분소득 증가 → 소비 확대", "isCorrect": true},
+        {"text": "소득 감소 → 소비 감소", "isCorrect": false},
+        {"text": "세수 자동 증가", "isCorrect": false},
+        {"text": "경기 침체 심화", "isCorrect": false}
+      ],
+      "tags": ["세금/재정"],
+      "explanation": "세금이 줄면 가계가 사용할 수 있는 돈이 늘어 소비가 증가한다."
+    },
+    {
+      "level": 2,
+      "question": "기업들이 신규 투자를 확대하면 고용시장에 나타날 가능성이 높은 변화는?",
+      "options": [
+        {"text": "채용 증가", "isCorrect": true},
+        {"text": "실업률 상승", "isCorrect": false},
+        {"text": "임금 삭감 확대", "isCorrect": false},
+        {"text": "생산 감소", "isCorrect": false}
+      ],
+      "tags": ["실적/경영", "고용/지표"],
+      "explanation": "투자 확대는 생산 확대와 채용 증가로 이어진다."
+    },
+    {
+      "level": 2,
+      "question": "전세 공급이 감소하면 월세 시장에는 어떤 변화가 나타날 가능성이 큰가?",
+      "options": [
+        {"text": "월세 수요 증가 → 월세 상승", "isCorrect": true},
+        {"text": "월세 가격 하락", "isCorrect": false},
+        {"text": "거래 중단", "isCorrect": false},
+        {"text": "주택 공급 증가", "isCorrect": false}
+      ],
+      "tags": ["임대차/전세"],
+      "explanation": "전세가 부족하면 월세로 이동하는 수요가 늘어 월세 가격이 오를 수 있다."
+    },
+    {
+      "level": 2,
+      "question": "기준금리 동결이 장기간 이어지고 유동성이 풍부하다. 가장 기대되는 자산 흐름은?",
+      "options": [
+        {"text": "투자 증가", "isCorrect": true},
+        {"text": "대출 급감", "isCorrect": false},
+        {"text": "소비 중단", "isCorrect": false},
+        {"text": "현금 보유만 증가", "isCorrect": false}
+      ],
+      "tags": ["통화/금리"],
+      "explanation": "풍부한 유동성은 주식·부동산 등 자산시장으로 자금이 이동하게 한다."
+    },
+    {
+      "level": 2,
+      "question": "수입 원자재 가격이 하락하면 제조업 기업에 기대되는 효과는?",
+      "options": [
+        {"text": "원가 상승", "isCorrect": false},
+        {"text": "이익률 개선 가능성", "isCorrect": true},
+        {"text": "매출 급감", "isCorrect": false},
+        {"text": "고용 중단", "isCorrect": false}
+      ],
+      "tags": ["채권/상품", "실적/경영"],
+      "explanation": "원가가 낮아지면 동일한 판매 가격에서 이익률이 개선된다."
+    },
+    {
+      "level": 2,
+      "question": "경기 침체 우려가 커질 때 안전자산 선호로 나타날 가능성이 높은 현상은?",
+      "options": [
+        {"text": "금값 상승", "isCorrect": true},
+        {"text": "주식 급등", "isCorrect": false},
+        {"text": "소비 폭증", "isCorrect": false},
+        {"text": "대출 급증", "isCorrect": false}
+      ],
+      "tags": ["채권/상품"],
+      "explanation": "불확실성이 커지면 금과 같은 안전자산 수요가 증가한다."
+    },
+    {
+      "level": 2,
+      "question": "가계 소득이 감소하고 소비가 줄어들면 기업 실적에 미치는 영향으로 가장 적절한 것은?",
+      "options": [
+        {"text": "매출 감소 가능성", "isCorrect": true},
+        {"text": "영업이익 급증", "isCorrect": false},
+        {"text": "주가 자동 상승", "isCorrect": false},
+        {"text": "고용 확대", "isCorrect": false}
+      ],
+      "tags": ["실적/경영"],
+      "explanation": "소비가 줄면 판매량이 감소해 매출이 줄어들 가능성이 크다."
+    },
+    {
+      "level": 2,
+      "question": "정부가 재정적자를 메우기 위해 국채 발행을 늘렸다. 가장 기대되는 시장 반응은?",
+      "options": [
+        {"text": "채권 공급 증가 → 금리 상승 압력", "isCorrect": true},
+        {"text": "채권 가격 급등", "isCorrect": false},
+        {"text": "주식 자동 상승", "isCorrect": false},
+        {"text": "물가 하락", "isCorrect": false}
+      ],
+      "tags": ["세금/재정", "채권/상품"],
+      "explanation": "채권 공급이 늘면 가격은 떨어지고 금리는 상승하는 경향이 있다."
+    },
+    {
+      "level": 2,
+      "question": "경기 회복 기대감으로 소비가 늘어나면 기업 생산 활동은 어떻게 변할 가능성이 큰가?",
+      "options": [
+        {"text": "생산 확대", "isCorrect": true},
+        {"text": "공장 가동 중단", "isCorrect": false},
+        {"text": "재고 축소만 진행", "isCorrect": false},
+        {"text": "고용 감소", "isCorrect": false}
+      ],
+      "tags": ["고용/지표", "실적/경영"],
+      "explanation": "수요가 늘면 기업은 생산을 확대해 대응한다."
+    }
+  ]
+}

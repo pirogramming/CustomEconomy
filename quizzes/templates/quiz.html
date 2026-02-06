@@ -1,76 +1,102 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block title %}퀴즈 | Custom Economy{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'quiz.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="mb-4 text-center">
-                <span class="badge bg-primary mb-2">{{ article.category.name }}</span>
-                <h2 class="fw-bold">📰 퀴즈 타임!</h2>
-                <p class="text-muted">기사 내용과 관련된 3문제를 풀어보세요.</p>
-            </div>
+<main class="main-content">
+  <header class="main-header">
+    <a class="page-title" href="{% url 'main' %}">Custom Economy</a>
+  </header>
 
-            <form action="{% url 'submit_quiz_session' article.id %}" method="POST">
-                {% csrf_token %}
-                
-                {% for quiz in quiz_set %}
+  <div class="quiz-container">
+    <div class="quiz-badge">Quiz</div>
 
-                {% if quiz.quiz_type == 'C' or quiz.type == 'C' %}
-                <div class="alert alert-info border-0 shadow-sm mb-3" style="border-radius: 12px; background-color: #f0f8ff;">
-                    <small class="text-primary fw-bold">🎯 분야 집중 문제</small>
-                    <p class="mb-0" style="font-size: 0.95rem; color: #333;">
-                        이 문제는 <strong>[{{ category_display }}]</strong> 분야에 관한 지식을 확인합니다.
-                    </p>
-                </div>
-                {% endif %}
-                
-                <div class="card shadow-sm mb-4">
-                    <div class="card-header bg-white">
-                        <h5 class="card-title mb-0">
-                            <span class="text-primary fw-bold">Q{{ forloop.counter }}.</span> 
-                            {{ quiz.question }}
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
-                        
-                        <div class="list-group">
-                            {% for choice in quiz.choices.all %}
-                            <label class="list-group-item list-group-item-action py-3">
-                                <input class="form-check-input me-2" type="radio" 
-                                       name="quiz_{{ quiz.id }}" 
-                                       value="{{ choice.id }}" required>
-                                {{ choice.choice_text }}
-                            </label>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
+    <h2 class="quiz-article-title">{{ article.title }}</h2>
 
-                <div class="d-grid gap-2 mt-5 mb-5">
-                    <button type="submit" class="btn btn-primary btn-lg shadow">
-                        제출하고 결과 확인하기
-                    </button>
-                    <a href="{% url 'detail' article.id %}" class="btn btn-outline-secondary">
-                        기사로 돌아가기
-                    </a>
-                </div>
-            </form>
+    <div class="tags-wrapper">
+      <div class="tag">
+        <span class="tag-text">#{{ article.category.name }}</span>
+      </div>
+
+      {# 소분류가 있으면 category_display로 보여주기 #}
+      {% if category_display %}
+        <div class="tag tag-green">
+          <span class="tag-text">#{{ category_display }}</span>
         </div>
+      {% endif %}
     </div>
-</div>
 
-<style>
-    .list-group-item-action:hover {
-        background-color: #f8f9fa;
-        cursor: pointer;
-    }
-    /* 라디오 버튼 선택 시 카드 내부 아이템 강조 */
-    .form-check-input:checked + .list-group-item {
-        background-color: #e7f1ff;
-        border-color: #0d6efd;
-    }
-    .card { border-radius: 15px; }
-</style>
+    <form action="{% url 'submit_quiz_session' article.id %}" method="post">
+      {% csrf_token %}
+
+      {% for quiz in quiz_set %}
+        {# quiz type 대응: quiz.quiz_type or quiz.type #}
+        {% with qtype=quiz.quiz_type|default:quiz.type %}
+        <div class="question-card {% if qtype == 'C' %}with-info{% endif %}">
+          <div class="question-header">
+            <h3 class="question-number">Q{{ forloop.counter }}. {{ quiz.question }}</h3>
+          </div>
+
+          {# C유형 안내 박스(원하면 B도 표시 가능) #}
+          {% if qtype == 'C' %}
+            <div class="concept-hint">
+              <span class="concept-badge">🎯 분야 집중 문제</span>
+              <span class="concept-text">
+                이 문제는 <strong>[{{ category_display|default:article.category.name }}]</strong> 관련 기초 개념을 확인합니다.
+              </span>
+            </div>
+          {% endif %}
+
+          {# ✅ 백엔드가 quiz_ids를 getlist로 받기 때문에 문제마다 hidden 유지 #}
+          <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
+
+          <div class="answers-grid">
+            {% for choice in quiz.choices.all %}
+              <label class="answer-option" style="cursor:pointer;">
+                <input
+                  type="radio"
+                  name="quiz_{{ quiz.id }}"
+                  value="{{ choice.id }}"
+                  required
+                  style="display:none;"
+                >
+                <span class="answer-text">{{ forloop.counter }}. {{ choice.choice_text }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+        {% endwith %}
+      {% endfor %}
+
+      <button type="submit" class="submit-btn">제출하고 결과 확인하기</button>
+
+      <div class="back-to-list-area" style="margin-top:16px;">
+        <a href="{% url 'detail' article.id %}" class="back-btn">← 기사로 돌아가기</a>
+      </div>
+    </form>
+  </div>
+</main>
+
+<script>
+  // answer-option 클릭 시 선택 표시 + 라디오 체크
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".answer-option").forEach((opt) => {
+      opt.addEventListener("click", () => {
+        const grid = opt.closest(".answers-grid");
+        if (!grid) return;
+
+        grid.querySelectorAll(".answer-option").forEach(o => o.classList.remove("selected"));
+        opt.classList.add("selected");
+
+        const radio = opt.querySelector('input[type="radio"]');
+        if (radio) radio.checked = true;
+      });
+    });
+  });
+</script>
+
 {% endblock %}
