@@ -32,16 +32,14 @@
             <option value="title" {% if current_sort == 'title' %}selected{% endif %}>이름순</option>
         </select>
 
-        {% comment %} <p style="margin-top:10px;">현재 카테고리: {{ current_category }}</p> {% endcomment %}
-
         <div class="articleCards">
             {% for article in articles %}
-            <div class="article-card" onclick="location.href='{% url 'detail' article.pk %}'"
+            <!-- 🔥 URL을 /api/explanations/로 수정 -->
+            <div class="article-card" onclick="location.href='/api/explanations/{{ article.pk }}/'"
                 style="cursor:pointer">
                 <div class="meta">
                     <span class="source">{{ article.source }}</span>
                     <span class="date">{{ article.published_at|date:"Y.m.d" }}</span>
-                    <!-- <span class="category">{{ article.category.name }}</span> -->
                 </div>
                 {% if article.image_url %}
                 <img class="thumb" src="{{ article.image_url }}" alt="">
@@ -83,18 +81,6 @@
         </div>
     </div>
 </div>
-
-{% comment %} <footer>
-    <div class="footer-content">
-        <p>© 2024 Custom Economy. All rights reserved.</p>
-        <div class="footer-links">
-            <a href="{% url 'main' %}">Home</a>
-            <a href="{% url 'articleList' %}">Articles</a>
-            <a href="{% url 'quiz' article.id %}">Quizzes</a>
-            <a href="{% url 'my_wrong_note' %}">Wrong Note</a>
-        </div>
-    </div>
-</footer> {% endcomment %}
 
 <!-- ✅ select 바꾸면 sort 쿼리만 바꿔서 page=1로 이동 -->
 <script>

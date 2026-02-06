@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'mypage_wrongquiz.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="wrong-page-wrapper">
+        <div class="wrong-top-area">
+            <a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
+        </div>
+        <div class="wrong-body-area">
+            <div class="sub-title">
+                <h2>틀린 문제 다시 풀어보기</h2>
+            </div>
+            <div class="sub-explanation">
+                <p>{{ user.nickname }}님이 틀린 문제들이에요. 틀린 문제를 다시 확인하며 경제 지식을 쌓아보세요!</p>
+            </div>
+
+            <div class="quiz_list_area">
+                {% for r in wrong_results %}
+                <div class="question-card-with-explanation">
+                    <div class="quiz_date">{{ r.created_at|date:"Y. m. d" }}</div>
+                    <div class="question-header">
+                        <h3 class="question-number">Q. {{ r.quiz.question }}</h3>
+                    </div>
+
+                    <div class="answers-grid">
+                    {% for c in r.quiz.choices.all %}
+                        <div class="answer-option
+                        {% if c.is_correct %}correct
+                        {% elif c.choice_text == r.selected_answer %}wrong
+                        {% endif %}
+                        ">
+                        <span class="answer-text">{{ forloop.counter }}. {{ c.choice_text }}</span>
+                        </div>
+                    {% endfor %}
+                    </div>
+
+                    <div class="explanation-box">
+                        <p class="explanation-text">💡 {{ r.quiz.explanation }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p>틀린 문제가 없습니다!</p>
+                {% endfor %}
+        </div>
+    </div>
+    
+    
+    
+{% endblock %}
