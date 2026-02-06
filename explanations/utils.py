@@ -94,25 +94,28 @@ class GeminiFinancialTutor:
                 'term_criteria': "Lv1: 기초 용어 | Lv2: 일반 용어 | Lv3: 실무 용어 | Lv4: 전문 용어 | Lv5: 고급 전문 용어"
             }
 
-    def generate_analysis(self, text, category, interests):
-        """AI 분석 실행 후 Python List 반환"""
+    def generate_single_level_analysis(self, text, category, interests, target_level):
+        """
+        ⭐ 새로운 메서드: 특정 레벨 1개만 생성 (토큰 최소화)
+        """
         
-        print("=" * 60)
-        print(f"📡 [AI 분석 시작]")
+        print(f"🎯 레벨 {target_level} 단독 분석 시작")
         print(f"   카테고리: {category}")
         print(f"   관심사: {interests}")
         print(f"   기사 길이: {len(text)}자")
-        print("=" * 60)
 
         if not text or len(text) < 10:
             print("❌ 기사 내용이 너무 짧습니다.")
-            return []
+            return None
 
         try:
             cat_info = self._get_category_info(category)
             interests_str = ", ".join(interests)
             
-            # 프롬프트 생성
+            # target_level에 해당하는 페르소나 정보 가져오기
+            persona = cat_info['personas'][target_level - 1]
+            
+            # 프롬프트 (1개 레벨만!)
             prompt = f"""당신은 금융/경제 뉴스를 레벨별로 맞춤 해설하는 전문 AI입니다.
 
 [기사 원문]
@@ -120,84 +123,39 @@ class GeminiFinancialTutor:
 
 [카테고리] {category}
 [사용자 관심사] {interests_str}
+[타겟 레벨] Level {target_level}
+[타겟 페르소나] {persona['role']} - {persona['description']}
 
-[5단계 레벨 정의]
-{json.dumps(cat_info['personas'], ensure_ascii=False, indent=2)}
-
-[레벨별 용어 선정 기준]
+[용어 기준]
 {cat_info['term_criteria']}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 작성 규칙 (반드시 준수)
+📋 작성 규칙 (레벨 {target_level} 전용)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. **storytelling (AI 재풀이)**
-   - 각 레벨에 맞는 대상에게 말하듯이 자연스럽게 작성
-   - 분량: 300~400자
-   - 해당 레벨 사용자가 이해할 수 있는 수준으로 설명
-   - Lv1은 쉽고 친근하게, Lv5는 전문적이고 심층적으로
+1. **storytelling**: {persona['description']}에게 맞춰 300~400자로 자연스럽게 설명
 
-2. **terms (용어 설명)** ⭐ 중요 ⭐
-   - 반드시 2개의 용어만 선정
-   - 선정 조건:
-     * 기사 원문에 실제로 등장하는 용어 우선
-     * 또는 storytelling에서 사용한 용어 중 선택
-     * 해당 레벨 사용자가 모를 만한 적정 난이도 용어
-     * 레벨별 용어 기준({cat_info['term_criteria']})에 맞춰야 함
-   - 설명: 해당 레벨에 맞게 쉽거나 전문적으로
+2. **terms**: 반드시 2개만 선정
+   - 기사 원문이나 storytelling에 나온 용어 중 선택
+   - 레벨 {target_level}에 적합한 난이도
 
-3. **advice (관심분야 조언)** ⭐ 중요 ⭐
-   - 사용자 관심사: [{interests_str}]
-   - 관심사가 여러 개면 기사와 가장 연관성 높은 1개 선택
-   - 이 기사를 바탕으로 해당 관심분야의 전망/견해/투자 방향 제시
-   - 마지막에 반드시 추가: "단, 이 전망은 AI 기반 추천이며, 모든 투자 결정과 그에 따른 책임은 본인에게 있습니다."
+3. **advice**: [{interests_str}] 중 기사와 가장 관련 깊은 분야 1개 선택
+   - 전망/견해 제시 후 반드시 면책 문구 추가
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**JSON 출력 (마크다운 금지):**
 
-**출력 형식 (JSON만 출력, 마크다운 금지):**
+{{
+  "level": {target_level},
+  "role": "{persona['role']}",
+  "storytelling": "레벨 {target_level}에 맞는 해설 (300~400자)",
+  "terms": [
+    {{"term": "용어1", "explanation": "설명1"}},
+    {{"term": "용어2", "explanation": "설명2"}}
+  ],
+  "advice": "관심분야 조언 + 단, 이 전망은 AI 기반 추천이며, 모든 투자 결정과 그에 따른 책임은 본인에게 있습니다."
+}}
 
-[
-  {{
-    "level": 1,
-    "role": "{cat_info['personas'][0]['role']}",
-    "storytelling": "Lv1 대상({cat_info['personas'][0]['description']})에게 친근하게 설명 (300~400자)",
-    "terms": [
-      {{"term": "기사나 storytelling에 나온 용어1", "explanation": "Lv1에 맞는 쉬운 설명"}},
-      {{"term": "기사나 storytelling에 나온 용어2", "explanation": "Lv1에 맞는 쉬운 설명"}}
-    ],
-    "advice": "[{interests_str}] 중 기사와 가장 관련 깊은 분야를 골라 전망 제시 + 면책 문구"
-  }},
-  {{
-    "level": 2,
-    "role": "{cat_info['personas'][1]['role']}",
-    "storytelling": "...",
-    "terms": [...],
-    "advice": "..."
-  }},
-  {{
-    "level": 3,
-    "role": "{cat_info['personas'][2]['role']}",
-    "storytelling": "...",
-    "terms": [...],
-    "advice": "..."
-  }},
-  {{
-    "level": 4,
-    "role": "{cat_info['personas'][3]['role']}",
-    "storytelling": "...",
-    "terms": [...],
-    "advice": "..."
-  }},
-  {{
-    "level": 5,
-    "role": "{cat_info['personas'][4]['role']}",
-    "storytelling": "...",
-    "terms": [...],
-    "advice": "..."
-  }}
-]
-
-중요: JSON 배열만 출력. ```json 마크다운 금지."""
+JSON 객체만 출력. ```json 금지."""
 
             print("🚀 AI 호출 중...")
             
@@ -208,61 +166,37 @@ class GeminiFinancialTutor:
                     "temperature": 0.7,
                     "top_p": 0.95,
                     "top_k": 40,
-                    "max_output_tokens": 16384,
+                    "max_output_tokens": 4096,  # 1개 레벨이므로 4K로 충분
                 }
             )
             
-            print(f"✅ AI 응답 수신")
-            print(f"   finish_reason: {response.candidates[0].finish_reason}")
+            print(f"✅ AI 응답 수신 (finish_reason: {response.candidates[0].finish_reason})")
             
             if response.candidates[0].finish_reason == 2:
-                print("⚠️ 응답이 토큰 제한으로 잘렸습니다.")
-                return []
-            
-            if response.prompt_feedback.block_reason:
-                print(f"⚠️ 차단됨: {response.prompt_feedback.block_reason}")
-                return []
+                print("⚠️ 응답 잘림")
+                return None
             
             if not response.parts:
-                print("⚠️ 응답 내용 없음")
-                return []
+                print("⚠️ 응답 없음")
+                return None
 
             raw_text = response.text.strip()
-            print(f"   응답 길이: {len(raw_text)}자")
             
             # JSON 정제
-            cleaned = raw_text
-            cleaned = re.sub(r'^```json\s*', '', cleaned, flags=re.MULTILINE)
+            cleaned = re.sub(r'^```json\s*', '', raw_text, flags=re.MULTILINE)
             cleaned = re.sub(r'\s*```$', '', cleaned, flags=re.MULTILINE)
             cleaned = re.sub(r'^```\s*', '', cleaned, flags=re.MULTILINE)
             cleaned = cleaned.strip()
             
-            print("🔄 JSON 파싱 시도...")
             data = json.loads(cleaned)
             
-            print(f"✅ 파싱 성공! {len(data)}개 레벨 데이터 생성")
-            
-            # 데이터 검증
-            for item in data:
-                required_keys = ['level', 'role', 'storytelling', 'terms', 'advice']
-                if not all(key in item for key in required_keys):
-                    print(f"⚠️ Level {item.get('level', '?')} 데이터 구조 불완전")
-                else:
-                    # 용어 개수 확인
-                    if len(item.get('terms', [])) != 2:
-                        print(f"⚠️ Level {item['level']}: 용어가 2개가 아님 (현재 {len(item.get('terms', []))}개)")
-            
+            print(f"✅ 파싱 성공! Level {target_level} 데이터 생성 완료")
             return data
             
         except json.JSONDecodeError as e:
             print(f"❌ JSON 파싱 실패: {e}")
-            print(f"   문제 위치: line {e.lineno}, column {e.colno}")
-            print(f"   원본 텍스트 (처음 500자):")
-            print(f"   {cleaned[:500]}")
-            return []
+            return None
             
         except Exception as e:
-            print(f"❌ 에러 발생: {type(e).__name__}: {e}")
-            import traceback
-            traceback.print_exc()
-            return []
+            print(f"❌ 에러: {type(e).__name__}: {e}")
+            return None
