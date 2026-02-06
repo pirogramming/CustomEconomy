@@ -148,7 +148,7 @@ body {
     margin-bottom: 15px;
 }
 
-.answer-option {
+.answer-option-result {
     background-color: #ffffff;
     border-radius: 20px;
     padding: 15px 20px;
@@ -168,13 +168,13 @@ body {
 }
 
 /* 정답 스타일 */
-.answer-option.correct {
+.answer-option-result.correct {
     background-color: #d2edd1;
     border-color: #80b27f;
 }
 
 /* 오답 스타일 */
-.answer-option.wrong {
+.answer-option-result.wrong {
     background-color: #fbbeb0;
     border-color: #ff0303;
 }
@@ -195,7 +195,10 @@ body {
     line-height: 1.6;
     margin: 0;
 }
-
+.explanation-box{
+    border-color: black;
+    border-width: 1px;
+}
 /* 결과 요약 */
 .result-summary {
     width: 100%;
@@ -216,28 +219,68 @@ body {
     margin: 0;
 }
 
-.question-card .answers-grid .answer-option:hover{
-    background-color: #fcbe9c;
-}
+
 /* 선택한 답(클릭된 보기) 강조 */
-.answer-option.selected {
+.answer-option-result .selected {
   border: 3px solid #14213E;   /* 짙은 남색 띠 */
   border-radius: 12px;         /* 카드 느낌 유지 */
   box-sizing: border-box;
 }
 
 /* 선택했을 때 살짝 떠 보이게(선택) */
-.answer-option.selected {
+.answer-option-result .selected {
   box-shadow: 0 0 0 2px rgba(20, 33, 62, 0.15);
 }
 
-.answer-option.correct {
+.answer-option-result .correct {
   border: 3px solid #2E7D32;
   background: #e8f5e9;
 }
 
-.answer-option.wrong {
+.answer-option-result .wrong {
   border: 3px solid #c62828;
   background: #ffebee;
 }
 
+.main-content .quiz-container .back-to-list-area{
+    display: flex;
+    flex-direction: row;
+
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+.main-content .quiz-container .back-to-list-area .articleList-btn{
+    display: flex; justify-content: center; align-items: center;
+    margin-right: 12px;
+
+    width: 130px; height: 50px; background-color: white;
+    border-color: #F4B132; 
+    border-width: 3px; border-style: solid;
+    border-radius: 30px; 
+
+    text-decoration: none;
+    color: black;
+    font-family: NanumGothic;
+}
+.main-content .quiz-container .back-to-list-area .articleList-btn:hover{
+    background-color: #F4B132;
+    color: black;
+}
+.main-content .quiz-container .back-to-list-area .wrongAnswer-btn{
+    display: flex; justify-content: center; align-items: center;
+    margin-right: 12px;
+
+    width: 130px; height: 50px; background-color: white;
+    border-color: #F4B132; 
+    border-width: 3px; border-style: solid;
+    border-radius: 30px; 
+
+    text-decoration: none;
+    color: black;
+    font-family: NanumGothic;
+}
+.main-content .quiz-container .back-to-list-area .wrongAnswer-btn:hover{
+    background-color: #F4B132;
+    color: black;
+}
