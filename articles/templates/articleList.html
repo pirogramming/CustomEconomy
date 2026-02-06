@@ -8,7 +8,6 @@
 {% block content %}
 <div class="articleListBody">
     <a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
-
     <div class="articleMenuBar">
         <a class="ecoBtn {% if current_category == '경제' %}active{% endif %}"
             href="?category=경제&sort={{ current_sort }}&page=1">경제</a>
@@ -40,9 +39,9 @@
             <div class="article-card" onclick="location.href='{% url 'detail' article.pk %}'"
                 style="cursor:pointer">
                 <div class="meta">
-                    <span class="date">{{ article.published_at|date:"Y.m.d" }}</span>
                     <span class="source">{{ article.source }}</span>
-                    <span class="category">{{ article.category.name }}</span>
+                    <span class="date">{{ article.published_at|date:"Y.m.d" }}</span>
+                    <!-- <span class="category">{{ article.category.name }}</span> -->
                 </div>
                 {% if article.image_url %}
                 <img class="thumb" src="{{ article.image_url }}" alt="">
