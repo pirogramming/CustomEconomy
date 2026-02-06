@@ -91,12 +91,62 @@ def explanation_detail(request, article_id):
                     article=article, 
                     level__lte=user_level
                 ).order_by('level')
-    
+
+    # -----------------------------------------------------------
+    # [시현 영역] 단어 추출 로직 (정규표현식 기반 매칭 강화 버전)
+    # -----------------------------------------------------------
+    related_words = []
+    import os, json, re
+    from django.conf import settings
+
+    try:
+        json_path = os.path.join(settings.BASE_DIR, 'scripts', 'data', 'master_dictionary.json')
+        
+        if os.path.exists(json_path):
+            with open(json_path, 'r', encoding='utf-8') as f:
+                master_dict = json.load(f)
+            
+            # 1. 분석 대상 텍스트 통합 (제목 + 본문)
+            # 본문뿐만 아니라 제목에 있는 핵심 단어도 놓치지 않도록 합칩니다.
+            full_text = f"{article.title} {article.content}"
+            
+            # 2. 매칭 루프
+            for word, definition in master_dict.items():
+                # 특수문자가 포함된 단어(예: LTV/DTI)를 안전하게 찾기 위해 escape 처리
+                safe_word = re.escape(word)
+                
+                # 정규표현식 설명: 
+                # 본문에 단어가 포함되어 있는지 확인 (앞뒤에 조사가 붙어도 찾을 수 있게 함)
+                # re.IGNORECASE: 대소문자 무시
+                if re.search(safe_word, full_text, re.IGNORECASE):
+                    related_words.append({
+                        'word': word,
+                        'definition': definition
+                    })
+            
+            # 3. 가나다순 정렬
+            related_words.sort(key=lambda x: x['word'])
+
+            # --- [최종 확인용 디버깅 로그] ---
+            print(f"✅ [디버깅] 분석한 기사: {article.title[:20]}...")
+            print(f"✅ [디버깅] 찾아낸 단어 개수: {len(related_words)}개")
+            if related_words:
+                print(f"✅ [디버깅] 매칭된 단어 샘플: {[w['word'] for w in related_words[:5]]}")
+            else:
+                print("⚠️ [디버깅] 매칭된 단어가 하나도 없습니다. 본문 내용을 확인해보세요.")
+                # 본문이 비어있지는 않은지 마지막 확인
+                print(f"⚠️ [디버깅] 본문 데이터 존재 여부: {bool(article.content)}")
+            # -------------------------------
+
+    except Exception as e:
+        print(f"❌ 단어 추출 중 에러 발생: {e}")
+    # -----------------------------------------------------------
     context = {
         'article': article,
         'explanations': explanations,
         'selected_level': selected_level,  # 이게 중요! JavaScript에서 사용
         'user_level': user_level,
+        'related_words': related_words,
     }
     
     return render(request, 'ai_explain.html', context)

@@ -11,96 +11,115 @@
 {% block content %}
 <div class="explanation-wrapper">
     <a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
-
-    <div class="card-ui-container">
+    
+    <div class="layout-container">
+    
+        <div class="card-ui-container">
         
-        <div class="tabs-header">
-            <button class="tab-item {% if selected_level == 0 %}active{% endif %}" onclick="openTab(event, 'tab-origin')">
-                기사 원문
-            </button>
+            <div class="tabs-header">
+                <button class="tab-item {% if selected_level == 0 %}active{% endif %}" onclick="openTab(event, 'tab-origin')">
+                    기사 원문
+                </button>
 
-            {% for i in "12345" %}
-                {% with current_level=i|add:"0" %}
-                    {% if current_level <= user_level %}
-                        <button class="tab-item {% if selected_level == current_level %}active{% endif %}" onclick="openTab(event, 'tab-lv{{ i }}')">
-                            Lv{{ i }}
-                        </button>
-                    {% else %}
-                        <button class="tab-item locked" disabled>
-                            🔒 Lv{{ i }}
-                        </button>
-                    {% endif %}
-                {% endwith %}
-            {% endfor %}
-        </div>
-
-        <div class="white-card-body">
-            
-            <div class="article-date-badge">
-                {{ article.published_at|date:"Y.m.d" }}
+                {% for i in "12345" %}
+                    {% with current_level=i|add:"0" %}
+                        {% if current_level <= user_level %}
+                            <button class="tab-item {% if selected_level == current_level %}active{% endif %}" onclick="openTab(event, 'tab-lv{{ i }}')">
+                                Lv{{ i }}
+                            </button>
+                        {% else %}
+                            <button class="tab-item locked" disabled>
+                                🔒 Lv{{ i }}
+                            </button>
+                        {% endif %}
+                    {% endwith %}
+                {% endfor %}
             </div>
 
-            <h2 class="content-title">{{ article.title }}</h2>
-
-            <div class="external-link-area">
-                <a href="{{ article.url }}" target="_blank" class="original-link">
-                    🔗 기사 원문 보러가기 (공식 홈페이지)
-                </a>
-            </div>
-
-            {% if article.image_url %}
-            <div class="article-hero-image">
-                <img src="{{ article.image_url }}" alt="기사 대표 이미지">
-            </div>
-            {% endif %}
-
-            <div id="tab-origin" class="tab-pane" style="{% if selected_level == 0 %}display: block;{% else %}display: none;{% endif %}">
-                <div class="text-content origin">
-                    {{ article.content|linebreaksbr }}
-                </div>
-            </div>
-
-            {% for expl in explanations %}
-            <div id="tab-lv{{ expl.level }}" class="tab-pane" style="{% if selected_level == expl.level %}display: block;{% else %}display: none;{% endif %}">
+            <div class="white-card-body">
                 
-                <div class="ai-section">
-                    <h3 class="ai-header text-orange">AI 재풀이</h3>
-                    <div class="ai-box">
-                        <p>{{ expl.article_explanation|linebreaksbr }}</p>
+                <div class="article-date-badge">
+                    {{ article.published_at|date:"Y.m.d" }}
+                </div>
+
+                <h2 class="content-title">{{ article.title }}</h2>
+
+                <div class="external-link-area">
+                    <a href="{{ article.url }}" target="_blank" class="original-link">
+                        🔗 기사 원문 보러가기 (공식 홈페이지)
+                    </a>
+                </div>
+
+                {% if article.image_url %}
+                <div class="article-hero-image">
+                    <img src="{{ article.image_url }}" alt="기사 대표 이미지">
+                </div>
+                {% endif %}
+
+                <div id="tab-origin" class="tab-pane" style="{% if selected_level == 0 %}display: block;{% else %}display: none;{% endif %}">
+                    <div class="text-content origin">
+                        {{ article.content|linebreaksbr }}
                     </div>
                 </div>
 
-                <div class="ai-section">
-                    <h3 class="ai-header text-green">용어 설명</h3>
-                    <div class="ai-box">
-                        <p>{{ expl.term_explanation|linebreaksbr }}</p>
+                {% for expl in explanations %}
+                <div id="tab-lv{{ expl.level }}" class="tab-pane" style="{% if selected_level == expl.level %}display: block;{% else %}display: none;{% endif %}">
+                    
+                    <div class="ai-section">
+                        <h3 class="ai-header text-orange">AI 재풀이</h3>
+                        <div class="ai-box">
+                            <p>{{ expl.article_explanation|linebreaksbr }}</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="ai-section">
-                    <h3 class="ai-header text-yellow">관심분야 전망</h3>
-                    <div class="ai-box">
-                        <p>{{ expl.prediction|linebreaksbr }}</p>
+                    <div class="ai-section">
+                        <h3 class="ai-header text-green">용어 설명</h3>
+                        <div class="ai-box">
+                            <p>{{ expl.term_explanation|linebreaksbr }}</p>
+                        </div>
                     </div>
-                </div>
 
-                <div class="quiz-btn-area">
-                    <a href="{% url 'quiz' article.id %}?level={{ expl.level }}" class="quiz-floating-btn">
-                        ✏️ 지금 바로 퀴즈 풀러가기 ✏️
+                    <div class="ai-section">
+                        <h3 class="ai-header text-yellow">관심분야 전망</h3>
+                        <div class="ai-box">
+                            <p>{{ expl.prediction|linebreaksbr }}</p>
+                        </div>
+                    </div>
+
+                    <div class="quiz-btn-area">
+                        <a href="{% url 'quiz' article.id %}?level={{ expl.level }}" class="quiz-floating-btn">
+                            ✏️ 지금 바로 퀴즈 풀러가기 ✏️
+                        </a>
+                    </div>
+
+                </div>
+                {% endfor %}
+
+                <hr class="section-divider">
+                <div class="back-to-list-area">
+                    <a href="{% url 'articleList' %}" class="back-btn">
+                        ← 목록으로 돌아가기
                     </a>
                 </div>
 
             </div>
-            {% endfor %}
-
-            <hr class="section-divider">
-            <div class="back-to-list-area">
-                <a href="{% url 'articleList' %}" class="back-btn">
-                    ← 목록으로 돌아가기
-                </a>
-            </div>
-
         </div>
+
+        <aside class="word-sidebar">
+            <h3 class="word-sidebar-title">📌 핵심 용어 사전</h3>
+            <div class="word-sidebar-scroll-area">
+                {% if related_words %}
+                    {% for item in related_words %}
+                        <div class="word-card">
+                            <strong class="word-name">{{ item.word }}</strong>
+                            <p class="word-desc">{{ item.definition }}</p>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="no-word">본문에 매칭된<br>경제 용어가 없습니다.</p>
+                {% endif %}
+            </div>
+        </aside>
     </div>
 </div>
 
