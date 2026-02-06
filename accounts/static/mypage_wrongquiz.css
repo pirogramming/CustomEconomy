@@ -1,0 +1,89 @@
+
+.wrong-top-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* background-color: red; */
+    padding: 10px 20px;
+}
+.wrong-top-area .page-main-title{
+    text-decoration: none;
+    font-size: 70px;
+    padding: 20px;
+    /* background-color: lightgreen; */
+
+
+}
+.wrong-body-area{
+    /* background-color: lightseagreen; */
+    padding: 10px 80px;
+}
+.wrong-body-area .sub-title{
+    /* background-color: lightsalmon; */
+    padding: 10px;
+}
+.wrong-body-area .sub-title h2{
+    color: #192237;
+    font-weight: 700;
+    font-size: 30px;
+}
+.wrong-body-area .sub-explanation p{
+    
+    color: #606060;
+    font-size: 16px;
+    padding: 0px 10px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+.wrong-body-area .quiz_list_area{
+    /* background-color: pink; */
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation{
+    background-color: white; 
+    border-radius: 35px;
+    padding: 20px;
+    margin: 30px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .quiz_date{
+    text-align: right;
+    color: #B2B2B2;
+    font-size: 14px;
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .question-header{
+
+    padding: 25px 35px;
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .question-header .question-number{
+
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .answers-grid{
+    /* background-color: lightgreen; */
+    margin: 10px;
+    padding: 10px;
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .answers-grid .answer-option{
+    background-color: #F7F7F7;
+    margin: 13px;
+    padding: 10px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .answers-grid .answer-option.correct{
+    background-color: #C4EDD0;
+    border: 1px solid #5D9A6E;
+    margin: 10px;
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .answers-grid .answer-option.wrong{
+    background-color: #FAD5C8;
+    margin: 10px;
+}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .answers-grid .answer-option .answer-text{}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .explanation-box{}
+.wrong-body-area .quiz_list_area .question-card-with-explanation .explanation-box .explanation-text{
+ background-color: #e9e9e9;
+ margin: 20px;
+ padding: 20px;
+ border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}

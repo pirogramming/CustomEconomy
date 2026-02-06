@@ -7,4 +7,10 @@
 
 {% block content %}
 <div class="mypage"><h2> 마이페이지 </h2>
+
+<div>
+    <a href="{% url 'wrongquiz' %}">틀린 문제 모음 버튼(피그마 4-4로 이동)</a>
+    <br>
+    <a href="{% url 'scraparticle' %}">내가 스크랩한 기사 버튼(피그마 4-2로 이동)</a>
+</div>
 {% endblock %}

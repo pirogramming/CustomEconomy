@@ -4,6 +4,8 @@ from django.contrib.auth.forms import AuthenticationForm
 # 👇 [핵심 수정 1] User 모델을 가져오기 위해 꼭 필요합니다!
 from django.contrib.auth import get_user_model
 from .forms import CustomUserCreationForm 
+from django.contrib.auth.decorators import login_required
+from quizzes.models import QuizResult
 
 
 # 👇 [핵심 수정 2] 현재 활성화된 유저 모델(커스텀 유저)을 가져옵니다.
@@ -87,3 +89,19 @@ def league_view(request):
         'rest_users': rest_users,
     }
     return render(request, 'league.html', context)
+
+
+@login_required
+def wrongquiz_view(request):
+    wrong_results = (
+        QuizResult.objects
+        .filter(user=request.user, is_correct=False)
+        .select_related("quiz")
+        .prefetch_related("quiz__choices")
+        .order_by("-created_at")
+    )
+    return render(request, "mypage_wrongquiz.html", {"wrong_results": wrong_results})
+
+def scrap_article_view(request):
+    return render(request, 'mypage_scraparticle.html')
+    
