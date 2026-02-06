@@ -262,5 +262,24 @@ window.addEventListener('DOMContentLoaded', async function() {
         }
     }
 });
+
+//---------------------------------
+// 퀴즈 생성 중 화면 추가
+document.addEventListener('click', function(e) {
+    // 클릭된 요소가 quiz-floating-btn 클래스를 가지고 있는지 확인
+    const quizBtn = e.target.closest('.quiz-floating-btn');
+    
+    if (quizBtn) {
+        // 원래 코드에 있던 메시지 요소를 찾아 텍스트 교체
+        const loadingText = document.querySelector('.loading-text');
+        const loadingSub = document.querySelector('.loading-sub');
+        
+        if (loadingText) loadingText.innerText = "✏️ AI가 퀴즈를 출제하고 있습니다...";
+        if (loadingSub) loadingSub.innerText = "기사 내용과 용어를 정리 중입니다 (3~5초 소요)";
+        
+        showLoading(); // 원래 정의되어 있던 로딩창 표시 함수 호출
+    }
+});
+//---------------------------------
 </script>
 {% endblock %}

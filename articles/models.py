@@ -29,6 +29,10 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
+    
+    @property
+    def sub_category_names(self):
+        return self.sub_interests.values_list('name', flat=True)
 
 class UserBookmark(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -11,6 +11,8 @@ import os
 import json
 import re
 from django.conf import settings
+from quizzes.services import create_ai_quiz_from_article
+import threading
 
 def explanation_detail(request, article_id):
     """기사 상세 페이지 (원문만 표시, AI는 나중에 AJAX로 로드)"""
@@ -189,6 +191,12 @@ def generate_level_explanation(request, article_id, level):
             )
             
             print(f"✅ 레벨 {level} 저장 완료")
+
+            #------------------------------------
+            # 퀴즈 생성 추가 (백그라운드에서 생성중)
+            thread = threading.Thread(target=create_ai_quiz_from_article, args=(article,))
+            thread.start()
+            #------------------------------------
             
             return JsonResponse({
                 'success': True,

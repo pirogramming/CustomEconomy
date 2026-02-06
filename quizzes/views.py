@@ -94,7 +94,7 @@ def submit_quiz_session(request, article_id):
                 "explanation": quiz.explanation,
                 "correct_answer": correct_choice_text,
                 "correct_choice_id": correct_choice_id,
-                "choices": all_choices,  # ✅ 전체 보기용
+                "choices": all_choices,  # 전체 보기용
             })
 
 
@@ -117,7 +117,7 @@ def submit_quiz_session(request, article_id):
                 
                 ui.save()
 
-        # [유저 성장] 전체 스코어 및 레벨업 로직
+        # [리그] 전체 점수 및 레벨업 로직
         total_session_points = correct_count * 10
         user.total_score += total_session_points
         user.level_score += total_session_points
@@ -136,18 +136,3 @@ def submit_quiz_session(request, article_id):
             'points': total_session_points,
             'article': article,         
         })
-
-
-@login_required
-def my_wrong_note(request):
-    """
-    3. 오답 노트: 유저별 틀린 문제 목록 조회
-    """
-    wrong_results = QuizResult.objects.filter(
-        user=request.user, 
-        is_correct=False
-    ).select_related('quiz', 'quiz__article').prefetch_related('quiz__choices').order_by('-created_at')
-    
-    return render(request, 'wrong_note.html', {
-        'wrong_results': wrong_results
-    })
