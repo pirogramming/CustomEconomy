@@ -16,9 +16,15 @@
         <p class="mb-1">❌ 나의 선택: <span class="text-danger">{{ result.selected_answer }}</span></p>
         <p class="mb-3">✅ 정답: <span class="text-success">{{ result.quiz.explanation }}</span></p>
         
-        <a href="{% url 'article_detail' result.quiz.article.id %}" class="btn btn-outline-info btn-sm">
-            이 기사에서 정답 확인하기
-        </a>
+        {% if result.quiz.article %}
+            <a href="{% url 'detail' result.quiz.article.id %}" class="btn btn-outline-info btn-sm">
+                이 기사에서 정답 확인하기
+            </a>
+        {% else %}
+            <button class="btn btn-outline-secondary btn-sm" disabled>
+                연결된 기사 없음
+            </button>
+        {% endif %}
     </div>
 </div>
 {% empty %}

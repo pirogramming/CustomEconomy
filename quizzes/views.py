@@ -121,6 +121,7 @@ def submit_quiz_session(request, article_id):
             'points': total_session_points
         })
 
+# 미완성 (틀린 문제 확인하기)
 @login_required
 def my_wrong_note(request):
     """
