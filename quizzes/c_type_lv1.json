@@ -1,0 +1,304 @@
+{
+  "quizzes": [
+    {
+      "level": 1,
+      "question": "기준금리가 인상되면 변동금리로 대출을 받은 사람에게 가장 먼저 나타날 가능성이 높은 변화는?",
+      "options": [
+        {"text": "대출 이자 부담 감소", "isCorrect": false},
+        {"text": "매달 갚아야 할 이자 증가", "isCorrect": true},
+        {"text": "집값 자동 상승", "isCorrect": false},
+        {"text": "소득세 감소", "isCorrect": false}
+      ],
+      "tags": ["통화/금리", "은행/대출"],
+      "explanation": "금리가 오르면 대출 금리도 함께 올라 매달 상환해야 하는 이자 부담이 커진다."
+    },
+    {
+      "level": 1,
+      "question": "국제 유가가 크게 상승했다. 일반 소비자의 생활비에 가장 직접적인 영향은 무엇인가?",
+      "options": [
+        {"text": "주식 배당금 증가", "isCorrect": false},
+        {"text": "휘발유·교통비 상승", "isCorrect": true},
+        {"text": "전세금 하락", "isCorrect": false},
+        {"text": "휴대폰 요금 인하", "isCorrect": false}
+      ],
+      "tags": ["물가/인플레", "채권/상품"],
+      "explanation": "유가 상승은 기름값과 물류비를 올려 교통비와 생활비 부담을 키운다."
+    },
+    {
+      "level": 1,
+      "question": "원/달러 환율이 상승해 원화 가치가 떨어졌다. 해외 직구를 할 때 가장 예상되는 변화는?",
+      "options": [
+        {"text": "상품 가격이 더 싸짐", "isCorrect": false},
+        {"text": "결제 금액이 더 비싸짐", "isCorrect": true},
+        {"text": "배송비 무료 증가", "isCorrect": false},
+        {"text": "관세 면제 확대", "isCorrect": false}
+      ],
+      "tags": ["환율/외환"],
+      "explanation": "원화 약세이면 같은 달러 가격이라도 더 많은 원화를 내야 하므로 해외 구매 비용이 증가한다."
+    },
+    {
+      "level": 1,
+      "question": "주택담보대출 규제가 강화되어 대출 한도가 줄었다. 다음 중 가장 자연스러운 결과는?",
+      "options": [
+        {"text": "집을 사는 사람 증가", "isCorrect": false},
+        {"text": "주택 구매 수요 감소", "isCorrect": true},
+        {"text": "가계부채 급증", "isCorrect": false},
+        {"text": "집값 즉시 폭등", "isCorrect": false}
+      ],
+      "tags": ["은행/대출", "매매/분양"],
+      "explanation": "대출이 어려워지면 집을 살 수 있는 사람이 줄어들어 매수 수요가 감소한다."
+    },
+    {
+      "level": 1,
+      "question": "경기 침체로 실업률이 높아졌다. 일반적으로 가계 소비는 어떻게 변할 가능성이 큰가?",
+      "options": [
+        {"text": "소비 증가", "isCorrect": false},
+        {"text": "소비 감소", "isCorrect": true},
+        {"text": "변화 없음", "isCorrect": false},
+        {"text": "수입 자동 증가", "isCorrect": false}
+      ],
+      "tags": ["고용/지표"],
+      "explanation": "실업자가 늘면 소득이 줄어들어 지출을 줄이게 되므로 전체 소비는 감소하는 경향이 있다."
+    },
+    {
+      "level": 1,
+      "question": "은행 예금 금리가 크게 낮아지면 사람들이 보일 가능성이 가장 높은 행동은?",
+      "options": [
+        {"text": "저축 확대", "isCorrect": false},
+        {"text": "예금 해지 후 투자 증가", "isCorrect": true},
+        {"text": "대출 상환 증가", "isCorrect": false},
+        {"text": "소비 완전 중단", "isCorrect": false}
+      ],
+      "tags": ["통화/금리", "은행/대출"],
+      "explanation": "예금 이자가 낮으면 돈을 맡겨도 수익이 적어 투자나 소비로 자금이 이동하는 경향이 있다."
+    },
+    {
+      "level": 1,
+      "question": "물가가 전반적으로 상승하면 같은 월급을 받는 사람의 생활 수준은 어떻게 될 가능성이 큰가?",
+      "options": [
+        {"text": "구매력 상승", "isCorrect": false},
+        {"text": "구매력 하락", "isCorrect": true},
+        {"text": "저축 자동 증가", "isCorrect": false},
+        {"text": "세금 감소", "isCorrect": false}
+      ],
+      "tags": ["물가/인플레"],
+      "explanation": "물가가 오르면 같은 돈으로 살 수 있는 상품이 줄어들어 실질 구매력이 감소한다."
+    },
+    {
+      "level": 1,
+      "question": "취업자가 늘어나고 실업률이 낮아질 때 일반적으로 기대되는 변화는?",
+      "options": [
+        {"text": "가계 소득 증가", "isCorrect": true},
+        {"text": "소비 급감", "isCorrect": false},
+        {"text": "세수 감소", "isCorrect": false},
+        {"text": "경기 침체 심화", "isCorrect": false}
+      ],
+      "tags": ["고용/지표"],
+      "explanation": "일하는 사람이 늘면 전체 소득이 증가해 소비와 경기가 개선되는 경향이 있다."
+    },
+    {
+      "level": 1,
+      "question": "달러 가치가 크게 상승했다(강달러). 수입업체가 가장 먼저 겪을 가능성이 높은 문제는?",
+      "options": [
+        {"text": "수입 비용 감소", "isCorrect": false},
+        {"text": "상품 원가 상승", "isCorrect": true},
+        {"text": "수출 증가", "isCorrect": false},
+        {"text": "세금 인하", "isCorrect": false}
+      ],
+      "tags": ["환율/외환"],
+      "explanation": "달러가 비싸지면 수입 물품을 사기 위해 더 많은 원화를 지불해야 하므로 원가가 오른다."
+    },
+    {
+      "level": 1,
+      "question": "정부가 교통요금과 전기요금 같은 공공요금을 인상했다. 가장 직접적인 결과는?",
+      "options": [
+        {"text": "생활비 감소", "isCorrect": false},
+        {"text": "소비자물가 상승", "isCorrect": true},
+        {"text": "금리 하락", "isCorrect": false},
+        {"text": "주가 급등", "isCorrect": false}
+      ],
+      "tags": ["물가/인플레"],
+      "explanation": "공공요금 인상은 가계 지출을 늘려 전체 물가 상승 요인이 된다."
+    },
+    {
+      "level": 1,
+      "question": "주식시장이 크게 하락하면 일반 투자자의 심리 변화로 가장 가까운 것은?",
+      "options": [
+        {"text": "추가 매수 급증", "isCorrect": false},
+        {"text": "투자 위축과 매도 증가", "isCorrect": true},
+        {"text": "소비 증가", "isCorrect": false},
+        {"text": "대출 확대", "isCorrect": false}
+      ],
+      "tags": ["국내증시"],
+      "explanation": "주가 하락 시 손실 우려로 투자 심리가 위축되고 매도가 늘어나는 경우가 많다."
+    },
+    {
+      "level": 1,
+      "question": "은행이 대출 금리를 낮추면 나타날 가능성이 높은 현상은?",
+      "options": [
+        {"text": "대출 수요 감소", "isCorrect": false},
+        {"text": "대출 이용 증가", "isCorrect": true},
+        {"text": "저축 급증", "isCorrect": false},
+        {"text": "부동산 거래 중단", "isCorrect": false}
+      ],
+      "tags": ["은행/대출", "통화/금리"],
+      "explanation": "이자가 낮아지면 돈을 빌리는 부담이 줄어 대출 수요가 증가한다."
+    },
+    {
+      "level": 1,
+      "question": "아파트 공급이 갑자기 많이 늘어나면 일반적으로 기대되는 가격 변화는?",
+      "options": [
+        {"text": "가격 상승", "isCorrect": false},
+        {"text": "가격 하락 또는 안정", "isCorrect": true},
+        {"text": "거래 완전 중단", "isCorrect": false},
+        {"text": "전세 사라짐", "isCorrect": false}
+      ],
+      "tags": ["매매/분양"],
+      "explanation": "공급이 많아지면 매물이 늘어 가격 상승 압력이 줄어든다."
+    },
+    {
+      "level": 1,
+      "question": "경기가 좋아져 기업 매출이 늘어나면 가장 기대되는 변화는?",
+      "options": [
+        {"text": "고용 축소", "isCorrect": false},
+        {"text": "채용 확대 가능성", "isCorrect": true},
+        {"text": "임금 삭감", "isCorrect": false},
+        {"text": "소비 감소", "isCorrect": false}
+      ],
+      "tags": ["실적/경영", "고용/지표"],
+      "explanation": "기업 실적이 좋아지면 생산 확대를 위해 인력을 더 채용하는 경우가 많다."
+    },
+    {
+      "level": 1,
+      "question": "전세 매물이 부족해지면 전세가격은 어떻게 될 가능성이 큰가?",
+      "options": [
+        {"text": "하락", "isCorrect": false},
+        {"text": "상승", "isCorrect": true},
+        {"text": "변화 없음", "isCorrect": false},
+        {"text": "세금 감소", "isCorrect": false}
+      ],
+      "tags": ["임대차/전세"],
+      "explanation": "공급이 부족하면 경쟁이 붙어 가격이 오르는 것이 일반적이다."
+    },
+    {
+      "level": 1,
+      "question": "정부가 소비 쿠폰을 지급해 지출을 장려했다. 가장 직접적인 효과는?",
+      "options": [
+        {"text": "소비 증가", "isCorrect": true},
+        {"text": "저축 증가", "isCorrect": false},
+        {"text": "금리 상승", "isCorrect": false},
+        {"text": "수출 감소", "isCorrect": false}
+      ],
+      "tags": ["세금/재정"],
+      "explanation": "쿠폰은 사용을 전제로 지급되기 때문에 소비 촉진 효과가 있다."
+    },
+    {
+      "level": 1,
+      "question": "국채 금리가 하락하면 기존에 보유한 채권 가격은 어떻게 될 가능성이 높은가?",
+      "options": [
+        {"text": "가격 하락", "isCorrect": false},
+        {"text": "가격 상승", "isCorrect": true},
+        {"text": "거래 중단", "isCorrect": false},
+        {"text": "세금 증가", "isCorrect": false}
+      ],
+      "tags": ["채권/상품"],
+      "explanation": "금리와 채권 가격은 반대로 움직인다. 금리 하락 시 채권 가격은 상승한다."
+    },
+    {
+      "level": 1,
+      "question": "가계부채가 빠르게 늘어나면 가계가 겪을 가능성이 높은 부담은?",
+      "options": [
+        {"text": "이자 상환 부담 증가", "isCorrect": true},
+        {"text": "세금 감소", "isCorrect": false},
+        {"text": "소득 자동 증가", "isCorrect": false},
+        {"text": "물가 하락", "isCorrect": false}
+      ],
+      "tags": ["은행/대출"],
+      "explanation": "빚이 많아질수록 이자와 원금 상환 부담이 커진다."
+    },
+    {
+      "level": 1,
+      "question": "수출이 크게 늘어나면 국내 기업에게 가장 긍정적인 변화는?",
+      "options": [
+        {"text": "매출 증가", "isCorrect": true},
+        {"text": "적자 확대", "isCorrect": false},
+        {"text": "생산 중단", "isCorrect": false},
+        {"text": "고용 감소", "isCorrect": false}
+      ],
+      "tags": ["실적/경영", "환율/외환"],
+      "explanation": "수출 증가는 판매량 증가로 이어져 기업 매출 개선에 도움이 된다."
+    },
+    {
+      "level": 1,
+      "question": "물가가 계속 하락하는 디플레이션이 발생하면 소비자는 어떻게 행동할 가능성이 큰가?",
+      "options": [
+        {"text": "지금 바로 구매", "isCorrect": false},
+        {"text": "구매 미루기", "isCorrect": true},
+        {"text": "가격 상승 걱정", "isCorrect": false},
+        {"text": "대출 급증", "isCorrect": false}
+      ],
+      "tags": ["물가/인플레"],
+      "explanation": "가격이 더 떨어질 것이라 기대하면 소비를 미루는 경향이 나타난다."
+    },
+    {
+      "level": 1,
+      "question": "금리가 낮고 대출이 쉬운 환경이 지속되면 부동산 시장에 나타나기 쉬운 현상은?",
+      "options": [
+        {"text": "거래 감소", "isCorrect": false},
+        {"text": "매수 증가", "isCorrect": true},
+        {"text": "공급 중단", "isCorrect": false},
+        {"text": "가격 즉시 폭락", "isCorrect": false}
+      ],
+      "tags": ["통화/금리", "매매/분양"],
+      "explanation": "자금 조달이 쉬워지면 주택 구매 수요가 늘어나는 경향이 있다."
+    },
+    {
+      "level": 1,
+      "question": "기업 실적이 좋아져 배당금이 늘어나면 주식을 보유한 사람에게 나타나는 변화는?",
+      "options": [
+        {"text": "현금 수입 증가", "isCorrect": true},
+        {"text": "세금 면제", "isCorrect": false},
+        {"text": "주가 자동 하락", "isCorrect": false},
+        {"text": "대출 감소", "isCorrect": false}
+      ],
+      "tags": ["국내증시", "실적/경영"],
+      "explanation": "배당금은 주주에게 지급되는 현금이므로 수익이 증가한다."
+    },
+    {
+      "level": 1,
+      "question": "연체율이 높아지면 은행이 취할 가능성이 가장 높은 조치는?",
+      "options": [
+        {"text": "대출 더 쉽게 승인", "isCorrect": false},
+        {"text": "대출 심사 강화", "isCorrect": true},
+        {"text": "금리 대폭 인하", "isCorrect": false},
+        {"text": "예금 중단", "isCorrect": false}
+      ],
+      "tags": ["은행/대출"],
+      "explanation": "연체 위험이 커지면 은행은 리스크 관리를 위해 대출 심사를 강화한다."
+    },
+    {
+      "level": 1,
+      "question": "해외 관광객이 한국에 많이 방문하면 국내 상점과 식당에는 어떤 영향이 가장 기대되는가?",
+      "options": [
+        {"text": "매출 증가", "isCorrect": true},
+        {"text": "가격 폭락", "isCorrect": false},
+        {"text": "소비 감소", "isCorrect": false},
+        {"text": "고용 축소", "isCorrect": false}
+      ],
+      "tags": ["고용/지표"],
+      "explanation": "관광객 증가는 소비 증가로 이어져 자영업과 상점 매출이 늘어난다."
+    },
+    {
+      "level": 1,
+      "question": "정부가 세금을 인상하면 가계가 체감하기 쉬운 변화는 무엇인가?",
+      "options": [
+        {"text": "사용 가능한 소득 증가", "isCorrect": false},
+        {"text": "실제 쓸 수 있는 돈 감소", "isCorrect": true},
+        {"text": "대출 이자 감소", "isCorrect": false},
+        {"text": "물가 자동 하락", "isCorrect": false}
+      ],
+      "tags": ["세금/재정"],
+      "explanation": "세금이 늘면 가처분소득이 줄어들어 실제 사용할 수 있는 돈이 감소한다."
+    }
+  ]
+}

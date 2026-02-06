@@ -84,6 +84,18 @@
     </div>
 </div>
 
+{% comment %} <footer>
+    <div class="footer-content">
+        <p>© 2024 Custom Economy. All rights reserved.</p>
+        <div class="footer-links">
+            <a href="{% url 'main' %}">Home</a>
+            <a href="{% url 'articleList' %}">Articles</a>
+            <a href="{% url 'quiz' article.id %}">Quizzes</a>
+            <a href="{% url 'my_wrong_note' %}">Wrong Note</a>
+        </div>
+    </div>
+</footer> {% endcomment %}
+
 <!-- ✅ select 바꾸면 sort 쿼리만 바꿔서 page=1로 이동 -->
 <script>
     const sortSelect = document.getElementById("sortSelect");
