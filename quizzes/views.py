@@ -94,7 +94,7 @@ def submit_quiz_session(request, article_id):
                 "explanation": quiz.explanation,
                 "correct_answer": correct_choice_text,
                 "correct_choice_id": correct_choice_id,
-                "choices": all_choices,  # ✅ 전체 보기용
+                "choices": all_choices,  # 전체 보기용
             })
 
 
@@ -117,7 +117,7 @@ def submit_quiz_session(request, article_id):
                 
                 ui.save()
 
-        # [유저 성장] 전체 스코어 및 레벨업 로직
+        # [리그] 전체 점수 및 레벨업 로직
         total_session_points = correct_count * 10
         user.total_score += total_session_points
         user.level_score += total_session_points

@@ -263,7 +263,8 @@ window.addEventListener('DOMContentLoaded', async function() {
     }
 });
 
-// [퀴즈] 퀴즈 생성 중 화면 추가
+//---------------------------------
+// 퀴즈 생성 중 화면 추가
 document.addEventListener('click', function(e) {
     // 클릭된 요소가 quiz-floating-btn 클래스를 가지고 있는지 확인
     const quizBtn = e.target.closest('.quiz-floating-btn');
@@ -279,5 +280,6 @@ document.addEventListener('click', function(e) {
         showLoading(); // 원래 정의되어 있던 로딩창 표시 함수 호출
     }
 });
+//---------------------------------
 </script>
 {% endblock %}
