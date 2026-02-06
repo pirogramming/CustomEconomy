@@ -136,3 +136,18 @@ def submit_quiz_session(request, article_id):
             'points': total_session_points,
             'article': article,         
         })
+
+# 미완성 (틀린 문제 확인하기)
+@login_required
+def my_wrong_note(request):
+    """
+    3. 오답 노트: 유저별 틀린 문제 목록 조회
+    """
+    wrong_results = QuizResult.objects.filter(
+        user=request.user, 
+        is_correct=False
+    ).select_related('quiz', 'quiz__article').prefetch_related('quiz__choices').order_by('-created_at')
+    
+    return render(request, 'wrong_note.html', {
+        'wrong_results': wrong_results
+    })
