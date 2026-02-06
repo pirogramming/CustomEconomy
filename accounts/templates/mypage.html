@@ -6,11 +6,142 @@
 {% endblock %}
 
 {% block content %}
-<div class="mypage"><h2> 마이페이지 </h2>
+<div class="main-wrapper">
+    <div class="main-container">
+        <!-- 헤더 -->
+        <div class="main-header">
+            <h1 class="page-title">Custom Economy</h1>
+        </div>
 
-<div>
-    <a href="{% url 'wrongquiz' %}">틀린 문제 모음 버튼(피그마 4-4로 이동)</a>
-    <br>
-    <a href="{% url 'scraparticle' %}">내가 스크랩한 기사 버튼(피그마 4-2로 이동)</a>
+        <!-- 나의 정보 섹션 -->
+        <div class="section-header-outside">
+            <h2>나의 정보</h2>
+            <a href="{% url 'edit' %}" class="icon-btn dot-btn">•••</a>
+        </div>
+        
+        <section class="card-section my-info-card">
+            <div class="user-profile">
+                <div class="profile-image">
+                    <img src="{% static 'img/profile-default.png' %}" alt="프로필">
+                </div>
+                <div class="profile-info">
+                    <div class="info-header">
+                        <p class="username"><span class="name">주식으로 인생역전</span> <span class="suffix">님</span></p>
+                        <span class="level-badge">Lv.4</span>
+                    </div>
+                    <p class="interest">관심분야 : 부동산</p>
+                    
+                    <div class="progress-area">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 60%;"></div>
+                        </div>
+                        <p class="progress-text">주식으로 인생역전님, 다음 레벨까지 몇 점 남았습니다</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 스크랩한 뉴스 섹션 -->
+        <div class="section-header-outside">
+            <h2>스크랩한 뉴스</h2>
+            <a href="{% url 'scraparticle' %}" class="icon-btn dot-btn">•••</a>
+        </div>
+        
+        <section class="news-section">
+            <div class="news-list">
+                <a href="#" class="news-item">
+                    <div class="news-tags-top">
+                        <span class="tag tag-economy">#경제</span>
+                        <span class="tag">#이거는 소분류</span>
+                    </div>
+                    <div class="news-body">
+                        <div class="news-image">
+                            <img src="{% static 'img/news-sample-1.png' %}" alt="뉴스 썸네일">
+                        </div>
+                        <div class="news-content">
+                            <p class="news-title">
+                                뉴스제목이 길 수도 있고 짧을수도 있는데 얼마나 길 수 있을까 과연? 어디까지 길어질래? 
+                                짧아지면? 어떡하니?[속보]이런식이면 겁나 길텐데 아 스크랩 안 하려나 아무리 길어도 이정도?아닌가 아무튼 최소 사진 사이즈나 글자 길이에 박스 맞추기
+                            </p>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="news-item">
+                    <div class="news-tags-top">
+                        <span class="tag tag-economy">#경제</span>
+                        <span class="tag">#이거는 소분류</span>
+                        <span class="tag">#이거는 소분류</span>
+                    </div>
+                    <div class="news-body">
+                        <div class="news-image">
+                            <img src="{% static 'img/news-sample-2.png' %}" alt="뉴스 썸네일">
+                        </div>
+                        <div class="news-content">
+                            <p class="news-title">
+                                사진의 윗부분과 글씨의 윗 부분이 맞으면 좋겠는데 피그마로 어케하는지 모르겟어요ㅜㅜ 
+                                프레임 패디 조정 다 너무 어려움 못해
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- 내가 푼 용어 퀴즈 섹션 -->
+        <div class="section-header-outside">
+            <h2>내가 푼 용어 퀴즈</h2>
+            <a href="#" class="icon-btn dot-btn">•••</a>
+        </div>
+        
+        <section class="quiz-section">
+            <div class="quiz-list">
+                <div class="quiz-card">기회비용</div>
+                <div class="quiz-card">기회비용</div>
+                <div class="quiz-card">기회비용</div>
+                <div class="quiz-card expanded">
+                    기회비용이 무슨뜻이겡에ㅔㅇ에엥<br>
+                    기회비용이 무슨뜻이겡에ㅔㅇ에엥<br>
+                    기회비용이 무슨뜻이겡에ㅔㅇ에엥
+                </div>
+            </div>
+        </section>
+
+        <!-- 틀린 문제 다시 풀어보기 섹션 -->
+        <div class="section-header-outside">
+            <h2>틀린 문제 다시 풀어보기</h2>
+            <a href="{% url 'wrongquiz' %}" class="icon-btn dot-btn">•••</a>
+        </div>
+        
+        <section class="wrong-answer-section">
+            <div class="wrong-list">
+                <div class="wrong-item">
+                    <span class="q-mark">Q.</span>
+                    <span class="q-text">질문이 한 줄일 수도 있음</span>
+                </div>
+                <div class="wrong-item">
+                    <span class="q-mark">Q.</span>
+                    <span class="q-text">질문이 한 줄일 수도 있음</span>
+                </div>
+                <div class="wrong-item">
+                    <span class="q-mark">Q.</span>
+                    <span class="q-text">질문이 두 줄일 수도 있음질문이 두 줄일 수도 있음질문이 두 줄일 수도 있음있음질문이 두 줄일 수도 있음</span>
+                </div>
+                <div class="wrong-item">
+                    <span class="q-mark">Q.</span>
+                    <span class="q-text">질문이 세 줄일 수도 있음질문이 세 줄일 수도질문이 세 줄일 수도 있음질문이 세 줄일 질문이 세 줄일 수도 있음질문이 세 줄일 수도 질문이 세 줄일 수도 있음질문이 세 줄일</span>
+                </div>
+                <div class="wrong-item">
+                    <span class="q-mark">Q.</span>
+                    <span class="q-text">
+                        질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?
+                        질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?
+                        질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?
+                        질문이 네 줄까지될까?질문이 네 줄까지될까?
+                    </span>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
 {% endblock %}
