@@ -19,10 +19,97 @@ body {
     font-family: "Noto Sans KR", sans-serif;
 }
 
+/* ==========================================
+   🆕 로딩 애니메이션 스타일
+   ========================================== */
+
+/* 전체 화면 오버레이 */
+.loading-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 로딩 컨텐츠 박스 */
+.loading-content {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    max-width: 400px;
+}
+
+/* 회전 스피너 */
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid var(--c-orange);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 로딩 텍스트 */
+.loading-text {
+    font-size: 18px;
+    color: #333;
+    margin: 10px 0;
+    font-weight: 700;
+}
+
+.loading-sub {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* 플레이스홀더 스켈레톤 효과 */
+.ai-section.loading-placeholder {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    min-height: 150px;
+    border-radius: 15px;
+    margin-bottom: 35px;
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* 로딩 플레이스홀더 컨테이너 */
+.loading-placeholder-content {
+    display: block;
+}
+
+/* AI 컨텐츠 컨테이너 (처음엔 숨김) */
+.ai-content-container {
+    display: none;
+}
+
+/* ==========================================
+   기존 스타일
+   ========================================== */
+
 /* 1. 레이아웃 래퍼 */
 .explanation-wrapper {
     width: 100%;
-    max-width: 1300px; /* 사이드바와 기사 영역을 수용할 넉넉한 너비 */
+    max-width: 1300px;
     margin: 0 auto;
     padding: 40px 20px;
     display: flex;
@@ -42,21 +129,21 @@ body {
     text-decoration: none;
 }
 
-/* ⭐ 3. 가로 배치를 위한 핵심 컨테이너 */
+/* 3. 가로 배치를 위한 핵심 컨테이너 */
 .layout-container {
     display: flex;
-    flex-direction: row; /* 가로 배치 */
+    flex-direction: row;
     align-items: flex-start;
     justify-content: center;
-    gap: 35px; /* 사이드바와 기사 사이의 여백 */
+    gap: 35px;
     width: 100%;
 }
 
-/* 📖 4. 왼쪽 사이드바 (용어 사전) */
+/* 4. 왼쪽 사이드바 (용어 사전) */
 .word-sidebar {
-    flex: 0 0 280px; /* 너비 280px 고정 */
+    flex: 0 0 280px;
     position: sticky;
-    top: 30px; /* 스크롤 시 상단에 찰딱 붙음 */
+    top: 30px;
     background-color: var(--c-white);
     border-radius: 20px;
     padding: 25px;
@@ -74,7 +161,7 @@ body {
 }
 
 .word-sidebar-scroll-area {
-    max-height: 75vh; /* 화면 높이에 맞춰 자동 스크롤 */
+    max-height: 75vh;
     overflow-y: auto;
     padding-right: 8px;
 }
@@ -98,11 +185,18 @@ body {
     word-break: keep-all;
 }
 
-/* 📄 5. 오른쪽 메인 카드 영역 */
+.no-word {
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    padding: 20px;
+}
+
+/* 5. 오른쪽 메인 카드 영역 */
 .card-ui-container {
     flex: 1;
     max-width: 850px;
-    min-width: 0; /* flex 자식 찌그러짐 방지 */
+    min-width: 0;
 }
 
 /* 탭 헤더 */
@@ -125,6 +219,11 @@ body {
     border-radius: 15px 15px 0 0;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.tab-item:hover:not(.locked) {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: var(--c-orange);
 }
 
 .tab-item.active {
@@ -151,7 +250,7 @@ body {
     min-height: 600px;
 }
 
-/* 🖼️ 6. 기사 이미지 스타일 (누락되었던 부분) */
+/* 6. 기사 이미지 스타일 */
 .article-hero-image {
     width: 100%;
     border-radius: 12px;
@@ -185,6 +284,18 @@ body {
     text-align: center;
 }
 
+/* 탭 내용 */
+.tab-pane {
+    display: none;
+}
+
+.text-content.origin {
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+    word-break: keep-all;
+}
+
 /* AI 섹션 스타일 */
 .ai-section {
     margin-bottom: 35px;
@@ -204,6 +315,7 @@ body {
     color: #444;
     font-size: 1rem;
     line-height: 1.7;
+    word-break: keep-all;
 }
 
 .text-orange { color: var(--c-orange); }
@@ -211,27 +323,83 @@ body {
 .text-yellow { color: var(--c-yellow); }
 
 /* 하단 버튼 & 기타 */
-.external-link-area { text-align: center; margin-bottom: 25px; }
-.original-link {
-    color: #6c757d; text-decoration: none; font-size: 0.95rem;
-    padding: 8px 16px; border-radius: 20px; background-color: #f8f9fa;
+.external-link-area {
+    text-align: center;
+    margin-bottom: 25px;
 }
 
-.quiz-btn-area { margin-top: 60px; text-align: center; }
+.original-link {
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+.original-link:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.section-divider {
+    border: none;
+    border-top: 2px solid var(--c-bg-gray);
+    margin: 50px 0 30px;
+}
+
+.back-to-list-area {
+    text-align: center;
+}
+
+.back-btn {
+    display: inline-block;
+    color: #666;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 10px 30px;
+    border-radius: 25px;
+    background-color: var(--c-bg-gray);
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background-color: #ddd;
+    color: #333;
+}
+
+.quiz-btn-area {
+    margin-top: 60px;
+    text-align: center;
+}
+
 .quiz-floating-btn {
     display: inline-block;
     background: linear-gradient(135deg, #ffd89b 0%, #ffb84d 100%);
-    color: var(--c-white); font-size: 1.2rem; font-weight: 800;
-    padding: 18px 60px; border-radius: 50px; text-decoration: none;
+    color: var(--c-white);
+    font-size: 1.2rem;
+    font-weight: 800;
+    padding: 18px 60px;
+    border-radius: 50px;
+    text-decoration: none;
     box-shadow: 0 5px 20px rgba(239, 145, 96, 0.4);
+    transition: all 0.3s ease;
 }
 
-/* 📱 7. 반응형 (태블릿/모바일) */
+.quiz-floating-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(239, 145, 96, 0.5);
+}
+
+/* 7. 반응형 (태블릿/모바일) */
 @media (max-width: 1100px) {
     .layout-container {
-        flex-direction: column; /* 세로로 쌓기 */
+        flex-direction: column;
         align-items: center;
     }
+    
     .word-sidebar {
         flex: none;
         width: 100%;
@@ -239,11 +407,48 @@ body {
         position: static;
         margin-bottom: 30px;
     }
+    
     .white-card-body {
         padding: 30px 20px;
+    }
+    
+    .page-main-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .tabs-header {
+        overflow-x: auto;
+        padding-left: 10px;
+    }
+    
+    .tab-item {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .content-title {
+        font-size: 1.3rem;
+    }
+    
+    .quiz-floating-btn {
+        font-size: 1rem;
+        padding: 15px 40px;
     }
 }
 
 /* 스크롤바 디자인 커스텀 */
-.word-sidebar-scroll-area::-webkit-scrollbar { width: 4px; }
-.word-sidebar-scroll-area::-webkit-scrollbar-thumb { background: #ddd; border-radius: 10px; }
+.word-sidebar-scroll-area::-webkit-scrollbar {
+    width: 4px;
+}
+
+.word-sidebar-scroll-area::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 10px;
+}
+
+.word-sidebar-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+}
