@@ -13,6 +13,7 @@ import re
 from django.conf import settings
 from quizzes.services import create_ai_quiz_from_article
 import threading
+from django.db.models import Q, F, Case, When, Value, FloatField
 
 def explanation_detail(request, article_id):
     """기사 상세 페이지 (원문만 표시, AI는 나중에 AJAX로 로드)"""
@@ -26,10 +27,25 @@ def explanation_detail(request, article_id):
     # 3. 추천 점수 로직
     user = request.user
     if user.is_authenticated and selected_level == 0:
-        for interest_obj in article.sub_interests.all():
-            ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
-            ui.interest_score += 2
-            ui.save()
+        target_interests = article.sub_interests.all()
+        
+        if target_interests.exists():
+            # (1) 관심 분야 점수 +2 (30점 상한은 모델 save에서 처리)
+            for interest_obj in target_interests:
+                ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
+                ui.interest_score += 2
+                ui.save() 
+                
+            # (2) 나머지 분야 점수 -0.5 (관심사 순위 교체)
+            UserInterest.objects.filter(user=user).exclude(
+                interest__in=target_interests
+            ).update(
+                interest_score=Case(
+                    When(interest_score__lte=0.5, then=Value(0)),
+                    default=F('interest_score') - Value(0.5),
+                    output_field=FloatField() # 또는 IntegerField
+                )
+            )
     
     # 4. 사용자 정보
     if request.user.is_authenticated:
