@@ -1,0 +1,52 @@
+{# templates/level_test/test.html #}
+{% load static %}
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>레벨 테스트</title>
+  <link rel="stylesheet" href="{% static 'level_test.css' %}">
+</head>
+<body>
+  <main style="max-width:720px;margin:40px auto;padding:0 16px;">
+    <h1>레벨 테스트</h1>
+
+    <div id="progress" style="margin:12px 0;color:#666;"></div>
+
+    <section id="card" style="border:1px solid #ddd;border-radius:12px;padding:16px;">
+      <div id="qtype" style="font-size:12px;color:#888;margin-bottom:8px;"></div>
+      <h2 id="question" style="margin:0 0 12px 0;font-size:18px;"></h2>
+
+      <div id="options" style="display:grid;gap:8px;"></div>
+
+      <div style="margin-top:14px;display:flex;gap:8px;">
+        <button id="nextBtn" disabled>다음</button>
+        <button id="restartBtn" type="button">처음부터</button>
+      </div>
+
+      <div id="feedback" style="margin-top:10px;color:#444;"></div>
+    </section>
+  </main>
+
+  <script>
+    // CSRF (Django 템플릿에서 쿠키 읽기)
+    function getCookie(name) {
+      let value = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + "=")) {
+            value = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return value;
+    }
+    window.__CSRF__ = getCookie("csrftoken");
+  </script>
+  <script src="{% static 'level_test.js' %}"></script>
+</body>
+</html>

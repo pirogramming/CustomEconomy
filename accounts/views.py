@@ -6,6 +6,9 @@ from django.contrib.auth import get_user_model
 from .forms import CustomUserCreationForm 
 from django.contrib.auth.decorators import login_required
 from quizzes.models import QuizResult
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.csrf import csrf_protect
 
 
 # 👇 [핵심 수정 2] 현재 활성화된 유저 모델(커스텀 유저)을 가져옵니다.
@@ -105,3 +108,125 @@ def wrongquiz_view(request):
 def scrap_article_view(request):
     return render(request, 'mypage_scraparticle.html')
     
+    
+    
+from .services import (
+    load_bank, pick_self_ids, next_question, grade_and_advance, score_to_level
+)
+
+SESSION_KEY = "level_test_state"
+
+def _init_state(bank):
+    return {
+        "phase": "self",
+        "self_ids": pick_self_ids(bank),
+        "self_idx": 0,
+        "current_diff_idx": 0,     # difficulty=1부터
+        "asked_ids": [],
+        "knowledge_count": 0,
+        "total_self": 0.0,
+        "total_knowledge": 0.0,
+    }
+
+def test_page(request):
+    return render(request, "level_test.html")
+
+@require_POST
+@csrf_protect
+def api_start(request):
+    bank = load_bank()
+    request.session[SESSION_KEY] = _init_state(bank)
+    request.session.modified = True
+    return JsonResponse({"ok": True})
+
+@require_GET
+def api_next(request):
+    bank = load_bank()
+    state = request.session.get(SESSION_KEY)
+
+    if not state:
+        return JsonResponse({"error": "not_started"}, status=400)
+
+    if state["phase"] == "done":
+        total = float(state["total_self"]) + float(state["total_knowledge"])
+        level = score_to_level(total)
+        return JsonResponse({"done": True, "total": total, "level": level})
+
+    q = next_question(bank, state)
+    if not q:
+        # 안전 처리
+        state["phase"] = "done"
+        request.session[SESSION_KEY] = state
+        request.session.modified = True
+        total = float(state["total_self"]) + float(state["total_knowledge"])
+        level = score_to_level(total)
+        return JsonResponse({"done": True, "total": total, "level": level})
+
+    # 프론트에 필요한 최소 정보만 내려줌
+    payload = {
+        "done": False,
+        "qid": q["id"],
+        "type": q["type"],
+        "difficulty": q.get("difficulty", 0),
+        "question": q["question"],
+        "options": [opt["text"] for opt in q["options"]],
+        "progress": {
+            "phase": state["phase"],
+            "self": {"current": state["self_idx"] + 1, "total": 2} if state["phase"] == "self" else None,
+            "knowledge": {"current": state["knowledge_count"] + 1, "total": 5} if state["phase"] == "knowledge" else None,
+        }
+    }
+    return JsonResponse(payload)
+
+@require_POST
+@csrf_protect
+def api_submit(request):
+    bank = load_bank()
+    state = request.session.get(SESSION_KEY)
+    if not state:
+        return JsonResponse({"error": "not_started"}, status=400)
+
+    qid = request.POST.get("qid")
+    picked = request.POST.get("picked")  # "0"~"3"
+    if qid is None or picked is None:
+        return JsonResponse({"error": "bad_request"}, status=400)
+
+    try:
+        picked_index = int(picked)
+    except:
+        return JsonResponse({"error": "bad_pick"}, status=400)
+
+    state, result = grade_and_advance(bank, state, qid, picked_index)
+    request.session[SESSION_KEY] = state
+    request.session.modified = True
+
+    done = (state["phase"] == "done")
+    if done:
+        total = float(state["total_self"]) + float(state["total_knowledge"])
+        level = score_to_level(total)
+        result.update({"done": True, "total": total, "level": level})
+    else:
+        result.update({"done": False})
+
+    return JsonResponse(result)
+
+def result_page(request):
+    state = request.session.get(SESSION_KEY)
+    if not state:
+        return redirect("level_test:page")
+
+    total = float(state["total_self"]) + float(state["total_knowledge"])
+    level = score_to_level(total)
+
+    # (선택) 로그인 유저면 레벨 저장하고 싶을 때:
+    if request.user.is_authenticated:
+        # 너희 User 모델에 level 필드 있으니 필요하면 활성화
+        request.user.level = level
+        request.user.save(update_fields=["level"])
+
+    return render(request, "level_test_result.html", {
+        "total_self": state["total_self"],
+        "total_knowledge": state["total_knowledge"],
+        "total": total,
+        "level": level,
+    })

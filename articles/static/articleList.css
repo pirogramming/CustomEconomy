@@ -190,11 +190,13 @@
 
 .articleListBody .middleFloat .articleCards .article-card{
   width: 280px;
-  height: 330px;
-  background-color: #f1f0f0; padding: 13px;
+  height: 370px;
+  background-color: #f1f0f0; 
+  /* background-color: pink; */
+  padding: 13px;
   box-shadow: 0 8px 18px rgba(0,0,0,0.1);
   border-radius: 12px;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .articleListBody .middleFloat .articleCards .article-card:hover{
   cursor: pointer;
