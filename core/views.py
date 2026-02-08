@@ -11,7 +11,6 @@ def main_view(request):
     user = request.user
     now = timezone.now()
 
-    
     # 1. 초기화 (데이터가 없을 경우를 대비)
     interest_articles = Article.objects.none()
     weak_articles = Article.objects.none()
@@ -40,7 +39,18 @@ def main_view(request):
         ).exists()
 
         # --- [2단계] 맞춤형 관심 뉴스 추출 ---
-        top_interests = user_sub_interests.order_by('-interest_score')[:3]
+        top_interests = user_sub_interests.annotate(
+            # 실시간 가중치 계산: 7일 내 조회(+5)
+            recency_weight=Case(
+                When(last_viewed_at__gte=seven_days_ago, then=Value(5)),
+                default=Value(0),
+                output_field=IntegerField(),
+            )
+        ).annotate(
+            # 최종 점수 = 기존 관심 점수 + 최근 학습 가중치
+            final_interest_score=F('interest_score') + F('recency_weight')
+        ).order_by('-final_interest_score')[:3]
+        
         if top_interests.exists():
             interest_q = Q()
             for ui in top_interests:
@@ -65,7 +75,7 @@ def main_view(request):
                     output_field=IntegerField(),
                 )
             ).annotate(
-                # 최종 계산: DB점수 + 최근오답가중치 + 미학습보너스
+                # 최종 점수 = DB점수 + 최근 오답 가중치 + 미학습 보너스
                 final_weak_score=F('weakness_score') + F('quiz_weight') + F('unlearned_bonus')
             ).order_by('-final_weak_score')[:3]
 
@@ -92,7 +102,6 @@ def main_view(request):
         already_picked = [a.id for a in interest_articles] + [a.id for a in weak_articles]
         extra_weak = Article.objects.exclude(id__in=already_picked).order_by('?')[:needed]
         weak_articles = list(weak_articles) + list(extra_weak)
-
 
     return render(request, 'main.html', {
         'interest_articles': interest_articles,
