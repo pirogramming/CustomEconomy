@@ -1,4 +1,49 @@
-.signup {
-  margin-left: 258px;
-  padding: 20px;      
+.signup_body{
+  display: flex;
+        justify-content: center; /* 가로 중앙 */
+        align-items: center;     /* 세로 중앙 */     
+}
+.signup_float{
+  background-color: white; padding: 20px;
+  width: 400px; height: 700px;
+  display: flex; flex-direction: column; align-items: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px
+}
+.signup_float .logo_img{}
+.signup_float .signup_toggle{}
+.signup_float .signup_toggle .login_toggle_btn{}
+.signup_float .signup_toggle .signup_toggle_btn{}
+.signup_float .signup_input_area{}
+.signup_float .signup_input_area .field{
+  background-color: #FFE4D6;
+  padding: 10px; margin: 10px;
+  border-radius: 10px; border-style: none;
+
+}
+.signup_float .signup_input_area .field>input{
+  background-color: #FFE4D6;
+  border-style: none;
+  outline: none;
+}
+.signup_float .signup_input_area .field>label{
+  background-color: pink;
+}
+.signup_float .signup_input_area .email{}
+.signup_float .signup_input_area .name{}
+.signup_float .signup_input_area .password{}
+.signup_float .signup_input_area .password_confirm{}
+.signup_float .signup_interest_area{background-color: #EEEEEE;}
+.signup_float .signup_interest_area .interest-btn{
+  background-color: white; color: black;
+  border-radius: 40px; border-style: none;
+  padding: 20px; width: 124px; height: 29px;
+  margin: 10px;
+  text-align: center;
+
+}
+
+.signup_interest_area .interest-btn.selected{
+  background-color: #EF9160; color: white; 
+  border-style: inset; border-color: white; border-width: 1px;
 }

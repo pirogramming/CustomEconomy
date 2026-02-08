@@ -9,39 +9,91 @@ from quizzes.models import QuizResult
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_protect
+from .models import Interest, UserInterest
+from django.db import transaction
+from django.contrib import messages
 
 
-# 👇 [핵심 수정 2] 현재 활성화된 유저 모델(커스텀 유저)을 가져옵니다.
 User = get_user_model()
 
-# 1. 회원가입
+# 아래 transaction.atomic가 뭐냐면 유저 생성과 유저의 관심분야 저장을 한 작업으로 묶는 것임
+# 계정은 생성되었는데 관심분야 저장에 실패하면 DB 꼬임. 이런 상황을 막음
+# 하나가 실패하면 전체 rollback
+@transaction.atomic 
 def signup_view(request):
-    if request.method == 'POST':
-        form = CustomUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            # 1. 로그인할 때 백엔드를 명시해서 한 번에 처리합니다.
-            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-            # 2. 로그인 성공 후 바로 리다이렉트!
-            return redirect('articleList') 
-    else:
-        form = CustomUserCreationForm()
+    if request.method == "GET":
+        return render(request, "signup.html")
 
-    # 아래에 있던 "if user:" 부분은 아예 지워버려야 합니다!
-    # 유저가 생성되지 않은 상태(GET 방식 등)에서 실행되면 에러가 나기 때문이죠.
-        
-    return render(request, 'signup.html', {'form': form})
+    email = request.POST.get("email", "").strip()
+    name = request.POST.get("name", "").strip()
+    password = request.POST.get("password", "")
+    password_confirm = request.POST.get("password_confirm", "")
+
+    raw = request.POST.get("selected_interests", "")
+    selected_names = [s.strip() for s in raw.split(",") if s.strip()]
+
+    # --- 서버 검증 ---
+    if not email:
+        messages.error(request, "이메일을 입력해 주세요.")
+        return redirect("signup")
+
+    if password != password_confirm:
+        messages.error(request, "비밀번호가 일치하지 않습니다.")
+        return redirect("signup")
+
+    if len(password) < 8:
+        messages.error(request, "비밀번호는 8자 이상이어야 합니다.")
+        return redirect("signup")
+
+    if User.objects.filter(email=email).exists():
+        messages.error(request, "이미 사용 중인 이메일입니다.")
+        return redirect("signup")
+
+    if not selected_names:
+        messages.error(request, "관심분야를 최소 1개 선택해 주세요.")
+        return redirect("signup")
+
+    # --- 유저 생성 (nickname은 manager에서 자동 생성되는 구조라고 가정) ---
+    user = User.objects.create_user(
+        email=email,
+        password=password,
+        name=name
+    )
+
+    # --- 관심사 저장 (MAIN 8개 중 선택된 것만 is_selected=True) ---
+    interests = list(Interest.objects.filter(category_type="MAIN", name__in=selected_names))
+
+    # 프론트에서 이상한 값이 오면 방어
+    if len(interests) != len(set(selected_names)):
+        messages.error(request, "유효하지 않은 관심분야가 포함되어 있습니다.")
+        raise ValueError("Invalid interest names")
+
+    UserInterest.objects.bulk_create([
+        UserInterest(user=user, interest=i, is_selected=True)
+        for i in interests
+    ])
+
+    # --- 가입 후 자동 로그인 ---
+    login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+    return redirect("articleList")
+
 # 2. 로그인
 def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('articleList') # 로그인 성공 시 이동할 곳
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+    if request.method == "GET":
+        return render(request, "login.html")
+
+    email = request.POST.get("email", "").strip()
+    password = request.POST.get("password", "")
+
+    # ⭐ 핵심: authenticate는 인자명이 username임
+    user = authenticate(request, username=email, password=password)
+
+    if user is None:
+        messages.error(request, "이메일 또는 비밀번호가 올바르지 않습니다.")
+        return redirect("login")
+
+    login(request, user)
+    return redirect("articleList")
 
 # 3. 로그아웃
 def logout_view(request):
