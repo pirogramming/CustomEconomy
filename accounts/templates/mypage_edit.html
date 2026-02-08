@@ -20,7 +20,7 @@
         <div class="profile-card">
             <div class="profile-left">
                 <div class="profile-img-box">
-                    <img src="{% static 'img/profile-default.png' %}" id="mainProfileImg" alt="프로필 이미지">
+                    <img src="{% if request.user.image_url %}{{ request.user.image_url }}{% else %}{% static 'img/profile-default.png' %}{% endif %}" id="mainProfileImg" alt="프로필 이미지">
                     <button class="edit-icon-circle" onclick="openModal('modal-photo')">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 20h9"></path>
@@ -33,7 +33,7 @@
             <div class="profile-right">
                 <div class="info-group">
                     <div class="info-row">
-                        <span class="nickname">주식으로 인생역전</span>
+                        <span class="nickname">{{ request.user.nickname }}</span>
                         <button class="edit-icon-btn" onclick="openModal('modal-nickname')">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 20h9"></path>
@@ -44,7 +44,7 @@
 
                     <div class="info-row">
                         <span class="interest-label">관심분야 : </span>
-                        <span class="interest-value">부동산</span>
+                        <span class="interest-value">{% if user_selected_interests %}{{ user_selected_interests|join:", " }}{% else %}선택된 관심분야가 없습니다{% endif %}</span>
                         <button class="edit-icon-btn" onclick="openModal('modal-interest')">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 20h9"></path>
@@ -61,7 +61,7 @@
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: 40%;"></div>
                         </div>
-                        <p class="mypage-progress-text">주식으로 인생역전님, 다음 레벨까지 몇 점 남았습니다</p>
+                        <p class="mypage_edit-progress-text">주식으로 인생역전님, 다음 레벨까지 몇 점 남았습니다</p>
                     </div>
                 </div>
             </div>
@@ -73,12 +73,13 @@
             <button class="close-btn" onclick="closeModal('modal-nickname')">x</button>
             <h3 class="modal-title">닉네임 수정하기</h3>
             <div class="modal-body">
-                <form action="#" method="POST">
+                <form action="{% url 'update_nickname' %}" method="POST">
+                    {% csrf_token %}
                     <label class="input-label">현재 닉네임</label>
-                    <input type="text" class="modal-input" value="주식으로 인생역전" readonly>
+                    <input type="text" class="modal-input" value="{{ request.user.nickname }}" readonly>
                     
-                    <label class="input-label">바꿀 닉네임</label>
-                    <input type="text" class="modal-input" placeholder="새로운 닉네임을 입력하세요">
+                    <label class="input-label">변경 닉네임</label>
+                    <input type="text" name="nickname" class="modal-input" placeholder="새로운 닉네임을 입력하세요">
                     
                     <button type="submit" class="confirm-btn">확인</button>
                 </form>
@@ -91,23 +92,18 @@
             <button class="close-btn" onclick="closeModal('modal-photo')">x</button>
             <h3 class="modal-title">사진 수정하기</h3>
             <div class="modal-body">
-                <form action="#" method="POST" enctype="multipart/form-data">
+                <form action="{% url 'update_photo' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <div class="photo-preview-area">
                         <div class="preview-box">
-                            <img src="{% static 'img/profile-default.png' %}" id="previewImg" alt="미리보기">
+                            <img src="{% if request.user.image_url %}{{ request.user.image_url }}{% else %}{% static 'img/profile-default.png' %}{% endif %}" id="previewImg" alt="미리보기">
                         </div>
-                        <p class="photo-desc">
-                            기존 프로필 사진이었다가<br>
-                            이미지 업로드 되면 그 사진 뜨게하기<br>
-                            근데 엑스 누르면 취소되게
-                        </p>
                     </div>
-
-                    <input type="file" id="fileInput" accept="image/*" hidden onchange="previewImage(this)">
+                    <input type="file" id="fileInput" name="photo" accept="image/*" hidden onchange="previewImage(this)">
                     <label for="fileInput" class="upload-btn">새로운 이미지 파일을 업로드 하세요</label>
 
                     <div class="btn-group">
-                        <button type="button" class="reset-btn">기본프로필로 변경하기</button>
+                        <button type="button" class="reset-btn" onclick="resetToDefault()">기본프로필로 변경하기</button>
                         <button type="submit" class="confirm-btn small">확인</button>
                     </div>
                 </form>
@@ -120,25 +116,17 @@
             <button class="close-btn" onclick="closeModal('modal-interest')">x</button>
             <h3 class="modal-title">관심분야 수정하기</h3>
             <div class="modal-body">
-                <form action="#" method="POST">
+                <form action="{% url 'update_interest' %}" method="POST">
+                    {% csrf_token %}
                     <label class="input-label">관심분야 목록</label>
                     <div class="interest-list">
-                        <label class="interest-item">
-                            <input type="radio" name="interest" value="interest01">
-                            <span>관심분야1</span>
+                        {% comment %} Use the 8 MAIN interests passed from view {% endcomment %}
+                        {% for name in main_interests %}
+                        <label class="interest-item {% if name in user_selected_interests %}selected{% endif %}">
+                            <input type="checkbox" name="interests" value="{{ name }}" {% if name in user_selected_interests %}checked{% endif %}>
+                            <span>{{ name }}</span>
                         </label>
-                        <label class="interest-item selected">
-                            <input type="radio" name="interest" value="realestate" checked>
-                            <span>현재선택되어있던거(부동산)</span>
-                        </label>
-                        <label class="interest-item">
-                            <input type="radio" name="interest" value="interest02">
-                            <span>관심분야2</span>
-                        </label>
-                        <label class="interest-item">
-                            <input type="radio" name="interest" value="interest03">
-                            <span>관심분야3</span>
-                        </label>
+                        {% endfor %}
                     </div>
                     <button type="submit" class="confirm-btn">확인</button>
                 </form>
@@ -175,12 +163,31 @@
 
     const interestItems = document.querySelectorAll('.interest-item');
     interestItems.forEach(item => {
-        item.addEventListener('click', function() {
-            interestItems.forEach(i => i.classList.remove('selected'));
-            this.classList.add('selected');
-            const radio = this.querySelector('input[type="radio"]');
-            if(radio) radio.checked = true;
+        item.addEventListener('click', function(e) {
+            const cb = this.querySelector('input[type="checkbox"]');
+            if (!cb) return;
+            // 체크박스 토글
+            cb.checked = !cb.checked;
+            if (cb.checked) this.classList.add('selected');
+            else this.classList.remove('selected');
+            // prevent label default toggling twice
+            e.preventDefault();
         });
     });
+
+    function resetToDefault() {
+        // set hidden input and submit the photo form
+        let form = document.querySelector('#modal-photo form');
+        // create or set reset_default hidden input
+        let hid = form.querySelector('input[name="reset_default"]');
+        if (!hid) {
+            hid = document.createElement('input');
+            hid.type = 'hidden'; hid.name = 'reset_default'; hid.value = '1';
+            form.appendChild(hid);
+        } else {
+            hid.value = '1';
+        }
+        form.submit();
+    }
 </script>
 {% endblock %}

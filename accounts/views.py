@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_protect
 from .models import Interest, UserInterest
 from django.db import transaction
 from django.contrib import messages
+from pathlib import Path
 
 
 User = get_user_model()
@@ -291,5 +292,98 @@ def result_page(request):
 
 @login_required
 def edit_view(request):
-    return render(request, 'mypage_edit.html')
+    # 전달할 관심분야 목록 (MAIN 8개) 및 사용자가 선택한 항목
+    main_interests = list(Interest.objects.filter(category_type='MAIN').values_list('name', flat=True))
+    user_selected = set(
+        UserInterest.objects.filter(user=request.user, interest__category_type='MAIN', is_selected=True)
+        .values_list('interest__name', flat=True)
+    )
+
+    return render(request, 'mypage_edit.html', {
+        'main_interests': main_interests,
+        'user_selected_interests': user_selected,
+    })
+
+
+@login_required
+@require_POST
+def update_nickname(request):
+    new_nick = request.POST.get('nickname', '').strip()
+    if not new_nick:
+        messages.error(request, '닉네임을 입력해 주세요.')
+        return redirect('edit')
+
+    if len(new_nick) > 20:
+        messages.error(request, '닉네임은 20자 이내여야 합니다.')
+        return redirect('edit')
+
+    if User.objects.exclude(pk=request.user.pk).filter(nickname=new_nick).exists():
+        messages.error(request, '이미 사용 중인 닉네임입니다.')
+        return redirect('edit')
+
+    request.user.nickname = new_nick
+    request.user.save(update_fields=['nickname'])
+    messages.success(request, '닉네임이 변경되었습니다.')
+    return redirect('edit')
+
+
+@login_required
+@require_POST
+def update_interest(request):
+    # 선택 체크박스는 name='interests'로 여러값 전송
+    selected = request.POST.getlist('interests')
+
+    # DB에 있는 MAIN 관심사만 허용
+    valid = list(Interest.objects.filter(category_type='MAIN', name__in=selected))
+
+    with transaction.atomic():
+        # 기존 MAIN 관계 제거
+        UserInterest.objects.filter(user=request.user, interest__category_type='MAIN').delete()
+
+        # 선택된 항목 생성
+        UserInterest.objects.bulk_create([
+            UserInterest(user=request.user, interest=i, is_selected=True)
+            for i in valid
+        ])
+
+    messages.success(request, '관심분야가 저장되었습니다.')
+    return redirect('edit')
+
+
+@login_required
+@require_POST
+def update_photo(request):
+    # 파일을 프로젝트 static/img/uploads 에 저장하고 URL을 user.image_url에 저장
+    from django.conf import settings
+
+    # 리셋 요청 처리
+    if request.POST.get('reset_default') == '1':
+        request.user.image_url = None
+        request.user.save(update_fields=['image_url'])
+        messages.success(request, '기본 프로필로 변경되었습니다.')
+        return redirect('edit')
+
+    file = request.FILES.get('photo')
+    if not file:
+        messages.error(request, '업로드할 파일을 선택해 주세요.')
+        return redirect('edit')
+
+    upload_dir = Path(settings.BASE_DIR) / 'static' / 'img' / 'uploads'
+    upload_dir.mkdir(parents=True, exist_ok=True)
+
+    # 안전한 파일명
+    import uuid
+    ext = Path(file.name).suffix
+    fname = f"user_{request.user.id}_{uuid.uuid4().hex[:8]}{ext}"
+    dest = upload_dir / fname
+
+    with open(dest, 'wb') as out:
+        for chunk in file.chunks():
+            out.write(chunk)
+
+    # 개발환경에서 접근 가능한 static 경로로 저장
+    request.user.image_url = settings.STATIC_URL + f"img/uploads/{fname}"
+    request.user.save(update_fields=['image_url'])
+    messages.success(request, '프로필 사진이 변경되었습니다.')
+    return redirect('edit')
     
