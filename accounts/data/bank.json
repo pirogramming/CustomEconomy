@@ -1,0 +1,245 @@
+[
+  {
+    "id": "K01",
+    "type": "knowledge",
+    "difficulty": 1,
+    "question": "물가가 오르면 같은 돈으로 살 수 있는 물건의 양은 어떻게 될까요?",
+    "options": [
+      { "text": "늘어난다", "score": 0 },
+      { "text": "줄어든다", "score": 1 },
+      { "text": "변하지 않는다", "score": 0 },
+      { "text": "두 배가 된다", "score": 0 }
+    ]
+  },
+  {
+    "id": "K02",
+    "type": "knowledge",
+    "difficulty": 1,
+    "question": "주식은 무엇을 의미하나요?",
+    "options": [
+      { "text": "회사의 빚", "score": 0 },
+      { "text": "회사의 소유권 일부", "score": 1 },
+      { "text": "은행 예금", "score": 0 },
+      { "text": "보험 상품", "score": 0 }
+    ]
+  },
+  {
+    "id": "K03",
+    "type": "knowledge",
+    "difficulty": 1,
+    "question": "금리가 오르면 대출 이자는 보통 어떻게 될까요?",
+    "options": [
+      { "text": "낮아진다", "score": 0 },
+      { "text": "높아진다", "score": 1 },
+      { "text": "사라진다", "score": 0 },
+      { "text": "변하지 않는다", "score": 0 }
+    ]
+  },
+  {
+    "id": "K04",
+    "type": "knowledge",
+    "difficulty": 1,
+    "question": "코스피는 무엇을 나타내는 지수일까요?",
+    "options": [
+      { "text": "부동산 가격", "score": 0 },
+      { "text": "한국 주식시장 전체 흐름", "score": 1 },
+      { "text": "환율", "score": 0 },
+      { "text": "금 가격", "score": 0 }
+    ]
+  },
+  {
+    "id": "K05",
+    "type": "knowledge",
+    "difficulty": 1,
+    "question": "적금은 주로 어떤 목적에 적합할까요?",
+    "options": [
+      { "text": "단기 투기", "score": 0 },
+      { "text": "안정적인 저축", "score": 1 },
+      { "text": "고위험 투자", "score": 0 },
+      { "text": "환율 거래", "score": 0 }
+    ]
+  },
+  {
+    "id": "K06",
+    "type": "knowledge",
+    "difficulty": 1,
+    "question": "뉴스에서 '환율 상승'은 보통 원화 가치가 어떻게 된다는 의미일까요?",
+    "options": [
+      { "text": "강해진다", "score": 0 },
+      { "text": "약해진다", "score": 1 },
+      { "text": "사라진다", "score": 0 },
+      { "text": "고정된다", "score": 0 }
+    ]
+  },
+
+  {
+    "id": "K07",
+    "type": "knowledge",
+    "difficulty": 3,
+    "question": "PER이 낮다는 것은 보통 무엇을 의미할까요?",
+    "options": [
+      { "text": "기업이 비싸다", "score": 0 },
+      { "text": "기업이 저평가되었을 가능성", "score": 2 },
+      { "text": "부도 위험", "score": 0 },
+      { "text": "배당이 없다", "score": 0 }
+    ]
+  },
+  {
+    "id": "K08",
+    "type": "knowledge",
+    "difficulty": 3,
+    "question": "ETF의 가장 큰 특징은 무엇인가요?",
+    "options": [
+      { "text": "한 기업만 투자", "score": 0 },
+      { "text": "은행만 판매", "score": 0 },
+      { "text": "여러 종목을 묶어 투자", "score": 2 },
+      { "text": "원금 보장", "score": 0 }
+    ]
+  },
+  {
+    "id": "K09",
+    "type": "knowledge",
+    "difficulty": 3,
+    "question": "중앙은행이 기준금리를 올리는 주된 이유는 무엇일까요?",
+    "options": [
+      { "text": "물가 안정", "score": 2 },
+      { "text": "주가 상승", "score": 0 },
+      { "text": "환율 고정", "score": 0 },
+      { "text": "세금 감면", "score": 0 }
+    ]
+  },
+  {
+    "id": "K10",
+    "type": "knowledge",
+    "difficulty": 3,
+    "question": "배당금이란 무엇인가요?",
+    "options": [
+      { "text": "세금", "score": 0 },
+      { "text": "이자", "score": 0 },
+      { "text": "기업이 이익을 주주에게 나눠주는 돈", "score": 2 },
+      { "text": "대출금", "score": 0 }
+    ]
+  },
+  {
+    "id": "K11",
+    "type": "knowledge",
+    "difficulty": 3,
+    "question": "환헤지는 무엇을 줄이기 위한 전략일까요?",
+    "options": [
+      { "text": "주가 위험", "score": 0 },
+      { "text": "금리 위험", "score": 0 },
+      { "text": "환율 변동 위험", "score": 2 },
+      { "text": "세금 위험", "score": 0 }
+    ]
+  },
+  {
+    "id": "K12",
+    "type": "knowledge",
+    "difficulty": 3,
+    "question": "인플레이션이 심해지면 현금 보유의 가치는 보통 어떻게 될까요?",
+    "options": [
+      { "text": "높아진다", "score": 0 },
+      { "text": "낮아진다", "score": 2 },
+      { "text": "두 배가 된다", "score": 0 },
+      { "text": "변하지 않는다", "score": 0 }
+    ]
+  },
+
+  {
+    "id": "K13",
+    "type": "knowledge",
+    "difficulty": 5,
+    "question": "양적완화(QE)의 주요 목적은 무엇인가요?",
+    "options": [
+      { "text": "세금 인상", "score": 0 },
+      { "text": "시장에 유동성 공급", "score": 3 },
+      { "text": "환율 고정", "score": 0 },
+      { "text": "수입 제한", "score": 0 }
+    ]
+  },
+  {
+    "id": "K14",
+    "type": "knowledge",
+    "difficulty": 5,
+    "question": "ROE가 높다는 것은 무엇을 의미하나요?",
+    "options": [
+      { "text": "부채 많음", "score": 0 },
+      { "text": "수익성 높음", "score": 3 },
+      { "text": "주가 하락", "score": 0 },
+      { "text": "현금 부족", "score": 0 }
+    ]
+  },
+  {
+    "id": "K15",
+    "type": "knowledge",
+    "difficulty": 5,
+    "question": "공매도의 목적은 무엇인가요?",
+    "options": [
+      { "text": "주가 상승 베팅", "score": 0 },
+      { "text": "주가 하락 베팅", "score": 3 },
+      { "text": "배당 수령", "score": 0 },
+      { "text": "이자 수취", "score": 0 }
+    ]
+  },
+  {
+    "id": "K16",
+    "type": "knowledge",
+    "difficulty": 5,
+    "question": "GDP는 무엇을 측정하는 지표인가요?",
+    "options": [
+      { "text": "기업 수", "score": 0 },
+      { "text": "국가 총 생산 규모", "score": 3 },
+      { "text": "환율", "score": 0 },
+      { "text": "금리", "score": 0 }
+    ]
+  },
+
+  {
+    "id": "S01",
+    "type": "self",
+    "difficulty": 0,
+    "question": "나는 경제 뉴스를 자주 읽는 편이다.",
+    "options": [
+      { "text": "전혀 아니다", "score": 0.0 },
+      { "text": "가끔", "score": 0.5 },
+      { "text": "자주", "score": 1.0 },
+      { "text": "매일", "score": 1.5 }
+    ]
+  },
+  {
+    "id": "S02",
+    "type": "self",
+    "difficulty": 0,
+    "question": "경제 기사에서 모르는 용어가 나오면 이해할 수 있다.",
+    "options": [
+      { "text": "거의 이해 못함", "score": 0.0 },
+      { "text": "조금 이해", "score": 0.5 },
+      { "text": "대부분 이해", "score": 1.0 },
+      { "text": "거의 다 이해", "score": 1.5 }
+    ]
+  },
+  {
+    "id": "S03",
+    "type": "self",
+    "difficulty": 0,
+    "question": "주식/ETF/펀드 투자 경험이 있다.",
+    "options": [
+      { "text": "없다", "score": 0.0 },
+      { "text": "조금 있다", "score": 0.5 },
+      { "text": "몇 년 했다", "score": 1.0 },
+      { "text": "전문적으로 한다", "score": 1.5 }
+    ]
+  },
+  {
+    "id": "S04",
+    "type": "self",
+    "difficulty": 0,
+    "question": "스스로 생각하는 나의 경제 지식 수준은?",
+    "options": [
+      { "text": "입문", "score": 0.0 },
+      { "text": "기초", "score": 0.5 },
+      { "text": "중급", "score": 1.0 },
+      { "text": "고급", "score": 1.5 }
+    ]
+  }
+]

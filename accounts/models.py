@@ -2,20 +2,43 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
 class UserManager(BaseUserManager):
-    def create_user(self, nickname, email=None, password=None, **extra_fields):
-        if not nickname:
-            raise ValueError('닉네임(ID)은 필수입니다')
-        
+
+    def _generate_nickname(self):
+        last_user = self.model.objects.order_by('-id').first()
+
+        if not last_user:
+            number = 1
+        else:
+            number = last_user.id + 1
+
+        return f"user{number:04d}"   # user0001 형식
+
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError('이메일은 필수입니다')
+
         email = self.normalize_email(email)
-        user = self.model(nickname=nickname, email=email, **extra_fields)
+
+
+        nickname = self._generate_nickname()
+
+        user = self.model(
+            email=email,
+            nickname=nickname,
+            **extra_fields
+        )
+
         user.set_password(password)
         user.save(using=self._db)
         return user
-    
-    def create_superuser(self, nickname, email=None, password=None, **extra_fields):
+
+
+    def create_superuser(self, email, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self.create_user(nickname, email, password, **extra_fields)
+
+        return self.create_user(email, password, **extra_fields)
+
 
 class User(AbstractBaseUser, PermissionsMixin):
     nickname = models.CharField(max_length=20, unique=True)
@@ -33,10 +56,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     
     objects = UserManager()
     
-    USERNAME_FIELD = 'nickname' 
+    USERNAME_FIELD = 'email'
 
     def __str__(self):
-        return self.nickname
+        return self.email
     
 class Interest(models.Model):
     # '관심분야(MAIN)' 또는 '소분류(SUB)'
