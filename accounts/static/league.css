@@ -30,8 +30,6 @@
     backdrop-filter: blur(5px);
     display: inline-flex; /* 내용물만큼만 너비 차지 */
     position: relative;
-    left: 50%;
-    transform: translateX(-50%); /* 가운데 정렬 */
     box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
 
