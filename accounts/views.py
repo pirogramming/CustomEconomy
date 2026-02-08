@@ -52,6 +52,8 @@ def signup_view(request):
     if not selected_names:
         messages.error(request, "관심분야를 최소 1개 선택해 주세요.")
         return redirect("signup")
+    
+
 
     # --- 유저 생성 (nickname은 manager에서 자동 생성되는 구조라고 가정) ---
     user = User.objects.create_user(
@@ -62,6 +64,9 @@ def signup_view(request):
 
     # --- 관심사 저장 (MAIN 8개 중 선택된 것만 is_selected=True) ---
     interests = list(Interest.objects.filter(category_type="MAIN", name__in=selected_names))
+    
+    print("selected_names:", selected_names)  # ← 여기 OK
+    print("matched interests:", [i.name for i in interests])  # ⭐ 여기!
 
     # 프론트에서 이상한 값이 오면 방어
     if len(interests) != len(set(selected_names)):
