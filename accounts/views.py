@@ -162,6 +162,7 @@ def wrongquiz_view(request):
     )
     return render(request, "mypage_wrongquiz.html", {"wrong_results": wrong_results})
 
+@login_required
 def scrap_article_view(request):
     return render(request, 'mypage_scraparticle.html')
     
@@ -287,3 +288,8 @@ def result_page(request):
         "total": total,
         "level": level,
     })
+
+@login_required
+def edit_view(request):
+    return render(request, 'mypage_edit.html')
+    

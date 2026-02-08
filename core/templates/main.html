@@ -35,12 +35,12 @@
     <section class="interest-news-section">
         <h2 class="section-title interest-title">
             {% if user.is_authenticated %}
-                {% if user_has_interests %} {{ user.nickname|default:user.get_username }}님께서 관심있어 할 뉴스들입니다!
+                {% if user_has_interests %} {{ user.nickname|default:user.get_username }}님께서 관심있어 할 뉴스들을 모아봤어요!
                 {% else %}
                     {{ user.nickname|default:user.get_username }}님, 첫 기사를 읽고 맞춤 추천을 받아보세요!
                 {% endif %}
             {% else %}
-                지금 핫한 경제 뉴스들을 모아봤어요!
+                많은 분들이 요즘 관심 갖는 뉴스들을 모아봤어요!
             {% endif %}
         </h2>
         
@@ -63,10 +63,10 @@
     {% if user.is_authenticated %}
     <section class="weak-news-section" style="margin-top: 60px;">
         <h2 class="section-title weak-title">
-            {% if has_weak_data %}
-                {{ user.nickname|default:user.get_username }}님이 최근 어려워하신 분야를 보완해 드릴게요!
+            {% if has_learning_history %}
+                {{ user.nickname|default:user.get_username }}님께서 취약한 분야의 뉴스들을 모아봤어요!
             {% else %}
-                {{ user.nickname|default:user.get_username }}님, 아직 취약 분야가 없네요! 이 뉴스들로 공부를 시작해볼까요?
+                {{ user.nickname|default:user.get_username }}님, 아직 취약 분야가 없네요!
             {% endif %}
         </h2>
         
@@ -74,14 +74,12 @@
             {% for article in weak_articles %}
             <article class="news-card weak-border" onclick="location.href='{% url 'detail' article.pk %}'" style="cursor:pointer;">
                 <div class="card-content">
-                    <span class="category-tag weak-tag">취약보완</span>
+                    <span class="category-tag weak-tag">{{ article.category.name }}</span>
                     <h3 class="card-title">{{ article.title }}</h3>
                     <p class="card-excerpt">{{ article.content|truncatechars:80 }}</p>
                     <small>{{ article.published_at|date:"Y.m.d" }}</small>
                 </div>
             </article>
-            {% empty %}
-            <p class="empty-msg">모든 분야를 완벽하게 마스터하셨네요! 취약 분야가 없습니다. 🎉</p>
             {% endfor %}
         </div>
     </section>
