@@ -19,10 +19,6 @@ main {
     width: calc(100% - var(--sidebar-width));
     min-height: 100vh;
     
-    /* 3. [핵심] 내부 콘텐츠(explanation-wrapper)를 정중앙에 배치 */
-    display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: flex-start; /* 세로 시작점 정렬 (필요 시 center로 변경 가능) */
     
     /* 4. 애니메이션: 너비와 여백이 변할 때 부드럽게 이동 */
     transition: all var(--transition-speed) ease;

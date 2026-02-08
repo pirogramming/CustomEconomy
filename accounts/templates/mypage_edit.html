@@ -20,7 +20,7 @@
             <div class="profile-left">
                 <div class="profile-img-box">
                     <img src="{% static 'img/profile-default.png' %}" id="mainProfileImg" alt="프로필 이미지">
-                    <button class="edit-icon-btn photo-edit-btn" onclick="openModal('modal-photo')">
+                    <button class="edit-icon-circle" onclick="openModal('modal-photo')">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 20h9"></path>
                             <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
@@ -30,20 +30,18 @@
             </div>
 
             <div class="profile-right">
-                <div class="info-row">
-                    <div class="nickname-group">
+                <div class="info-group">
+                    <div class="info-row">
                         <span class="nickname">주식으로 인생역전</span>
                         <button class="edit-icon-btn" onclick="openModal('modal-nickname')">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 20h9"></path>
                                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                             </svg>
                         </button>
                     </div>
-                </div>
 
-                <div class="info-row">
-                    <div class="interest-group">
+                    <div class="info-row">
                         <span class="interest-label">관심분야 : </span>
                         <span class="interest-value">부동산</span>
                         <button class="edit-icon-btn" onclick="openModal('modal-interest')">
@@ -53,16 +51,17 @@
                             </svg>
                         </button>
                     </div>
-                </div>
 
-                <div class="level-row">
-                    <span class="level">Lv.4</span>
-                </div>
-                <div class="progress-container">
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 40%;"></div>
+                    <div class="level-row">
+                        <span class="level">Lv.4</span>
                     </div>
-                    <p class="progress-text">주식으로 인생역전님, 다음 레벨까지 몇 점 남았습니다</p>
+
+                    <div class="progress-bar-area">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 40%;"></div>
+                        </div>
+                        <p class="progress-text">주식으로 인생역전님, 다음 레벨까지 몇 점 남았습니다</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -157,14 +156,12 @@
         document.getElementById(modalId).style.display = 'none';
     }
 
-    // 모달 바깥 클릭 시 닫기
     window.onclick = function(event) {
         if (event.target.classList.contains('modal-overlay')) {
             event.target.style.display = "none";
         }
     }
 
-    // 사진 미리보기 기능
     function previewImage(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -175,12 +172,13 @@
         }
     }
 
-    // 관심분야 선택 시 스타일 변경 (라디오 버튼 클릭 시)
     const interestItems = document.querySelectorAll('.interest-item');
     interestItems.forEach(item => {
         item.addEventListener('click', function() {
             interestItems.forEach(i => i.classList.remove('selected'));
             this.classList.add('selected');
+            const radio = this.querySelector('input[type="radio"]');
+            if(radio) radio.checked = true;
         });
     });
 </script>
