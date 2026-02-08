@@ -19,8 +19,32 @@
     font-family: 'Noto Sans KR', sans-serif;
     color: var(--me-text-main);
     width: 100%;
+    position: relative; /* 상단 우측 절대 위치 요소 기준 */
     box-sizing: border-box;
     padding: 40px;
+}
+
+/* 상단 오른쪽 돌아가기 버튼 */
+.mypage-edit-wrapper .back-to-mypage-btn {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: var(--me-btn-confirm);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: transform 0.12s, opacity 0.12s;
+    z-index: 3000;
+}
+.mypage-edit-wrapper .back-to-mypage-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
 }
 
 
@@ -167,8 +191,8 @@
     
     display: inline-block; /* 가로 배치 */
     vertical-align: middle; /* 수직 정렬 */
-    
     transition: opacity 0.2s;
+    transform: translateY(3px); 
 }
 .mypage-edit-wrapper .edit-icon-btn:hover {
     opacity: 0.6;
@@ -205,7 +229,10 @@
 /* 경험치 바 */
 .mypage-edit-wrapper .progress-bar-area {
     width: 100%;
-    display: block;
+    display: flex; /* 세로 스택으로 배치 */
+    flex-direction: column;
+    align-items: flex-start; /* 왼쪽 정렬 */
+    gap: 8px; /* 바와 텍스트 사이 간격 */
     margin-top: 5px;
 }
 .mypage-edit-wrapper .progress-bar {
@@ -221,10 +248,11 @@
     background-color: #9abf86;
     border-radius: 12px;
 }
-.mypage-edit-wrapper .progress-text {
+.mypage-edit-wrapper .mypage_edit-progress-text {
     font-size: 14px;
     color: var(--me-text-sub);
-    margin: 8px 0 0 0;
+    margin: 0; /* gap으로 간격 조절 */
+    display: block;
 }
 
 
