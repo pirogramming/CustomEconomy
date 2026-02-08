@@ -1,0 +1,409 @@
+/* 폰트 설정 */
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
+
+.mypage-edit-wrapper {
+    --bg-color: #ebf0f6;
+    --card-bg: #ffffff;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --accent-green: #8bc34a; /* 레벨 색상 */
+    --accent-orange: #e57373; /* 이름 색상 */
+    --btn-confirm: #D89B73; /* 이미지의 살구색/갈색 버튼 */
+    --btn-reset: #BDBDBD; /* 회색 버튼 */
+    --border-color: #ddd;
+
+    background-color: var(--bg-color);
+    font-family: "Noto Sans KR", sans-serif;
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding-bottom: 50px;
+    box-sizing: border-box;
+}
+
+/* 컨테이너 */
+.mypage-edit-wrapper .edit-container {
+    width: 100%;
+    max-width: 800px; /* 수정 페이지는 너무 넓지 않게 */
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+/* 헤더 */
+.mypage-edit-wrapper .page-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.mypage-edit-wrapper .page-title {
+    font-family: "Merriweather", serif;
+    font-size: 36px;
+    color: #1a2b45;
+    margin: 0;
+    font-weight: 700;
+}
+
+.mypage-edit-wrapper .section-title {
+    margin-bottom: 15px;
+}
+
+.mypage-edit-wrapper .section-title h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a2b45;
+    margin: 0;
+}
+
+/* --- 프로필 카드 스타일 (이미지 2) --- */
+.mypage-edit-wrapper .profile-card {
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px 40px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* 왼쪽 이미지 영역 */
+.mypage-edit-wrapper .profile-left {
+    flex-shrink: 0;
+    position: relative;
+}
+
+.mypage-edit-wrapper .profile-img-box {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid #1a2b45; /* 이미지의 진한 남색 테두리 */
+    position: relative;
+    background: #fff;
+}
+
+.mypage-edit-wrapper .profile-img-box img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 사진 수정 버튼 (우측 하단 아이콘) */
+.mypage-edit-wrapper .photo-edit-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* 오른쪽 정보 영역 */
+.mypage-edit-wrapper .profile-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mypage-edit-wrapper .info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.mypage-edit-wrapper .nickname-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mypage-edit-wrapper .nickname {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent-orange);
+}
+
+.mypage-edit-wrapper .edit-icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    padding: 2px;
+    display: flex;
+    align-items: center;
+}
+.mypage-edit-wrapper .edit-icon-btn:hover {
+    opacity: 0.6;
+}
+
+.mypage-edit-wrapper .interest-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.mypage-edit-wrapper .level {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-green);
+    margin-top: 5px;
+    display: block;
+}
+
+.mypage-edit-wrapper .progress-container {
+    width: 100%;
+    margin-top: 5px;
+}
+
+.mypage-edit-wrapper .progress-bar {
+    width: 100%;
+    height: 24px; /* 이미지처럼 두껍게 */
+    background-color: #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.mypage-edit-wrapper .progress-fill {
+    height: 100%;
+    background-color: #9abf86; /* 이미지의 탁한 초록색 */
+    border-radius: 12px;
+}
+
+.mypage-edit-wrapper .progress-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 8px 0 0 0;
+}
+
+/* --- 모달 공통 스타일 --- */
+.mypage-edit-wrapper .modal-overlay {
+    display: none; /* 기본 숨김 */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.mypage-edit-wrapper .modal-box {
+    background-color: #fff;
+    width: 400px;
+    border-radius: 15px;
+    padding: 30px;
+    position: relative;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mypage-edit-wrapper .close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+}
+
+.mypage-edit-wrapper .modal-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #000;
+}
+
+/* 모달 타이틀 밑줄 (이미지 스타일) */
+.mypage-edit-wrapper .modal-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 2px;
+    background-color: var(--btn-confirm);
+    margin: 10px auto 20px;
+}
+
+.mypage-edit-wrapper .modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 입력 필드 공통 */
+.mypage-edit-wrapper .input-label {
+    font-size: 14px;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.mypage-edit-wrapper .modal-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 15px;
+    box-sizing: border-box; /* 패딩 포함 */
+    margin-bottom: 15px;
+    outline: none;
+}
+.mypage-edit-wrapper .modal-input:focus {
+    border-color: var(--btn-confirm);
+}
+
+/* 확인 버튼 공통 */
+.mypage-edit-wrapper .confirm-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--btn-confirm); /* 이미지의 갈색/살구색 */
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 10px;
+}
+.mypage-edit-wrapper .confirm-btn:hover {
+    opacity: 0.9;
+}
+.mypage-edit-wrapper .confirm-btn.small {
+    width: auto;
+    padding: 12px 30px;
+    min-width: 100px;
+}
+
+/* --- 사진 수정 모달 전용 --- */
+.mypage-edit-wrapper .photo-preview-area {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.mypage-edit-wrapper .preview-box {
+    width: 80px;
+    height: 80px;
+    background: #eee;
+    flex-shrink: 0;
+}
+.mypage-edit-wrapper .preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.mypage-edit-wrapper .photo-desc {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.mypage-edit-wrapper .upload-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.mypage-edit-wrapper .btn-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.mypage-edit-wrapper .reset-btn {
+    background-color: #a7a7a7; /* 옅은 갈색/회색 */
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    flex: 1;
+}
+
+/* --- 관심분야 모달 전용 (이미지 5) --- */
+.mypage-edit-wrapper .interest-list {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.mypage-edit-wrapper .interest-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    font-size: 15px;
+}
+.mypage-edit-wrapper .interest-item:last-child {
+    border-bottom: none;
+}
+
+.mypage-edit-wrapper .interest-item input {
+    display: none; /* 라디오 버튼 숨김 */
+}
+
+/* 선택된 항목 스타일 (이미지의 초록색 배경) */
+.mypage-edit-wrapper .interest-item.selected {
+    background-color: #e8f5e9;
+    font-weight: 700;
+}
+
+
+/* 반응형 */
+@media (max-width: 600px) {
+    .mypage-edit-wrapper .profile-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+    .mypage-edit-wrapper .profile-left {
+        margin-bottom: 20px;
+    }
+    .mypage-edit-wrapper .info-row, 
+    .mypage-edit-wrapper .nickname-group {
+        justify-content: center;
+    }
+    .mypage-edit-wrapper .modal-box {
+        width: 90%;
+        padding: 20px;
+    }
+}

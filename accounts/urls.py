@@ -10,4 +10,5 @@ urlpatterns = [
      path('league/', views.league_view, name='league'),
      path('wrongquiz/', views.wrongquiz_view, name='wrongquiz'),
      path('scraparticle/', views.scrap_article_view, name='scraparticle'),
+     path('edit/', views.edit_view, name='edit'),
 ]
