@@ -12,6 +12,9 @@
     <a class="page-title" href="{% url 'main' %}">Custom Economy</a>
   </header>
 
+  <div class="back-to-list-area">
+    <a href="{% url 'detail' article.id %}" class="back-btn">기사로 돌아가기</a>
+  </div>
   <div class="quiz-container">
     <div class="quiz-badge">Quiz</div>
 
@@ -71,12 +74,16 @@
         </div>
         {% endwith %}
       {% endfor %}
+        
+      <div class="button-container">
+        <button type="submit" class="submit-btn">제출하고 결과 확인하기</button>
 
-      <button type="submit" class="submit-btn">제출하고 결과 확인하기</button>
+        <div class="back-to-list-area">
+          <a href="{% url 'detail' article.id %}" class="back-btn">기사로 돌아가기</a>
+        </div>
 
-      <div class="back-to-list-area" style="margin-top:16px;">
-        <a href="{% url 'detail' article.id %}" class="back-btn">← 기사로 돌아가기</a>
       </div>
+      
     </form>
   </div>
 </main>

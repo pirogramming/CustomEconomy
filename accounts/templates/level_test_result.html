@@ -1,0 +1,23 @@
+{# templates/level_test/result.html #}
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>레벨 테스트 결과</title>
+</head>
+<body>
+  <main style="max-width:720px;margin:40px auto;padding:0 16px;">
+    <h1>테스트 결과</h1>
+    <p>SELF 점수: {{ total_self }}</p>
+    <p>KNOWLEDGE 점수: {{ total_knowledge }}</p>
+    <hr>
+    <p><strong>총점: {{ total }}</strong></p>
+    <p><strong>추천 레벨: Lv{{ level }}</strong></p>
+
+    {% comment %} <div style="margin-top:16px;">
+      <a href="{% url 'level_test:page' %}">다시 하기</a>
+    </div> {% endcomment %}
+  </main>
+</body>
+</html>

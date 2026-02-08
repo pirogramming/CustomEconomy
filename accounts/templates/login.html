@@ -133,13 +133,24 @@
     <div class="auth-card">
         <h2 class="auth-title">로그인</h2>
         
-        <form method="post" class="auth-form">
-            {% csrf_token %}
-            
-            {{ form.as_p }}
-            
-            <button type="submit" class="submit-btn">로그인</button>
-        </form>
+
+
+            <form method="post" class="auth-form" action="{% url 'login' %}">
+                {% csrf_token %}
+
+                <p>
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" required />
+                </p>
+
+                <p>
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" required />
+                </p>
+
+                <button type="submit" class="submit-btn">로그인</button>
+            </form>
+
 
         <a href="{% provider_login_url 'kakao' %}">
             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnOACrRJyk-4693gXNbbpXfQ4OVXSWm3sl5g&s" alt="카카오 로그인">

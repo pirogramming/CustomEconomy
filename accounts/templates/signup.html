@@ -3,8 +3,12 @@
 
 {% block title %}회원가입 | Custom Economy{% endblock %}
 
+
 {% block extra_css %}
-<style>
+<link rel="stylesheet" href="{% static 'signup.css' %}">
+
+
+{% comment %} <style>
     .auth-container {
         display: flex;
         justify-content: center; /* 가로 중앙 */
@@ -95,5 +99,101 @@
             이미 계정이 있으신가요? <a href="{% url 'login' %}">로그인</a>
         </p>
     </div>
+</div> {% endcomment %}
+
+<div class="signup_body">
+    <form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+    <div class="signup_float">
+        <div class="logo_img">
+            {% comment %} <img src="{% static '../customEconomyRe/images/customEconomyLogo.png' %}" alt="Logo Illustration" /> {% endcomment %}
+        </div>
+
+        <div class="signup_toggle">
+            <div class="login_toggle_btn">Login</div>
+            <div class="signup_toggle_btn">Sign up</div>
+        </div>
+
+        <div class="signup_input_area">
+            <div class="field">
+                <label for="email">이메일</label>
+                <input type="email" id="email" placeholder="E-mail" name="email" required maxlength="40" />
+            </div>
+            <div class="field">
+                <label for="name">이름</label>
+                <input type="text" id="name" placeholder="이름" name="name" required maxlength="15" />
+                <br>
+            </div>
+            <div class="field">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" placeholder="비밀번호" name="password" required minlength="8" />
+                <br>
+            </div>
+            <div class="field">
+                <label for="password_confirm">비밀번호 확인</label>
+                <input type="password" id="password_confirm" placeholder="비밀번호 확인" name="password_confirm" required minlength="8" />
+                <br>
+            </div>
+        </div>
+
+        <div class="signup_interest_area" id="interestArea">
+            <button type="button" class="interest-btn" data-name="소비">소비</button>
+            <button type="button" class="interest-btn" data-name="취업/고용">취업/고용</button>
+            <button type="button" class="interest-btn" data-name="대출/금융">대출/금융</button>
+            <button type="button" class="interest-btn" data-name="자영업/사업자">자영업/사업자</button>
+            <button type="button" class="interest-btn" data-name="투자">투자</button>
+            <button type="button" class="interest-btn" data-name="세금/정책">세금/정책</button>
+            <button type="button" class="interest-btn" data-name="부동산">부동산</button>
+            <button type="button" class="interest-btn" data-name="환율/해외">환율/해외</button>
+
+            <!-- 선택된 관심사 이름들을 쉼표로 담아서 서버로 보냄 -->
+            <input type="hidden" name="selected_interests" id="selected_interests" value="" />
+        </div>
+
+        <div class="signup_submit_btn">
+            <button type="submit" class="submit-btn">Sign up</button>
+        </div>
+        <div class="signup_social_area"></div>
+
+    </div>
+    </form>
 </div>
+
+
+<script>
+    document.getElementById("selected_interests").value
+
+    
+  const selected = new Set();
+  const hidden = document.getElementById("selected_interests");
+
+  document.querySelectorAll(".interest-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const name = btn.dataset.name;
+      btn.classList.toggle("selected");
+      if (selected.has(name)) selected.delete(name);
+      else selected.add(name);
+      hidden.value = Array.from(selected).join(",");
+    });
+  });
+
+  // ✅ 폼 제출 시 검증
+  document.querySelector("form").addEventListener("submit", (e) => {
+    const pw = document.getElementById("password").value;
+    const pw2 = document.getElementById("password_confirm").value;
+
+    if (pw !== pw2) {
+      e.preventDefault();
+      alert("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    if (selected.size === 0) {
+      e.preventDefault();
+      alert("관심분야를 최소 1개 선택해 주세요.");
+      return;
+    }
+  });
+</script>
+
 {% endblock %}

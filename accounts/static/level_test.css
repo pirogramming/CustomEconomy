@@ -1,0 +1,8 @@
+/* static/level_test/test.css */
+/* 피그마로 갈아엎기 쉬우라고 최소만 */
+button {
+  background: white;
+}
+button:disabled {
+  opacity: 0.5;
+}

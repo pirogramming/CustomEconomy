@@ -115,7 +115,7 @@ body {
 /* 문제 카드 */
 .question-card {
     width: 100%;
-    background-color: #fffbf5;
+    background-color: #FDF6EB;
     border-radius: 20px;
     padding: 25px 10px;
     margin-bottom: 20px;
@@ -239,5 +239,46 @@ body {
 .answer-option.wrong {
   border: 3px solid #c62828;
   background: #ffebee;
+}
+.button-container{
+    /* background-color: pink; */
+    display: flex; justify-content: center; align-items: center;
+    padding: 40px;
+}
+.button-container .submit-btn{
+    display: flex; justify-content: center; align-items: center;
+    margin-right: 12px;
+    padding: 10px;
+
+    width: auto; height: 50px; background-color: white;
+    border-color: #F4B132; 
+    border-width: 3px; border-style: solid;
+    border-radius: 30px; 
+
+    text-decoration: none;
+    color: black;
+    font-family: NanumGothic;
+}
+.button-container .submit-btn:hover{
+    background-color: #F4B132;
+    color: black;
+}
+.button-container .back-to-list-area {
+    display: flex; justify-content: center; align-items: center;
+    margin-right: 12px;
+
+    width: 130px; height: 50px; background-color: white;
+    border-color: #F4B132; 
+    border-width: 3px; border-style: solid;
+    border-radius: 30px; 
+}
+.button-container .back-to-list-area a{
+    text-decoration: none;
+    color: black;
+    font-family: NanumGothic;
+}
+.button-container .back-to-list-area:hover{
+    background-color: #F4B132;
+    color: black;
 }
 
