@@ -19,4 +19,5 @@ urlpatterns = [
      path('edit/nickname/', views.update_nickname, name='update_nickname'),
      path('edit/photo/', views.update_photo, name='update_photo'),
      path('edit/interest/', views.update_interest, name='update_interest'),
+     path('scrapterm/', views.scrap_term_view, name='scrapterm'),
 ]

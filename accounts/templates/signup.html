@@ -6,136 +6,55 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'signup.css' %}">
-
-
-{% comment %} <style>
-    .auth-container {
-        display: flex;
-        justify-content: center; /* 가로 중앙 */
-        align-items: center;     /* 세로 중앙 */
-        min-height: 100vh;       /* 높이를 화면 꽉 차게(80vh -> 100vh) */
-        width: 100%;             /* 800px 대신 100%로 변경해서 중앙 정렬 확보 */
-    }
-    .auth-card {
-        background: white;
-        padding: 40px;
-        border-radius: 20px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        width: 100%;
-        max-width: 500px;        /* 카드 자체의 최대 넓이를 살짝 키움 (400px -> 500px) */
-        text-align: center;
-        /* margin-top: 70px; */  /* 수직 중앙 정렬을 위해 마진 제거 */
-    }
-    .auth-title {
-        font-family: 'Kadwa', sans-serif;
-        font-size: 28px;
-        color: #192237;
-        margin-bottom: 20px;
-    }
-    /* 폼 내부 스타일링 */
-    .auth-form p {
-        text-align: left;
-        margin-bottom: 15px;
-    }
-    .auth-form input {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        margin-top: 5px;
-        transition: border-color 0.3s;
-    }
-    
-    .auth-form input:focus {
-        border-color: #ef9160;
-        outline: none; 
-    }
-    .auth-form .helptext {
-        display: none;
-    }
-    .auth-form ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        color: #ef9160; 
-        font-size: 13px;
-        text-align: left;
-        display: none;
-    }
-    .auth-form .errorlist {
-        display: block;
-        margin-bottom: 10px;
-    }
-    .submit-btn {
-        width: 100%;
-        padding: 12px;
-        background-color: #ef9160;
-        color: white;
-        border: none;
-        border-radius: 10px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 20px;
-    }
-    .submit-btn:hover { background-color: #e67e4d; }
-    .help-text { margin-top: 20px; font-size: 14px; color: #888; }
-    .help-text a { color: #192237; text-decoration: none; font-weight: bold; }
-</style>
 {% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <div class="auth-card">
-        <h2 class="auth-title">회원가입</h2>
-        
-        <form method="post" class="auth-form">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="submit-btn">가입하기</button>
-        </form>
 
-        <p class="help-text">
-            이미 계정이 있으신가요? <a href="{% url 'login' %}">로그인</a>
-        </p>
-    </div>
-</div> {% endcomment %}
 
 <div class="signup_body">
     <form method="post" action="{% url 'signup' %}">
     {% csrf_token %}
     <div class="signup_float">
-        <div class="logo_img">
-            {% comment %} <img src="{% static '../customEconomyRe/images/customEconomyLogo.png' %}" alt="Logo Illustration" /> {% endcomment %}
+        <div class="signup_logo" onclick="location.href='{% url 'main' %}'">
+            <p>Custom Economy</p>
         </div>
 
         <div class="signup_toggle">
-            <div class="login_toggle_btn">Login</div>
-            <div class="signup_toggle_btn">Sign up</div>
+            <div class="login_toggle_btn" onclick="location.href='{% url 'login' %}'">Login</div>
+            <div class="signup_toggle_btn" onclick="location.href='{% url 'signup' %}'">Sign up</div>
         </div>
 
         <div class="signup_input_area">
             <div class="field">
-                <label for="email">이메일</label>
+                <div class="icon" id="email-icon">
+                   <img src="{% static 'icon/mark_email_unread.svg' %}" alt="email icon" width="24">
+                </div>
                 <input type="email" id="email" placeholder="E-mail" name="email" required maxlength="40" />
             </div>
             <div class="field">
-                <label for="name">이름</label>
+                <div class="icon" id="email-icon">
+                   <img src="{% static 'icon/person.svg' %}" alt="email icon" width="24">
+                </div>
                 <input type="text" id="name" placeholder="이름" name="name" required maxlength="15" />
                 <br>
             </div>
             <div class="field">
-                <label for="password">비밀번호</label>
+                <div class="icon" id="lock-icon">
+                   <img src="{% static 'icon/Lock.svg' %}" alt="email icon" width="24">
+                </div>
                 <input type="password" id="password" placeholder="비밀번호" name="password" required minlength="8" />
                 <br>
             </div>
             <div class="field">
-                <label for="password_confirm">비밀번호 확인</label>
+                <div class="icon" id="lock-icon">
+                   <img src="{% static 'icon/Lock.svg' %}" alt="email icon" width="24">
+                </div>
                 <input type="password" id="password_confirm" placeholder="비밀번호 확인" name="password_confirm" required minlength="8" />
                 <br>
             </div>
         </div>
 
+        <div class="signup_interest_title"><p>어느 분야가 관심 있으신가요?</p></div>
         <div class="signup_interest_area" id="interestArea">
             <button type="button" class="interest-btn" data-name="소비">소비</button>
             <button type="button" class="interest-btn" data-name="취업/고용">취업/고용</button>
@@ -153,7 +72,33 @@
         <div class="signup_submit_btn">
             <button type="submit" class="submit-btn">Sign up</button>
         </div>
-        <div class="signup_social_area"></div>
+
+        <div class="signup_divider">
+            <hr>
+            <p>or</p>
+            <hr>
+        </div>
+        
+
+        <div class="signup_social_area">
+            <div class="social_signup_btn" id="kakao">
+                <a href="#">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQnOACrRJyk-4693gXNbbpXfQ4OVXSWm3sl5g&s" alt="카카오 로그인">
+            </a>
+            </div>
+            
+            <div class="social_signup_btn" id="naver">
+                <a href="#">
+                    <img src="data:image/png;base64,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" alt="구글 로그인">
+                </a>
+            </div>
+
+            <div class="social_signup_btn" id="google">
+                <a href="#">
+                    <img src="data:image/jpeg;base64,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" alt="네이버 로그인">
+                </a>
+            </div>
+        </div>
 
     </div>
     </form>
@@ -163,7 +108,7 @@
 <script>
     document.getElementById("selected_interests").value
 
-    
+
   const selected = new Set();
   const hidden = document.getElementById("selected_interests");
 

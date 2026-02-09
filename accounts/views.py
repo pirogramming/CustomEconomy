@@ -108,7 +108,23 @@ def logout_view(request):
 
 # 4. 마이페이지
 def mypage_view(request):
-    return render(request, 'mypage.html')
+    context = {}
+    if request.user.is_authenticated:
+        # MAIN 관심분야 중 사용자가 선택한 것들
+        selected = list(
+            UserInterest.objects.filter(
+                user=request.user,
+                interest__category_type='MAIN',
+                is_selected=True
+            ).values_list('interest__name', flat=True)
+        )
+        context['user_selected_interests'] = selected
+        context['user_nickname'] = request.user.nickname
+        context['user_image_url'] = request.user.image_url
+        # session-stored term bookmarks (if any)
+        context['term_bookmarks'] = request.session.get('term_bookmarks', [])
+
+    return render(request, 'mypage.html', context)
 
 # 5. 리그 페이지 (중복 제거 및 로직 통합 완료)
 def league_view(request):
@@ -387,3 +403,7 @@ def update_photo(request):
     messages.success(request, '프로필 사진이 변경되었습니다.')
     return redirect('edit')
     
+
+@login_required
+def scrap_term_view(request):
+    return render(request, 'mypage_scrapterm.html')
