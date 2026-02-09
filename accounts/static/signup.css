@@ -173,9 +173,8 @@
   border-radius: 100%;
 }
 
-.signup_body .modal{
-  /* display: none;  */
-  display: flex;
+/* .signup_body .modal{
+  display: none; 
   position: fixed;
   top: 0;
   left: 0;
@@ -196,8 +195,8 @@
   height: 521px;
 
   display: flex; position: relative;
-  flex-direction: column;   /* ⭐ 세로 스택 */
-  justify-content: center;  /* ⭐ 세로 중앙 */
+  flex-direction: column;   
+  justify-content: center;  
   align-items: center;
 
   padding: 40px;
@@ -210,19 +209,20 @@
 
 }
 .signup_body .modal .modal-content .close_btn{
-  /* background-color: tomato; */
   position: absolute;   
   top: 26px;  
   right: 21px; 
   padding: 0px;
+
+  transition: transform 0.15s ease;
 }
 
 .signup_body .modal .modal-content .close_btn:hover{
   cursor: pointer;
+  transform: rotate(15deg) scale(1.08);
 }
 
 .signup_body .modal .modal-content .leveltest_suggestion{
-  /* background-color: pink; */
   padding-top: 60px;
 }
 .signup_body .modal .modal-content .leveltest_suggestion>p{
@@ -231,7 +231,6 @@
   line-height: 36.6px;
 }
 .signup_body .modal .modal-content .leveltest_subtext{
-  /* background-color: aqua; */
 }
 .signup_body .modal .modal-content .leveltest_subtext>p{
   font-size: 14px;
@@ -239,8 +238,8 @@
   color: #EF9160;
 }
 .signup_body .modal .modal-content .button_area{
-  position: absolute;   /* ⭐ 독립 */
-  bottom: 80px;         /* 아래 간격 */
+  position: absolute; 
+  bottom: 80px;      
   left: 0;
   width: 100%;
 
@@ -276,4 +275,4 @@
 }
 .signup_body .modal .modal-content .button_area .yes_btn:hover{
   cursor: pointer;
-}
+} */

@@ -135,23 +135,15 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  // ===== 요소 가져오기 =====
   const form = document.querySelector("form");
   const hidden = document.getElementById("selected_interests");
   const modal = document.getElementById("signupModal");
 
-  // 모달이 없으면 여기서 바로 알 수 있게
-  if (!modal) {
-    console.warn('모달(#signupModal)이 HTML에 없습니다. 모달 div를 추가했는지 확인하세요.');
-  }
-
-  // ===== 회원가입 성공 시 모달 자동 열기 =====
-  const signupSuccess = {{ signup_success|default:"false" }};
-  if (signupSuccess) {
+  const signupSuccess = {{ signup_success|yesno:"true,false" }};
+  if (signupSuccess && modal) {
     modal.style.display = "flex";
   }
 
-  // ===== 관심분야 선택 =====
   const selected = new Set();
 
   document.querySelectorAll(".interest-btn").forEach((btn) => {
@@ -166,21 +158,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ===== 모달 함수 (전역으로도 쓰고 싶으면 window에 달기) =====
-  function showModal() {
-    if (!modal) return;
-    modal.style.display = "flex";
-  }
-
   function closeModal() {
     if (!modal) return;
     modal.style.display = "none";
   }
-
-  // (옵션) 닫기 버튼에서 onclick="closeModal()" 쓰고 싶으면 전역 등록
   window.closeModal = closeModal;
 
-  // ===== 폼 제출 검증 + (테스트용) 모달 띄우기 =====
   form.addEventListener("submit", (e) => {
     const pw = document.getElementById("password").value;
     const pw2 = document.getElementById("password_confirm").value;
@@ -190,20 +173,15 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
-
     if (selected.size === 0) {
       e.preventDefault();
       alert("관심분야를 최소 1개 선택해 주세요.");
       return;
     }
-
-    // 여기부터는 “모달을 띄우고 싶을 때만” 사용
-    // 실제 서버로 회원가입을 보내려면 아래 2줄을 제거하세요.
-    e.preventDefault(); // 테스트용: 서버 제출 막기
-    showModal();
   });
 });
 </script>
+
 
 
 {% endblock %}

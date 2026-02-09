@@ -78,9 +78,18 @@ def signup_view(request):
         for i in interests
     ])
 
+
+    
     # --- 가입 후 자동 로그인 ---
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    return render(request, "signup.html", {"signup_success": True, "user_name": user.name})
+    
+    
+    return render(request, "main.html", {
+        "signup_success": True,   # ⭐ 무조건 True
+        "user_name": user.name,   # ⭐ 또는 name
+    })
+    
+
 
 def signup_popup(request):
     return render(request, "level_test_popup.html")
@@ -223,6 +232,8 @@ def api_next(request):
         total = float(state["total_self"]) + float(state["total_knowledge"])
         level = score_to_level(total)
         return JsonResponse({"done": True, "total": total, "level": level})
+    
+    
 
     # 프론트에 필요한 최소 정보만 내려줌
     payload = {
