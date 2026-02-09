@@ -154,10 +154,31 @@ function renderBookmarks(bookmarks){
         return;
     }
     bookmarks.forEach(b => {
-        const div = document.createElement('div');
-        div.className = 'term-card';
-        div.innerHTML = `${b.word}<div class="term-card-desc">${b.definition || ''}</div>`;
-        container.appendChild(div);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'flip-card';
+
+        const inner = document.createElement('div');
+        inner.className = 'flip-card-inner';
+
+        const front = document.createElement('div');
+        front.className = 'flip-card-front';
+        front.textContent = b.word;
+
+        const back = document.createElement('div');
+        back.className = 'flip-card-back';
+        back.innerHTML = `<div class="term-card-desc">${b.definition || ''}</div>`;
+
+        inner.appendChild(front);
+        inner.appendChild(back);
+        wrapper.appendChild(inner);
+
+        // toggle flip on click (and Enter key)
+        function toggleFlip(){ wrapper.classList.toggle('flipped'); }
+        inner.addEventListener('click', toggleFlip);
+        inner.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); } });
+        inner.setAttribute('tabindex', '0');
+
+        container.appendChild(wrapper);
     });
 }
 
