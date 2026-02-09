@@ -22,14 +22,14 @@
         <section class="card-section my-info-card">
             <div class="user-profile">
                 <div class="profile-image">
-                    <img src="{% static 'img/profile-default.png' %}" alt="프로필">
+                    <img src="{% if user_image_url %}{{ user_image_url }}{% else %}{% static 'img/profile-default.png' %}{% endif %}" alt="프로필">
                 </div>
                 <div class="profile-info">
                     <div class="info-header">
-                        <p class="username"><span class="name">주식으로 인생역전</span> <span class="suffix">님</span></p>
+                        <p class="username"><span class="name">{% if user_nickname %}{{ user_nickname }}{% else %}{{ request.user.nickname }}{% endif %}</span> <span class="suffix">님</span></p>
                         <span class="level-badge">Lv.4</span>
                     </div>
-                    <p class="interest">관심분야 : 부동산</p>
+                    <p class="interest">관심분야 : {% if user_selected_interests %}{{ user_selected_interests|join:", " }}{% else %}선택된 관심분야가 없습니다{% endif %}</p>
                     
                     <div class="progress-area">
                         <div class="progress-bar">
@@ -88,9 +88,9 @@
             </div>
         </section>
 
-        <!-- 내가 푼 용어 퀴즈 섹션 -->
+        <!-- 단어 섹션 -->
         <div class="section-header-outside">
-            <h2>내가 푼 용어 퀴즈</h2>
+            <h2>스크랩한 단어</h2>
             <a href="#" class="icon-btn dot-btn">•••</a>
         </div>
         
