@@ -110,7 +110,7 @@
                 <img src="{% static "icon/letter_x.png" %}">
             </div>
             <div class="leveltest_suggestion">
-                <p>레벨 측정 질문들에 응답하시면 길동님에게 맞는<br>레벨을 찾아드려요!</p>
+                <p>레벨 측정 질문들에 응답하시면 {{ user_name }}님에게 맞는<br>레벨을 찾아드려요!</p>
             </div>
             <br>
             <div class="leveltest_subtext">
@@ -143,6 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // 모달이 없으면 여기서 바로 알 수 있게
   if (!modal) {
     console.warn('모달(#signupModal)이 HTML에 없습니다. 모달 div를 추가했는지 확인하세요.');
+  }
+
+  // ===== 회원가입 성공 시 모달 자동 열기 =====
+  const signupSuccess = {{ signup_success|default:"false" }};
+  if (signupSuccess) {
+    modal.style.display = "flex";
   }
 
   // ===== 관심분야 선택 =====

@@ -80,7 +80,7 @@ def signup_view(request):
 
     # --- 가입 후 자동 로그인 ---
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    return redirect("articleList")
+    return render(request, "signup.html", {"signup_success": True, "user_name": user.name})
 
 def signup_popup(request):
     return render(request, "level_test_popup.html")
