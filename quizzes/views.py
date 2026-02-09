@@ -48,91 +48,106 @@ def submit_quiz_session(request, article_id):
         
         results_detail = []
         correct_count = 0
-        
+        session_earned_xp = 0 
+
         for q_id in quiz_ids:
             quiz = Quiz.objects.get(id=q_id)
             selected_choice_id = request.POST.get(f'quiz_{q_id}')
             
-            # 1. 답 선택 여부 확인
             if selected_choice_id:
                 choice = QuizChoice.objects.get(id=selected_choice_id)
                 is_correct = choice.is_correct
-                selected_text = choice.choice_text # 실제 선택한 텍스트
+                selected_text = choice.choice_text
+                selected_choice_id_int = int(selected_choice_id)
             else:
                 is_correct = False
-                selected_text = "(미선택)" # 선택 안 했을 때의 텍스트
+                selected_text = "(미선택)"
+                selected_choice_id_int = None
 
-            if is_correct: 
+            # [XP 계산 로직] 모델의 quiz.type 필드 사용 (A, B, C)
+            earned_xp = 0
+            if is_correct:
                 correct_count += 1
+                if quiz.type in ['A', 'B']:
+                    earned_xp = 5
+                elif quiz.type == 'C':
+                    # 레벨별 XP 매핑
+                    level_xp_map = {1: 10, 2: 15, 3: 25, 4: 40, 5: 70}
+                    earned_xp = level_xp_map.get(quiz.level, 10)
+            
+            session_earned_xp += earned_xp
 
-            # [결과 저장] 개별 문제 풀이 기록
+            # QuizResult 저장
             QuizResult.objects.create(
                 user=user,
                 quiz=quiz,
                 selected_answer=selected_text,
                 is_correct=is_correct,
-                earned_score=10 if is_correct else 0
+                earned_score=earned_xp
             )
-            
-            # 선택한 choice id (템플릿에서 빨강 표시용)
-            selected_choice_id_int = int(selected_choice_id) if selected_choice_id else None
 
-            # 정답 choice
+            # 결과 데이터 정리
             correct_choice = quiz.choices.filter(is_correct=True).first()
-            correct_choice_id = correct_choice.id if correct_choice else None
-            correct_choice_text = correct_choice.choice_text if correct_choice else "(정답 없음)"
-
-            # 선지 전체 (id + text)
-            all_choices = list(quiz.choices.all().values("id", "choice_text"))
-
             results_detail.append({
                 "quiz_id": quiz.id,
+                "quiz_type": quiz.type, # 템플릿용
                 "question": quiz.question,
                 "selected": selected_text,
                 "selected_choice_id": selected_choice_id_int,
                 "is_correct": is_correct,
                 "explanation": quiz.explanation,
-                "correct_answer": correct_choice_text,
-                "correct_choice_id": correct_choice_id,
-                "choices": all_choices,  # 전체 보기용
+                "correct_answer": correct_choice.choice_text if correct_choice else "(정답 없음)",
+                "correct_choice_id": correct_choice.id if correct_choice else None,
+                "choices": list(quiz.choices.all().values("id", "choice_text")),
+                "earned_xp": earned_xp,
             })
 
-
-            # [핵심 로직] 기사에 연결된 모든 소분류(Interest)에 대해 점수 반영
+            # [약점 업데이트] Article에 연결된 sub_interests 기준
             article_interests = article.sub_interests.all() 
-            
             for interest_obj in article_interests:
-                # get_or_create로 유저의 관심사 기록이 없으면 생성
                 ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
-                
                 if is_correct:
-                    # 정답인 경우: 약점 점수 2점 차감 (하한 0점은 모델 save에서 처리)
-                    ui.weakness_score -= 2
+                    ui.weakness_score -= 2 # UserInterest.save()에서 하한 0점 처리됨
                 else:
-                    # 오답인 경우: 약점 점수 2점 증가
-                    # 오답인 경우: 마지막 오답 시각을 현재로 갱신
-                    # 메인 뷰에서 이 시각을 기준으로 3일 내(+4), 7일 내(+2) 가중치 부여
                     ui.weakness_score += 2
                     ui.last_wrong_at = timezone.now()
-                
                 ui.save()
 
-        # [리그] 전체 점수 및 레벨업 로직
-        total_session_points = correct_count * 10
-        user.total_score += total_session_points
-        user.level_score += total_session_points
+        # 세트 보너스
+        bonus_xp = 5 if correct_count == 2 else (15 if correct_count == 3 else 0)
+        total_final_xp = session_earned_xp + bonus_xp
+
+        # 유저 총점 반영 및 레벨업
+        user.total_score += total_final_xp
         
-        is_levelup = False
-        if user.level_score >= 100:
-            user.level += 1
-            user.level_score = 0
-            is_levelup = True
+        # 레벨업 기준 (누적 XP)
+        level_thresholds = [(5, 25725), (4, 12985), (3, 5635), (2, 1715)]
+        
+        old_level = user.level
+        new_level = 1
+        for lv, xp_needed in level_thresholds:
+            if user.total_score >= xp_needed:
+                new_level = lv
+                break
+
+        is_levelup = new_level > old_level
+        if is_levelup:
+            user.level = new_level
+
+        next_level_map = {1: 1715, 2: 5635, 3: 12985, 4: 25725, 5: 999999}
+        next_xp = next_level_map.get(user.level, 25725)
+        remaining_xp = max(0, next_xp - user.total_score)
+        
         user.save()
         
         return render(request, 'quiz_result.html', {
             'results_detail': results_detail,
             'correct_count': correct_count,
             'is_levelup': is_levelup,
-            'points': total_session_points,
+            'base_xp': session_earned_xp,
+            'bonus_xp': bonus_xp,
+            'total_final_xp': total_final_xp,
+            'current_total_xp': user.total_score,
+            'remaining_xp': remaining_xp,
             'article': article,         
         })
