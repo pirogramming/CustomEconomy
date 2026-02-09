@@ -35,8 +35,8 @@ def load_master_dictionary():
     print(f"✅ 용어 사전: {count}개의 용어 이식 완료.")
 
 def load_c_quiz():
-    """[C유형] 대분류와 소분류를 구분하여 DB 적재"""
-    file_path = 'scripts/data/c_quiz.json'
+    """[C유형] 레벨별(1~5) 데이터를 구분하여 DB 적재"""
+    file_path = 'scripts/data/c_level_quiz.json'
     if not os.path.exists(file_path):
         print(f"⚠️ 파일을 찾을 수 없습니다: {file_path}")
         return
@@ -45,8 +45,10 @@ def load_c_quiz():
         data = json.load(f)
 
     total_quiz = 0
+    updated_quiz = 0
+
     for target_name, quizzes in data.items():
-        # 1. 소분류(Interest)인지 대분류(Category)인지 확인
+        # 소분류(Interest)인지 대분류(Category)인지 확인
         interest = Interest.objects.filter(name=target_name).first()
         category = Category.objects.filter(name=target_name).first()
 
@@ -55,19 +57,21 @@ def load_c_quiz():
             continue
 
         for q in quizzes:
-            # 2. Quiz 생성
+            # 2. Quiz 생성 (질문과 레벨이 모두 같아야 동일 문제로 간주하도록 설정 가능)
+            # 여기서는 질문 텍스트를 기준으로 중복을 체크합니다.
             quiz, created = Quiz.objects.get_or_create(
                 question=q['question'],
                 defaults={
                     'type': 'C',
-                    'interest': interest,  # 소분류면 객체 저장, 아니면 None
-                    'category': category,      # 대분류면 객체 저장, 아니면 None
+                    'interest': interest,
+                    'category': category,
                     'explanation': q['explanation'],
-                    'level': 1
+                    'level': q.get('level', 1)  # JSON에 있는 level 값을 저장
                 }
             )
 
             if created:
+                # 3. 선택지(Choice) 생성
                 for opt in q['options']:
                     QuizChoice.objects.create(
                         quiz=quiz,
@@ -75,8 +79,58 @@ def load_c_quiz():
                         is_correct=(opt == q['answer'])
                     )
                 total_quiz += 1
+            else:
+                # 이미 존재한다면 레벨만 업데이트하고 싶을 경우 (선택 사항)
+                if quiz.level != q.get('level'):
+                    quiz.level = q.get('level', 1)
+                    quiz.save()
+                    updated_quiz += 1
 
-    print(f"✅ 기초 퀴즈(C유형): {total_quiz}세트 이식 완료.")
+    print(f"✅ 기초 퀴즈(C유형): {total_quiz}개 신규 이식, {updated_quiz}개 레벨 업데이트 완료.")
+
+# def load_c_quiz():
+#     """[C유형] 대분류와 소분류를 구분하여 DB 적재"""
+#     file_path = 'scripts/data/c_quiz.json'
+#     if not os.path.exists(file_path):
+#         print(f"⚠️ 파일을 찾을 수 없습니다: {file_path}")
+#         return
+    
+#     with open(file_path, 'r', encoding='utf-8') as f:
+#         data = json.load(f)
+
+#     total_quiz = 0
+#     for target_name, quizzes in data.items():
+#         # 1. 소분류(Interest)인지 대분류(Category)인지 확인
+#         interest = Interest.objects.filter(name=target_name).first()
+#         category = Category.objects.filter(name=target_name).first()
+
+#         if not interest and not category:
+#             print(f"⚠️ {target_name}이(가) DB에 없습니다. 확인이 필요합니다.")
+#             continue
+
+#         for q in quizzes:
+#             # 2. Quiz 생성
+#             quiz, created = Quiz.objects.get_or_create(
+#                 question=q['question'],
+#                 defaults={
+#                     'type': 'C',
+#                     'interest': interest,  # 소분류면 객체 저장, 아니면 None
+#                     'category': category,      # 대분류면 객체 저장, 아니면 None
+#                     'explanation': q['explanation'],
+#                     'level': 1
+#                 }
+#             )
+
+#             if created:
+#                 for opt in q['options']:
+#                     QuizChoice.objects.create(
+#                         quiz=quiz,
+#                         choice_text=opt,
+#                         is_correct=(opt == q['answer'])
+#                     )
+#                 total_quiz += 1
+
+#     print(f"✅ 기초 퀴즈(C유형): {total_quiz}세트 이식 완료.")
 
 if __name__ == "__main__":
     print("🚀 데이터베이스 이식을 시작합니다...")
