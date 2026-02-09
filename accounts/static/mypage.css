@@ -5,20 +5,22 @@
 /* [핵심] 네임스페이스: base.css와 충돌 방지 */
 .main-wrapper {
     /* 로컬 색상 변수 */
-    --mp-bg-color: #ebf0f6;       /* 배경색 */
+    --mp-bg-color: #eeefee;       /* 배경색 */
     --mp-card-bg: #ffffff;        /* 카드 배경 */
     --mp-text-main: #333333;
     --mp-text-sub: #666666;
     --mp-accent-green: #8bc34a;   /* 초록색 포인트 */
     --mp-accent-navy: #1a2b45;    /* 남색 포인트 */
     --mp-tag-bg: #ffebee;         
-    --mp-tag-text: #e57373;       
+    --mp-tag-text: #e57373;   
+    --mp-orange: #EF9160;
 
     font-family: 'Noto Sans KR', sans-serif;
     color: var(--mp-text-main);
     width: 100%;
     box-sizing: border-box;
     padding: 40px 20px; /* 상하 40, 좌우 20 */
+    background-color: var(--mp-bg-color);
 }
 
 /* --- 메인 컨테이너 (1단 배치 수정) --- */
@@ -237,16 +239,17 @@
 /* --- 3. 퀴즈 스타일 (가로 나열) --- */
 .main-wrapper .term-list {
     display: flex;
+    justify-content: space-around;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 24px 18px; /* row-gap (vertical): 24px, column-gap (horizontal): 18px */
 }
 
 /* Flip card container */
 .main-wrapper .flip-card {
-    width: 160px;
+    width: 340px;
     height: 100px;
     perspective: 1000px;
-    flex: 0 0 auto;
+    flex: 0 0 auto; 
 }
 
 .main-wrapper .flip-card-inner {
@@ -274,15 +277,15 @@
     justify-content: center;
     padding: 12px;
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.09);
     overflow: hidden;
 }
 
 .main-wrapper .flip-card-front {
-    background: #f8f9fa;
-    color: var(--mp-accent-green);
-    font-weight: 800;
-    font-size: 16px;
+    background: var(--mp-card-bg);
+    color: var(--mp-orange);
+    font-weight: 700;
+    font-size: 20px;
     text-align: center;
 }
 

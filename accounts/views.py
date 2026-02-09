@@ -189,6 +189,8 @@ from .services import (
     load_bank, pick_self_ids, next_question, grade_and_advance, score_to_level
 )
 
+from terms.models import TermBookmark
+
 SESSION_KEY = "level_test_state"
 
 def _init_state(bank):
@@ -406,4 +408,8 @@ def update_photo(request):
 
 @login_required
 def scrap_term_view(request):
-    return render(request, 'mypage_scrapterm.html')
+    bookmarks = []
+    if request.user.is_authenticated:
+        qs = TermBookmark.objects.filter(user=request.user).select_related('term').order_by('-created_at')
+        bookmarks = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at} for b in qs]
+    return render(request, 'mypage_scrapterm.html', {'bookmarks': bookmarks})
