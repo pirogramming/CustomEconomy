@@ -1,8 +1,196 @@
-/* static/level_test/test.css */
-/* 피그마로 갈아엎기 쉬우라고 최소만 */
-button {
-  background: white;
+/* ===== page ===== */
+.leveltest_body {
+  background-color: #F1F7FF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  font-family: system-ui, -apple-system, "NanumGothic", "Segoe UI", Roboto, Arial, sans-serif;
 }
-button:disabled {
+
+.leveltest_body .leveltest_main {
+  /* background-color: pink; */
+}
+.leveltest_body .leveltest_main .logo_area{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: aqua; */
+  padding: 20px;
+}
+.leveltest_body .leveltest_main .logo_area2{background-color: pink; margin: 0px;}
+.leveltest_body .leveltest_main .logo_area2 > p{
+  font-size: 70px;
+  font-family: 'Kadwa';
+}
+.leveltest_body .leveltest_main .logo_area .logo{
+  /* background-color: #888; */
+}
+
+.leveltest_body .leveltest_main .leveltest_title {
+  margin: 0 0 16px 0;
+}
+
+/* ===== progress banner ===== */
+.leveltest_body .leveltest_main .leveltest_progress_area {
+  width: 1079px; height: 123px;
+  background-color: white;
+  border-radius: 60px; border-style: solid; border-width: 1px; border-color: #353535;
+
+  display: flex; 
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.leveltest_body .leveltest_main .leveltest_progress_area .leveltest_progress_banner {
+  width: 35px; height: 35px;
+  border-radius: 12px;
+  display: block;
+
+  transition: transform 0.15s ease;
+}
+
+.leveltest_body .leveltest_main .leveltest_progress_area .leveltest_progress_banner.pop {
+  animation: popHeart 0.35s ease;
+}
+
+@keyframes popHeart {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35) rotate(8deg); }
+  70%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+
+.leveltest_body .leveltest_main .leveltest_progress_area .progress_line{
+  width: 100px; height: 4px;
+  background-color: #D9D9D9;
+  border-radius: 2px;
+
+  transition: background-color 0.25s ease;
+}
+
+.leveltest_body .leveltest_main .leveltest_progress_area .progress_line.active {
+  background-color: #FFBF5F;
+}
+
+
+
+/* progress container (JS가 채울 수 있도록) */
+.leveltest_body .leveltest_main .leveltest_progress_area .leveltest_progress {
+  /* background-color: pink; */
+}
+
+/* ===== card ===== */
+
+.leveltest_card {
+  background-color: white; padding: 90px;
+  width: 1079px; height: 411px;
+  border: 1px solid #353535;
+  border-radius: 90px;
+  padding: 16px;
+}
+
+.leveltest_card .question_area{
+  /* background-color: aquamarine; */
+  height: 250px;
+}
+
+.leveltest_qtype {
+  padding-left: 70px;
+  padding-top: 20px;
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 8px;
+}
+
+.leveltest_question {
+  /* background-color: pink; */
+  margin: 0 0 12px 0; padding: 30px 10px;
+  padding: 10px 70px;
+  font-size: 24px;
+}
+
+/* ===== options ===== */
+.leveltest_options {
+  display: grid;
+  /* background-color: rgb(144, 22, 22); */
+  padding: 10px 70px;
+  gap: 8px;
+}
+
+.leveltest_options > button {
+  width: 550px;
+  padding: 14px 16px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+
+.leveltest_options > button.is-selected {
+  border: 1px solid #2c2c2c;
+}
+
+/* (옵션 버튼을 JS에서 만들면 이 클래스를 붙여 쓰기 좋아요)
+.leveltest_option_btn {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+}
+.leveltest_option_btn:hover { background: #f6f6f6; }
+.leveltest_option_btn.selected { border-color: #111; }
+*/
+
+/* ===== actions ===== */
+.leveltest_actions {
+  /* background-color: blueviolet; */
+  padding: 5px 70px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 50px;
+}
+
+.leveltest_actions #prevBtn{
+  background-color: #D0D4D8;
+}
+.leveltest_actions #nextBtn{
+  background-color: #4993E8;
+}
+
+.leveltest_btn {
+  width: 100px; height: 41px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+.leveltest_btn:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.leveltest_btn--primary {
+  border-color: #111;
+  background: #111;
+  color: #fff;
+}
+
+.leveltest_btn--ghost {
+  background: #fff;
+  color: #111;
+}
+
+/* ===== feedback ===== */
+.leveltest_feedback {
+  margin-top: 10px;
+  color: #444;
 }

@@ -342,3 +342,112 @@ section {
         font-size: 14px;
     }
 }
+
+
+.main-wrapper .modal{
+  display: none; 
+  /* display: flex; */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0,0,0,0.45);
+
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.main-wrapper .modal .modal-content{
+  background: white;
+
+  width: 579px;
+  height: 521px;
+
+  display: flex; position: relative;
+  flex-direction: column;   /* ⭐ 세로 스택 */
+  justify-content: center;  /* ⭐ 세로 중앙 */
+  align-items: center;
+
+  padding: 40px;
+  border-radius: 14px;
+  text-align: center;
+  min-width: 300px;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+
+
+}
+.main-wrapper .modal .modal-content .close_btn{
+  /* background-color: tomato; */
+  position: absolute;   
+  top: 26px;  
+  right: 21px; 
+  padding: 0px;
+
+  transition: transform 0.15s ease;
+}
+
+.main-wrapper .modal .modal-content .close_btn:hover{
+  cursor: pointer;
+  transform: rotate(15deg) scale(1.08);
+}
+
+.main-wrapper .modal .modal-content .leveltest_suggestion{
+  /* background-color: pink; */
+  padding-top: 60px;
+}
+.main-wrapper .modal .modal-content .leveltest_suggestion>p{
+  font-size: 20px;
+  font-family: NanumGothic;
+  line-height: 36.6px;
+}
+.main-wrapper .modal .modal-content .leveltest_subtext{
+  /* background-color: aqua; */
+}
+.main-wrapper .modal .modal-content .leveltest_subtext>p{
+  font-size: 14px;
+  font-family: NanumGothic;
+  color: #EF9160;
+}
+.main-wrapper .modal .modal-content .button_area{
+  position: absolute;   /* ⭐ 독립 */
+  bottom: 80px;         /* 아래 간격 */
+  left: 0;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  gap: 0px;
+}
+
+.main-wrapper .modal .modal-content .button_area .no_btn{
+  text-decoration: none;
+  background-color: #D3CECE; color: black;
+  border-radius: 40px; border: none; 
+  width: 202px; height: 46px;
+  margin: 0px 0px;
+
+  display: flex; justify-content: center; align-items: center;
+
+  font-family: 'NanumGothic'; font-size: 13px; font-weight: 300;
+}
+.main-wrapper .modal .modal-content .button_area .no_btn:hover{
+  cursor: pointer;
+}
+.main-wrapper .modal .modal-content .button_area .yes_btn{
+  text-decoration: none;
+  background-color: black; color: white;
+  border-radius: 40px; border: none; 
+  width: 202px; height: 46px;
+  margin: 0px 20px;
+
+  display: flex; justify-content: center; align-items: center;
+
+  font-family: 'NanumGothic'; font-size: 13px; font-weight: 300;
+}
+.main-wrapper .modal .modal-content .button_area .yes_btn:hover{
+  cursor: pointer;
+}

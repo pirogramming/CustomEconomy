@@ -102,28 +102,69 @@
 
     </div>
     </form>
+
+    <!-- 모달 팝업 영역입니둥. 안 보이는 게 정상 -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <div class="close_btn" onclick="closeModal()">
+                <img src="{% static "icon/letter_x.png" %}">
+            </div>
+            <div class="leveltest_suggestion">
+                <p>레벨 측정 질문들에 응답하시면 {{ user_name }}님에게 맞는<br>레벨을 찾아드려요!</p>
+            </div>
+            <br>
+            <div class="leveltest_subtext">
+                <p>*레벨은 AI 재풀이와 퀴즈에 사용됩니다.</p>
+            </div>
+
+            <br><br><br><br>
+            <div class="button_area">
+                <a href="{% url 'main' %}" class="no_btn">
+                    레벨 측정 없이 Lv1부터 시작
+                </a>
+                <a href="{% url 'level_test' %}" class="yes_btn">
+                    나의 경제 레벨 측정하러 가기
+                </a>
+            </div>
+            
+        </div>
+    </div>
+
 </div>
 
 
 <script>
-    document.getElementById("selected_interests").value
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.querySelector("form");
+  const hidden = document.getElementById("selected_interests");
+  const modal = document.getElementById("signupModal");
 
+  const signupSuccess = {{ signup_success|yesno:"true,false" }};
+  if (signupSuccess && modal) {
+    modal.style.display = "flex";
+  }
 
   const selected = new Set();
-  const hidden = document.getElementById("selected_interests");
 
   document.querySelectorAll(".interest-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const name = btn.dataset.name;
       btn.classList.toggle("selected");
+
       if (selected.has(name)) selected.delete(name);
       else selected.add(name);
+
       hidden.value = Array.from(selected).join(",");
     });
   });
 
-  // ✅ 폼 제출 시 검증
-  document.querySelector("form").addEventListener("submit", (e) => {
+  function closeModal() {
+    if (!modal) return;
+    modal.style.display = "none";
+  }
+  window.closeModal = closeModal;
+
+  form.addEventListener("submit", (e) => {
     const pw = document.getElementById("password").value;
     const pw2 = document.getElementById("password_confirm").value;
 
@@ -132,13 +173,15 @@
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
-
     if (selected.size === 0) {
       e.preventDefault();
       alert("관심분야를 최소 1개 선택해 주세요.");
       return;
     }
   });
+});
 </script>
+
+
 
 {% endblock %}

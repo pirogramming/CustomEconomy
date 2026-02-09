@@ -1,11 +1,12 @@
-{# templates/level_test/result.html #}
-<!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>레벨 테스트 결과</title>
-</head>
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'level_test_result.css' %}">
+{% endblock %}
+
+{% block content %}
+
 <body>
   <main style="max-width:720px;margin:40px auto;padding:0 16px;">
     <h1>테스트 결과</h1>
@@ -20,4 +21,5 @@
     </div> {% endcomment %}
   </main>
 </body>
-</html>
+
+{% endblock %}
