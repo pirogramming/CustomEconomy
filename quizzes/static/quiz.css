@@ -52,6 +52,7 @@ body {
     display: flex;
     flex-direction: column;
     background-color: #192237;
+    opacity: 90%;
     border-radius: 20px;
     overflow: hidden;
     padding: 40px 48px;
@@ -245,40 +246,91 @@ body {
     display: flex; justify-content: center; align-items: center;
     padding: 40px;
 }
-.button-container .submit-btn{
-    display: flex; justify-content: center; align-items: center;
-    margin-right: 12px;
-    padding: 10px;
-
-    width: auto; height: 50px; background-color: white;
-    border-color: #F4B132; 
-    border-width: 3px; border-style: solid;
-    border-radius: 30px; 
-
-    text-decoration: none;
-    color: black;
-    font-family: NanumGothic;
-}
-.button-container .submit-btn:hover{
-    background-color: #F4B132;
-    color: black;
-}
+/* 버튼 컨테이너 내부 공통 스타일 (제출 & 목록 버튼) */
+.button-container .submit-btn,
 .button-container .back-to-list-area {
-    display: flex; justify-content: center; align-items: center;
-    margin-right: 12px;
-
-    width: 130px; height: 50px; background-color: white;
-    border-color: #F4B132; 
-    border-width: 3px; border-style: solid;
-    border-radius: 30px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    height: 50px;
+    background-color: #fff;
+    
+    /* 1. 색감 완화: 조금 더 부드러운 머스타드/망고 톤 */
+    border: 2px solid #FFD580; 
+    border-radius: 30px;
+    
+    color: #555; /* 글자색도 완전 검정보다 짙은 회색이 더 고급스러워요 */
+    font-family: NanumGothic, sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    
+    /* 2. 입체감을 위한 기본 그림자 (살짝) */
+    box-shadow: 0 4px 0px 0px #FFE5B4; 
+    
+    transition: all 0.1s ease-in-out;
+    position: relative;
+    top: 0;
 }
-.button-container .back-to-list-area a{
+
+/* 각 버튼 개별 설정 */
+.button-container .submit-btn {
+    width: auto;
+    padding: 0 25px;
+    margin-right: 15px;
+}
+
+.button-container .back-to-list-area {
+    width: 130px;
+    margin-right: 0;
+}
+
+/* 링크 텍스트 색상 고정 */
+.button-container .back-to-list-area a {
     text-decoration: none;
-    color: black;
-    font-family: NanumGothic;
-}
-.button-container .back-to-list-area:hover{
-    background-color: #F4B132;
-    color: black;
+    color: inherit; /* 부모인 .back-to-list-area의 색상을 따라감 */
 }
 
+/* 🚀 3. 입체감 있는 호버 & 클릭 효과 */
+.button-container .submit-btn:hover,
+.button-container .back-to-list-area:hover {
+    background-color: #FFF9EF; /* 살짝 노란빛 도는 흰색으로 변경 */
+    border-color: #F4B132;
+    color: #F4B132;
+    
+    /* 마우스를 올리면 살짝 위로 뜨는 느낌 */
+    top: -2px;
+    box-shadow: 0 6px 0px 0px #FFD580;
+}
+
+.button-container .submit-btn:active,
+.button-container .back-to-list-area:active {
+    /* 클릭했을 때 실제로 버튼이 눌리는 효과 */
+    top: 2px;
+    box-shadow: 0 0px 0px 0px #FFD580;
+}
+
+
+.main-content > .back-to-list-area {
+    display: flex;
+    justify-content: flex-start; 
+    
+    padding-left: 30px; 
+    
+    width: 100%;
+    max-width: 1000px;
+    margin: 40px auto 25px auto;
+}
+
+.main-content > .back-to-list-area .back-btn {
+    display: inline-flex;
+    align-items: center;
+    background-color: #F3F4F6;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border:1px solid #80b27f;
+    color: #4B5563;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
