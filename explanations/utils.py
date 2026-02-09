@@ -94,14 +94,32 @@ class GeminiFinancialTutor:
                 'term_criteria': "Lv1: 기초 용어 | Lv2: 일반 용어 | Lv3: 실무 용어 | Lv4: 전문 용어 | Lv5: 고급 전문 용어"
             }
 
-    def generate_single_level_analysis(self, text, category, interests, target_level):
+    def generate_full_analysis_with_all_interests(self, text, category, target_level, all_interests):
         """
-        ⭐ 새로운 메서드: 특정 레벨 1개만 생성 (토큰 최소화)
+        ⭐ 핵심 메서드: 해설 + 8개 관심사 전망을 1회 AI 호출로 생성
+        
+        Args:
+            text: 기사 본문
+            category: 기사 카테고리
+            target_level: 레벨 (1~5)
+            all_interests: 전체 관심사 리스트
+                ['투자', '부동산', '대출/금융', '소비', '해외/환율', '세금/정책', '자영업/사업자', '취업/고용']
+        
+        Returns:
+            {
+                "storytelling": "...",
+                "terms": [...],
+                "predictions": {
+                    "투자": "투자 전망...",
+                    "부동산": "부동산 전망...",
+                    ...
+                }
+            }
         """
         
-        print(f"🎯 레벨 {target_level} 단독 분석 시작")
+        print(f"🎯 레벨 {target_level} 전체 분석 시작")
         print(f"   카테고리: {category}")
-        print(f"   관심사: {interests}")
+        print(f"   관심사 개수: {len(all_interests)}개")
         print(f"   기사 길이: {len(text)}자")
 
         if not text or len(text) < 10:
@@ -110,21 +128,33 @@ class GeminiFinancialTutor:
 
         try:
             cat_info = self._get_category_info(category)
-            interests_str = ", ".join(interests)
-            
-            # target_level에 해당하는 페르소나 정보 가져오기
             persona = cat_info['personas'][target_level - 1]
             
-            # 프롬프트 (1개 레벨만!)
+            # 레벨별 글자 수 제한
+            char_limits = {1: "250~300자", 2: "300~350자", 3: "350~400자", 4: "400~450자", 5: "450~500자"}
+            char_limit = char_limits.get(target_level, "400자")
+            
+            # 관심사 목록 문자열
+            interests_str = ", ".join(all_interests)
+            
+            # JSON 템플릿 동적 생성
+            predictions_template = ",\n    ".join([
+                f'"{interest}": "{interest} 관점 전망 (4~5문장) + 면책문구"'
+                for interest in all_interests
+            ])
+            
+            # 🔥 프롬프트: 8개 관심사 전망 전부 요청
             prompt = f"""당신은 금융/경제 뉴스를 레벨별로 맞춤 해설하는 전문 AI입니다.
 
 [기사 원문]
 {text[:2000]}
 
 [카테고리] {category}
-[사용자 관심사] {interests_str}
 [타겟 레벨] Level {target_level}
 [타겟 페르소나] {persona['role']} - {persona['description']}
+
+[관심분야 목록]
+{interests_str}
 
 [용어 기준]
 {cat_info['term_criteria']}
@@ -133,31 +163,70 @@ class GeminiFinancialTutor:
 📋 작성 규칙 (레벨 {target_level} 전용)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. **storytelling**: {persona['description']}에게 맞춰 300~400자로 자연스럽게 설명
+**중요: 작성 톤 & 보이스**
+- 타겟 페르소나({persona['role']})는 독자의 **지식 수준을 가늠하는 기준**일 뿐입니다
+- 실제 텍스트에서는 독자를 특정 직업/역할로 호칭하거나 지칭하지 마세요
+- 예시: "5년차 개인투자자님", "베테랑 공인중개사로서", "경제연구소 연구원이라면" 등 **절대 금지**
+- 대신 중립적이고 포괄적인 표현 사용: "투자에 관심 있는 분들", "부동산 시장을 주시하는 분들", "경제 흐름을 파악하고자 하는 분들"
+- 설명은 "{persona['description']}" 수준의 배경지식을 전제로 작성하되, 누구나 읽을 수 있는 객관적 톤 유지
+
+1. **storytelling**: 레벨 {target_level} 독자를 위해 {char_limit}로 간결하고 핵심만 설명
+   - 독자를 특정 직업으로 호칭하지 말 것 (예: "5년차 개인투자자님" 금지)
+   - "{persona['description']}" 수준의 지식을 가진 일반 독자를 대상으로 작성
+   - "~님", "투자자님" 등 특정 호칭 사용 금지
 
 2. **terms**: 반드시 2개만 선정
    - 기사 원문이나 storytelling에 나온 용어 중 선택
    - 레벨 {target_level}에 적합한 난이도
+   - 각 용어 설명은 2~3문장으로 간결하게
 
-3. **advice**: [{interests_str}] 중 기사와 가장 관련 깊은 분야 1개 선택
-   - 전망/견해 제시 후 반드시 면책 문구 추가
+3. **predictions**: 위 [관심분야 목록]의 **8개 항목 각각**에 대해 전망 작성
+   - 각 관심사별로 **4~5문장**으로 구체적이고 실질적인 분석 제공
+   - 구조: ① 기사의 핵심 내용이 해당 분야에 미치는 영향 (1문장) → ② 구체적 예시나 시나리오 (1~2문장) → ③ 주의할 점이나 대응 방안 (1문장) → ④ 면책문구
+   - 기사와 관련이 적은 분야도 간접적 영향, 참고사항, 또는 전반적 경제 흐름과의 연계성을 구체적으로 언급
+   - 키(Key)는 반드시 위 목록의 한글 명칭을 **정확히** 사용
+   - **톤**: 중립적이고 객관적으로 작성. "~하시는 분", "투자자분들", "사업자님" 등 특정 독자 지칭 금지
+   - 모든 전망 끝에 면책 문구 추가: "단, 이 전망은 AI 기반 추천이며, 모든 투자 결정과 그에 따른 책임은 본인에게 있습니다."
+
+**중요**: 
+- predictions는 반드시 8개 항목 모두 포함
+- 각 전망은 4~5문장으로 충분히 구체적으로 작성
+- 단순 나열이 아닌 논리적 흐름으로 구성
+- **모든 텍스트는 중립적·객관적 톤 유지 (특정 직업/역할 호칭 절대 금지)**
 
 **JSON 출력 (마크다운 금지):**
 
 {{
   "level": {target_level},
   "role": "{persona['role']}",
-  "storytelling": "레벨 {target_level}에 맞는 해설 (300~400자)",
+  "storytelling": "레벨 {target_level} 해설 ({char_limit}) - 중립적이고 객관적인 톤으로 작성",
   "terms": [
-    {{"term": "용어1", "explanation": "설명1"}},
-    {{"term": "용어2", "explanation": "설명2"}}
+    {{"term": "용어1", "explanation": "간결한 설명 (2~3문장)"}},
+    {{"term": "용어2", "explanation": "간결한 설명 (2~3문장)"}}
   ],
-  "advice": "관심분야 조언 + 단, 이 전망은 AI 기반 추천이며, 모든 투자 결정과 그에 따른 책임은 본인에게 있습니다."
+  "predictions": {{
+    {predictions_template}
+  }}
 }}
 
-JSON 객체만 출력. ```json 금지."""
+**출력 형식**: JSON 객체만 출력. ```json 마크다운 금지.
+**톤 체크리스트**: 
+- ❌ "5년차 개인투자자님", "베테랑 공인중개사로서" 
+- ✅ "주식 투자를 고려하는 경우", "부동산 시장 동향에 주목할 필요"
+"""
 
-            print("🚀 AI 호출 중...")
+            print("🚀 AI 호출 중 (8개 전망 포함)...")
+            
+            # 🔥 토큰 증가: 4~5문장으로 늘어났으므로 토큰 상향
+            token_limits = {
+                1: 6144,   # 기존 4096 → 6144
+                2: 7168,   # 기존 5120 → 7168
+                3: 8192,   # 기존 6144 → 8192
+                4: 10240,  # 기존 8192 → 10240
+                5: 12288   # 기존 8192 → 12288
+            }
+            max_tokens = token_limits.get(target_level, 10240)
+            print(f"   📊 할당 토큰: {max_tokens}")
             
             response = self.model.generate_content(
                 prompt,
@@ -166,14 +235,14 @@ JSON 객체만 출력. ```json 금지."""
                     "temperature": 0.7,
                     "top_p": 0.95,
                     "top_k": 40,
-                    "max_output_tokens": 4096,  # 1개 레벨이므로 4K로 충분
+                    "max_output_tokens": max_tokens,
                 }
             )
             
             print(f"✅ AI 응답 수신 (finish_reason: {response.candidates[0].finish_reason})")
             
             if response.candidates[0].finish_reason == 2:
-                print("⚠️ 응답 잘림")
+                print(f"⚠️ 응답 잘림! 토큰 부족 (현재: {max_tokens})")
                 return None
             
             if not response.parts:
@@ -190,13 +259,118 @@ JSON 객체만 출력. ```json 금지."""
             
             data = json.loads(cleaned)
             
-            print(f"✅ 파싱 성공! Level {target_level} 데이터 생성 완료")
+            # 검증: predictions가 dict이고 8개 항목이 있는지 확인
+            predictions = data.get('predictions', {})
+            if not isinstance(predictions, dict):
+                print("⚠️ predictions가 dict가 아닙니다")
+                return None
+            
+            missing = [i for i in all_interests if i not in predictions]
+            if missing:
+                print(f"⚠️ 누락된 관심사: {missing}")
+                # 누락된 것들은 기본값으로 채움
+                for interest in missing:
+                    predictions[interest] = "전망 정보를 생성하지 못했습니다. 단, 이 전망은 AI 기반 추천이며, 모든 투자 결정과 그에 따른 책임은 본인에게 있습니다."
+            
+            print(f"✅ 파싱 성공! Level {target_level} + 8개 전망 생성 완료")
             return data
             
         except json.JSONDecodeError as e:
             print(f"❌ JSON 파싱 실패: {e}")
+            print(f"   원본: {raw_text[:300]}...")
             return None
             
         except Exception as e:
             print(f"❌ 에러: {type(e).__name__}: {e}")
             return None
+
+
+    def select_best_interest_from_user_list(self, text, user_interests):
+        """
+        🤖 사용자 관심사 중 기사와 가장 관련 깊은 것 선택
+        
+        Args:
+            text: 기사 본문
+            user_interests: 사용자 관심사 리스트
+                예: ["투자", "부동산", "소비"]
+        
+        Returns:
+            {
+                "selected_interest": "투자",
+                "reason": "코스피 지수와 직접 관련"
+            }
+        """
+        
+        if not user_interests or len(user_interests) == 0:
+            return {"selected_interest": "투자", "reason": "기본값"}
+        
+        # 관심사가 1개면 바로 반환
+        if len(user_interests) == 1:
+            return {"selected_interest": user_interests[0], "reason": "유일한 관심사"}
+        
+        print(f"🤖 AI에게 최적 관심사 선택 요청...")
+        print(f"   후보: {user_interests}")
+        
+        try:
+            interests_str = ", ".join(user_interests)
+            
+            prompt = f"""당신은 금융/경제 기사를 분석하는 전문가입니다.
+
+[기사 원문]
+{text[:1500]}
+
+[사용자의 관심 분야]
+{interests_str}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 작업: 이 기사와 가장 밀접한 관심사 1개 선택
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+위 관심사 중 이 기사와 **가장 관련성이 높은 1개**를 선택하고,
+이유를 1문장으로 간단히 설명하세요.
+
+**중요**: selected_interest는 반드시 위 목록 중 하나를 그대로 사용.
+
+**JSON 출력:**
+
+{{
+  "selected_interest": "선택된 관심사",
+  "reason": "선택 이유 (1문장)"
+}}
+
+JSON만 출력. ```json 금지."""
+
+            response = self.model.generate_content(
+                prompt,
+                safety_settings=self.safety_settings,
+                generation_config={
+                    "temperature": 0.3,
+                    "top_p": 0.8,
+                    "top_k": 20,
+                    "max_output_tokens": 256,
+                }
+            )
+            
+            if response.candidates[0].finish_reason != 1:
+                return {"selected_interest": user_interests[0], "reason": "AI 실패"}
+            
+            raw_text = response.text.strip()
+            cleaned = re.sub(r'^```json\s*', '', raw_text, flags=re.MULTILINE)
+            cleaned = re.sub(r'\s*```$', '', cleaned, flags=re.MULTILINE)
+            cleaned = re.sub(r'^```\s*', '', cleaned, flags=re.MULTILINE)
+            cleaned = cleaned.strip()
+            
+            data = json.loads(cleaned)
+            
+            # 검증
+            selected = data.get('selected_interest', '')
+            if selected not in user_interests:
+                print(f"⚠️ AI가 잘못된 관심사 반환: {selected}")
+                return {"selected_interest": user_interests[0], "reason": "검증 실패"}
+            
+            print(f"✅ AI 선택: {selected}")
+            return data
+            
+        except Exception as e:
+            print(f"❌ 에러: {e}")
+            return {"selected_interest": user_interests[0], "reason": "에러"}
