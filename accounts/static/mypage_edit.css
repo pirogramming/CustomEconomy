@@ -1,46 +1,75 @@
-/* 폰트 설정 */
+/* 폰트 및 로컬 변수 설정 */
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
 
+/* [네임스페이스] base.css와 충돌 방지 */
 .mypage-edit-wrapper {
-    --bg-color: #ebf0f6;
-    --card-bg: #ffffff;
-    --text-primary: #333333;
-    --text-secondary: #666666;
-    --accent-green: #8bc34a; /* 레벨 색상 */
-    --accent-orange: #e57373; /* 이름 색상 */
-    --btn-confirm: #D89B73; /* 이미지의 살구색/갈색 버튼 */
-    --btn-reset: #BDBDBD; /* 회색 버튼 */
-    --border-color: #ddd;
+    /* 로컬 색상 변수 */
+    --me-bg-color: #ebf0f6;       
+    --me-card-bg: #ffffff;        
+    --me-text-main: #333333;
+    --me-text-sub: #666666;
+    --me-accent-green: #8bc34a;   
+    --me-accent-orange: #e57373;  
+    --me-btn-confirm: #D89B73;    
+    --me-btn-reset: #BDBDBD;      
+    --me-border: #ddd;            
+    --me-navy: #1a2b45;           
 
-    background-color: var(--bg-color);
-    font-family: "Noto Sans KR", sans-serif;
-    color: var(--text-primary);
-    min-height: 100vh;
-    padding-bottom: 50px;
-    box-sizing: border-box;
-}
-
-/* 컨테이너 */
-.mypage-edit-wrapper .edit-container {
+    font-family: 'Noto Sans KR', sans-serif;
+    color: var(--me-text-main);
     width: 100%;
-    max-width: 800px; /* 수정 페이지는 너무 넓지 않게 */
-    margin: 0 auto;
-    padding: 30px 20px;
+    position: relative; /* 상단 우측 절대 위치 요소 기준 */
+    box-sizing: border-box;
+    padding: 40px;
 }
 
-/* 헤더 */
+/* 상단 오른쪽 돌아가기 버튼 */
+.mypage-edit-wrapper .back-to-mypage-btn {
+    position: absolute;
+    top: 20px;
+    right: 40px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: var(--me-btn-confirm);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    transition: transform 0.12s, opacity 0.12s;
+    z-index: 3000;
+}
+.mypage-edit-wrapper .back-to-mypage-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+
+/* --- 메인 컨테이너 --- */
+/* Flex 대신 일반 Block 흐름 사용 */
+.mypage-edit-wrapper .edit-container {
+    display: block; /* 기본 블록 요소 (위에서 아래로 쌓임) */
+    width: 100%;
+    max-width: 1400px; /* 화면 꽉 채우기 */
+    margin: 0 auto;    /* 중앙 정렬 */
+}
+
+
+/* --- 헤더 영역 --- */
 .mypage-edit-wrapper .page-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
 .mypage-edit-wrapper .page-title {
-    font-family: "Merriweather", serif;
+    font-family: 'Merriweather', serif;
     font-size: 36px;
-    color: #1a2b45;
-    margin: 0;
     font-weight: 700;
+    color: var(--me-navy);
+    margin: 0;
 }
 
 .mypage-edit-wrapper .section-title {
@@ -48,36 +77,44 @@
 }
 
 .mypage-edit-wrapper .section-title h2 {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 700;
-    color: #1a2b45;
-    margin: 0;
+    color: #111;
+    margin: 0 0 10px 5px;
 }
 
-/* --- 프로필 카드 스타일 (이미지 2) --- */
+
+/* --- 프로필 카드 (핵심 디자인) --- */
+/* Flex 대신 Grid 사용 (좌우 배치) */
 .mypage-edit-wrapper .profile-card {
-    background-color: var(--card-bg);
+    background-color: var(--me-card-bg);
     border-radius: 20px;
-    padding: 30px 40px;
-    display: flex;
-    align-items: center;
-    gap: 40px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    padding: 50px 60px;
+    
+    /* [수정] Grid로 좌우 배치 구현 */
+    display: grid;
+    grid-template-columns: 150px 1fr; /* 왼쪽: 고정크기, 오른쪽: 나머지 꽉 채움 */
+    gap: 60px; /* 사진과 텍스트 사이 간격 */
+    align-items: center; /* 수직 중앙 정렬 */
+    
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
-/* 왼쪽 이미지 영역 */
+/* 왼쪽: 프로필 이미지 영역 */
 .mypage-edit-wrapper .profile-left {
-    flex-shrink: 0;
-    position: relative;
+    position: relative; /* 자식(아이콘)의 기준점 */
+    width: 150px;       /* 크기 명시 */
+    height: 150px;
 }
 
 .mypage-edit-wrapper .profile-img-box {
-    width: 120px;
-    height: 120px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    border: 4px solid #1a2b45; /* 이미지의 진한 남색 테두리 */
-    position: relative;
     background: #fff;
+    border: 5px solid var(--me-navy);
+    box-sizing: border-box; /* 테두리 포함 크기 계산 */
 }
 
 .mypage-edit-wrapper .profile-img-box img {
@@ -85,133 +122,172 @@
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
+    display: block; /* 이미지 하단 여백 제거 */
 }
 
-/* 사진 수정 버튼 (우측 하단 아이콘) */
-.mypage-edit-wrapper .photo-edit-btn {
+/* 사진 수정 버튼 (원형 아이콘) */
+.mypage-edit-wrapper .edit-icon-circle {
     position: absolute;
     bottom: 0;
     right: 0;
+    width: 40px;
+    height: 40px;
     background: #fff;
     border: 1px solid #ccc;
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    color: #555;
+    padding: 0;
+    z-index: 10;
+    
+    /* Grid/Flex 없이 중앙 정렬하기 */
+    text-align: center;
+    line-height: 38px; /* height와 비슷하게 맞춰서 수직 정렬 효과 */
+}
+.mypage-edit-wrapper .edit-icon-circle svg {
+    vertical-align: middle; /* 아이콘 수직 정렬 보정 */
+    margin-top: -2px;
+}
+.mypage-edit-wrapper .edit-icon-circle:hover {
+    background-color: #f9f9f9;
 }
 
-/* 오른쪽 정보 영역 */
+
+/* 오른쪽: 정보 텍스트 영역 */
 .mypage-edit-wrapper .profile-right {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    width: 100%;
+    display: block; /* 일반 블록 흐름 */
 }
 
+.mypage-edit-wrapper .info-group {
+    /* 자식 요소들이 세로로 쌓이도록 */
+    display: block; 
+}
+
+/* 각 정보 줄 (닉네임, 관심분야 등) */
 .mypage-edit-wrapper .info-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    margin-bottom: 15px;
+    /* 내부 요소 가로 정렬을 위해 inline-block 사용 */
 }
 
-.mypage-edit-wrapper .nickname-group {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
+/* 닉네임 스타일 */
 .mypage-edit-wrapper .nickname {
-    font-size: 22px;
+    font-size: 28px;
     font-weight: 700;
-    color: var(--accent-orange);
+    color: var(--me-accent-orange);
+    display: inline-block; /* 가로 배치 */
+    vertical-align: middle; /* 수직 정렬 */
+    margin-right: 8px;
 }
 
+/* 수정(연필) 버튼 공통 */
 .mypage-edit-wrapper .edit-icon-btn {
     background: none;
     border: none;
     cursor: pointer;
     color: #333;
-    padding: 2px;
-    display: flex;
-    align-items: center;
+    padding: 0;
+    
+    display: inline-block; /* 가로 배치 */
+    vertical-align: middle; /* 수직 정렬 */
+    transition: opacity 0.2s;
+    transform: translateY(3px); 
 }
 .mypage-edit-wrapper .edit-icon-btn:hover {
     opacity: 0.6;
 }
 
-.mypage-edit-wrapper .interest-group {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 16px;
-    font-weight: 700;
-    margin-bottom: 5px;
-}
-
-.mypage-edit-wrapper .level {
+/* 관심분야 스타일 */
+.mypage-edit-wrapper .interest-label,
+.mypage-edit-wrapper .interest-value {
     font-size: 18px;
     font-weight: 700;
-    color: var(--accent-green);
-    margin-top: 5px;
+    color: #333;
+    display: inline-block;
+    vertical-align: middle;
+}
+.mypage-edit-wrapper .interest-label {
+    margin-right: 5px;
+}
+.mypage-edit-wrapper .interest-row .edit-icon-btn {
+    margin-left: 5px;
+}
+
+/* 레벨 스타일 */
+.mypage-edit-wrapper .level-row {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.mypage-edit-wrapper .level {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--me-accent-green);
     display: block;
 }
 
-.mypage-edit-wrapper .progress-container {
+/* 경험치 바 */
+.mypage-edit-wrapper .progress-bar-area {
     width: 100%;
+    display: flex; /* 세로 스택으로 배치 */
+    flex-direction: column;
+    align-items: flex-start; /* 왼쪽 정렬 */
+    gap: 8px; /* 바와 텍스트 사이 간격 */
     margin-top: 5px;
 }
-
 .mypage-edit-wrapper .progress-bar {
     width: 100%;
-    height: 24px; /* 이미지처럼 두껍게 */
+    height: 24px;
     background-color: #ddd;
     border-radius: 12px;
     overflow: hidden;
 }
-
 .mypage-edit-wrapper .progress-fill {
+    display: block; /* div는 기본 block */
     height: 100%;
-    background-color: #9abf86; /* 이미지의 탁한 초록색 */
+    background-color: #9abf86;
     border-radius: 12px;
 }
-
-.mypage-edit-wrapper .progress-text {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin: 8px 0 0 0;
+.mypage-edit-wrapper .mypage_edit-progress-text {
+    font-size: 14px;
+    color: var(--me-text-sub);
+    margin: 0;
+    display: block;
 }
 
-/* --- 모달 공통 스타일 --- */
+
+/* --- 모달 (Modal) 공통 스타일 --- */
 .mypage-edit-wrapper .modal-overlay {
-    display: none; /* 기본 숨김 */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 2000;
 }
 
+/* [수정] Flex 없이 모달 정중앙 띄우기 (Position 활용) */
 .mypage-edit-wrapper .modal-box {
     background-color: #fff;
     width: 400px;
     border-radius: 15px;
     padding: 30px;
-    position: relative;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-    animation: fadeIn 0.3s ease-out;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    
+    /* 정중앙 위치 계산 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    
+    animation: modalFadeIn 0.3s ease-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes modalFadeIn {
+    from { opacity: 0; top: 45%; }
+    to { opacity: 1; top: 50%; }
 }
 
 .mypage-edit-wrapper .close-btn {
@@ -231,98 +307,102 @@
     font-size: 20px;
     font-weight: 700;
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     color: #000;
+    position: relative;
 }
 
-/* 모달 타이틀 밑줄 (이미지 스타일) */
 .mypage-edit-wrapper .modal-title::after {
     content: '';
     display: block;
     width: 60px;
-    height: 2px;
-    background-color: var(--btn-confirm);
-    margin: 10px auto 20px;
+    height: 3px;
+    background-color: var(--me-btn-confirm);
+    margin: 10px auto 0;
 }
 
 .mypage-edit-wrapper .modal-body {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+    /* Flex Column 대신 일반 Block 흐름 사용 */
+    display: block; 
 }
 
-/* 입력 필드 공통 */
+
+/* --- 모달 내부 폼 요소 --- */
 .mypage-edit-wrapper .input-label {
     font-size: 14px;
-    color: #333;
+    color: #555;
     font-weight: 500;
     margin-bottom: 5px;
-    display: block;
+    display: block; /* 줄바꿈 */
 }
 
 .mypage-edit-wrapper .modal-input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--me-border);
     border-radius: 10px;
     font-size: 15px;
-    box-sizing: border-box; /* 패딩 포함 */
-    margin-bottom: 15px;
+    box-sizing: border-box;
     outline: none;
+    margin-bottom: 15px; /* 아래 요소와 간격 */
+    display: block;
 }
 .mypage-edit-wrapper .modal-input:focus {
-    border-color: var(--btn-confirm);
+    border-color: var(--me-btn-confirm);
 }
 
-/* 확인 버튼 공통 */
+/* 확인 버튼 */
 .mypage-edit-wrapper .confirm-btn {
     width: 100%;
     padding: 12px;
-    background-color: var(--btn-confirm); /* 이미지의 갈색/살구색 */
+    background-color: var(--me-btn-confirm);
     color: #fff;
     border: none;
     border-radius: 25px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     margin-top: 10px;
+    display: block;
 }
-.mypage-edit-wrapper .confirm-btn:hover {
-    opacity: 0.9;
-}
-.mypage-edit-wrapper .confirm-btn.small {
-    width: auto;
-    padding: 12px 30px;
-    min-width: 100px;
+.mypage-edit-wrapper .confirm-btn:hover { opacity: 0.9; }
+.mypage-edit-wrapper .confirm-btn.small { 
+    display: inline-block; 
+    width: auto; 
+    min-width: 100px; 
+    padding: 12px 30px; 
+    margin-top: 0; 
 }
 
-/* --- 사진 수정 모달 전용 --- */
+
 .mypage-edit-wrapper .photo-preview-area {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    border: 1px solid #ddd;
-    padding: 20px;
-    margin-bottom: 15px;
+    /* 기존 Grid, 테두리 제거 */
+    display: block; 
+    border: none;
+    padding: 0;
+    margin-bottom: 20px; /* 업로드 버튼과 간격 */
+    text-align: center;  /* 내부 박스 중앙 정렬 */
 }
 
 .mypage-edit-wrapper .preview-box {
-    width: 80px;
-    height: 80px;
+    /* 크기 확대 및 중앙 정렬 */
+    width: 100%;
+    max-width: 250px;    /* 너무 커지지 않게 제한 */
+    aspect-ratio: 1 / 1; /* 정사각형 비율 유지 */
+    margin: 0 auto;      /* 가운데 정렬 */
+    
     background: #eee;
-    flex-shrink: 0;
+    border: 1px solid var(--me-border);
+    border-radius: 15px; /* 모서리 둥글게 */
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
+
 .mypage-edit-wrapper .preview-box img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-}
-
-.mypage-edit-wrapper .photo-desc {
-    font-size: 13px;
-    color: #333;
-    line-height: 1.6;
-    margin: 0;
+    object-fit: cover;   /* 영역에 꽉 차게 (잘릴 수 있음) */
+    display: block;
 }
 
 .mypage-edit-wrapper .upload-btn {
@@ -330,7 +410,7 @@
     width: 100%;
     text-align: center;
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--me-border);
     border-radius: 25px;
     background: #fff;
     color: #333;
@@ -341,67 +421,79 @@
 }
 
 .mypage-edit-wrapper .btn-group {
-    display: flex;
-    justify-content: space-between;
+    /* 버튼 좌우 배치 */
+    display: grid;
+    grid-template-columns: 1fr auto; /* 왼쪽 버튼은 채우고, 오른쪽은 내용만큼 */
     gap: 10px;
+    margin-top: 10px;
 }
 
 .mypage-edit-wrapper .reset-btn {
-    background-color: #a7a7a7; /* 옅은 갈색/회색 */
+    background-color: #a7a7a7;
     color: #fff;
     border: none;
     border-radius: 25px;
     padding: 12px 20px;
     font-size: 14px;
     cursor: pointer;
-    flex: 1;
+    width: 100%;
 }
 
-/* --- 관심분야 모달 전용 (이미지 5) --- */
+
+/* --- 관심분야 모달 전용 --- */
 .mypage-edit-wrapper .interest-list {
-    border: 1px solid #ddd;
+    border: 1px solid var(--me-border);
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 10px;
 }
 
 .mypage-edit-wrapper .interest-item {
-    display: flex;
-    align-items: center;
+    display: block; /* 한 줄에 하나씩 */
     padding: 12px 15px;
     border-bottom: 1px solid #eee;
     cursor: pointer;
     font-size: 15px;
+    position: relative; /* 자식 요소 배치 기준 */
 }
-.mypage-edit-wrapper .interest-item:last-child {
-    border-bottom: none;
+/* input과 span 세로 정렬 맞추기 */
+.mypage-edit-wrapper .interest-item span {
+    display: inline-block;
+    vertical-align: middle;
 }
 
-.mypage-edit-wrapper .interest-item input {
-    display: none; /* 라디오 버튼 숨김 */
-}
+.mypage-edit-wrapper .interest-item:last-child { border-bottom: none; }
+.mypage-edit-wrapper .interest-item input { display: none; }
 
-/* 선택된 항목 스타일 (이미지의 초록색 배경) */
 .mypage-edit-wrapper .interest-item.selected {
     background-color: #e8f5e9;
     font-weight: 700;
 }
 
 
-/* 반응형 */
-@media (max-width: 600px) {
+/* --- 반응형 스타일 (모바일/태블릿) --- */
+@media (max-width: 768px) {
+    .mypage-edit-wrapper {
+        padding: 30px 20px;
+    }
+
     .mypage-edit-wrapper .profile-card {
-        flex-direction: column;
+        /* 모바일에서는 세로로 쌓이게 변경 */
+        display: block; 
         text-align: center;
-        padding: 20px;
+        padding: 30px;
     }
+
     .mypage-edit-wrapper .profile-left {
-        margin-bottom: 20px;
+        /* 이미지 가운데 정렬 */
+        margin: 0 auto 30px auto; 
     }
-    .mypage-edit-wrapper .info-row, 
-    .mypage-edit-wrapper .nickname-group {
-        justify-content: center;
+
+    .mypage-edit-wrapper .profile-right {
+        /* 중앙 정렬 유지 */
+        text-align: center;
     }
+
     .mypage-edit-wrapper .modal-box {
         width: 90%;
         padding: 20px;

@@ -9,96 +9,95 @@
 
 {% block content %}
 <div class="terms-wrapper">
-    <!-- 헤더 영역 -->
     <header class="terms-header">
         <a class="page-title" href="{% url 'main' %}">Custom Economy</a>
     </header>
 
-    <!-- 검색바 -->
     <div class="search-bar-container">
-        <div class="search-bar">
-            <input type="text" class="search-input" placeholder="단어를 검색하세요">
-            <button class="search-button">
+        <form class="search-bar" method="get" action="{% url 'terms' %}">
+            <input type="text" name="q" class="search-input" placeholder="단어를 검색하세요" value="{{ q|default:'' }}">
+            <button type="submit" class="search-button">
                 <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
                     <path d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </button>
-        </div>
+        </form>
+        {% if q %}
+        <div class="search-info">검색어 "{{ q }}" — 결과 {{ count }}개</div>
+        {% endif %}
     </div>
 
-    <!-- 경제 용어 리스트 -->
     <div class="terms-list">
-        <!-- 가계수지 -->
+        {% for word, definition in dictionary_items %}
         <article class="term-card">
-            <div class="term-header">
-                <h2 class="term-title">가계수지</h2>
-            </div>
-            <div class="term-content">
-                <p class="term-description">
-                    가정에서 일정 기간의 수입(명목소득)과 지출을 비교해서 남았는지 모자랐는지를 표시한 것을 가계수지(Household's Total Income and Expenditure)라 한다. 가계수지가 흑자를 냈다면 그 가정은 벌어들인 수입 일부만을 사용했다는 것을 의미하며, 적자를 냈다면 수입 외에 빚을 추가로 얻어 사용한 것이라고 보아야 한다
-                </p>
-            </div>
-        </article>
+            <button class="bookmark-btn {% if word in bookmarked_words %}active{% endif %}" aria-label="북마크" data-word="{{ word|escapejs }}" data-definition="{{ definition|escapejs }}">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
 
-        <!-- 가계부실위험지수 -->
-        <article class="term-card">
             <div class="term-header">
-                <h2 class="term-title">가계부실위험지수</h2>
+                <h2 class="term-title">{{ word }}</h2>
             </div>
             <div class="term-content">
-                <p class="term-description">
-                    가구의 소득 흐름은 물론 금융 및 실물 자산까지 종합적으로 고려하여 가계부채의 부실 위험을 평가하는 지표로, 가계의 채무상환능력을 소득 측면에서 평가하는 원리금상환비율(DSR; Debt Service Ratio)과 자산 측면에서 평가하는 부채/자산비율(DTA; Debt To Asset Ratio)을 결합하여 산출한 지수이다.
-                </p>
+                <p class="term-description">{{ definition }}</p>
             </div>
         </article>
-
-        <!-- 가계수지 (반복) -->
-        <article class="term-card">
-            <div class="term-header">
-                <h2 class="term-title">가계수지</h2>
-            </div>
-            <div class="term-content">
-                <p class="term-description">
-                    가정에서 일정 기간의 수입(명목소득)과 지출을 비교해서 남았는지 모자랐는지를 표시한 것을 가계수지(Household's Total Income and Expenditure)라 한다. 가계수지가 흑자를 냈다면 그 가정은 벌어들인 수입 일부만을 사용했다는 것을 의미하며, 적자를 냈다면 수입 외에 빚을 추가로 얻어 사용한 것이라고 보아야 한다
-                </p>
-            </div>
-        </article>
-
-        <!-- 가계순저축률 -->
-        <article class="term-card">
-            <div class="term-header">
-                <h2 class="term-title">가계순저축률</h2>
-            </div>
-            <div class="term-content">
-                <p class="term-description">
-                    일반적으로 저축률은 저축액을 처분가능소득으로 나눈 비율을 말한다. 마찬가지로 가계순저축률은 가계부문의 순저축액을 가계순처분가능소득과 정부로부터 받은 사회적 현물이전 금액, 연금기금의 가계순지분 증감조정액을 합계한 금액으로 나눈 비율이다.
-                </p>
-            </div>
-        </article>
-
-        <!-- 가계신용통계 -->
-        <article class="term-card">
-            <div class="term-header">
-                <h2 class="term-title">가계신용통계</h2>
-            </div>
-            <div class="term-content">
-                <p class="term-description">
-                    가계신용통계는 가계부문에 대한 신용공급 규모를 나타내는 통계이다. 가계신용은 금융 기관뿐 아니라 정부, 판매회사 등 기타기관이 가계에 제공한 대출과 외상구매 관련 신용을 모두 포괄하는 것으로 크게 가계대출과 판매신용으로 구분된다.
-                </p>
-            </div>
-        </article>
-
-        <!-- 가교은행 -->
-        <article class="term-card">
-            <div class="term-header">
-                <h2 class="term-title">가교은행</h2>
-            </div>
-            <div class="term-content">
-                <p class="term-description">
-                    청산 대상 금융기관의 자산, 부채를 임시로 넘겨받아 예금, 출금 등의 업무를 대행하고 합병, 채권채무관계 조정 등 후속조치를 수행하는 은행을 말한다
-                </p>
-            </div>
-        </article>
+        {% empty %}
+        <p>사전 데이터가 없습니다.</p>
+        {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+}
+
+document.querySelectorAll('.bookmark-btn').forEach(btn => {
+    btn.addEventListener('click', function(e){
+        e.preventDefault();
+        const word = this.dataset.word;
+        const definition = this.dataset.definition;
+        const isActive = this.classList.contains('active');
+        const url = isActive ? "{% url 'unbookmark_term' %}" : "{% url 'bookmark_term' %}";
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({word: word, definition: definition})
+        }).then(r => r.json()).then(data => {
+            if (data.ok) {
+                if (isActive) this.classList.remove('active'); else this.classList.add('active');
+
+                // If mypage bookmark list exists on the page, refresh it using returned bookmarks
+                const container = document.getElementById('term-bookmark-list');
+                if (container) {
+                    const bookmarks = data.bookmarks || [];
+                    container.innerHTML = '';
+                    if (!bookmarks.length) {
+                        container.innerHTML = '<div class="term-card">스크랩한 단어가 없습니다.</div>';
+                    } else {
+                        bookmarks.forEach(b => {
+                            const div = document.createElement('div');
+                            div.className = 'term-card';
+                            div.innerHTML = `${b.word}<div class="term-card-desc">${b.definition || ''}</div>`;
+                            container.appendChild(div);
+                        });
+                    }
+                }
+            } else {
+                alert('스크랩 실패: ' + (data.error || ''));
+            }
+        }).catch(()=>{
+            alert('로그인이 필요한 서비스입니다');
+        });
+    });
+});
+</script>
 {% endblock %}

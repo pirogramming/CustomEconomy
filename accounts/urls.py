@@ -17,4 +17,8 @@ urlpatterns = [
      path("level_test/submit/", views.api_submit, name="level_test_submit"), # 답 제출(채점/다음)
      path("level_test/result/", views.result_page, name="level_test_result"),      # 결과 화면
      path('edit/', views.edit_view, name='edit'),
+     path('edit/nickname/', views.update_nickname, name='update_nickname'),
+     path('edit/photo/', views.update_photo, name='update_photo'),
+     path('edit/interest/', views.update_interest, name='update_interest'),
+     path('scrapterm/', views.scrap_term_view, name='scrapterm'),
 ]

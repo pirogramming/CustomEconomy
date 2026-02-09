@@ -201,24 +201,26 @@ body {
 
 /* 탭 헤더 */
 .tabs-header {
-    display: flex;
-    gap: 8px;
-    padding-left: 20px;
-    margin-bottom: -2px;
-    z-index: 10;
-    position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  padding: 0px 0px;
+  max-width: 1000px;  
+  width: 100%; height: 40px;
 }
 
 .tab-item {
     background-color: rgba(255, 255, 255, 0.5);
     border: none;
-    padding: 12px 24px;
+    padding: 12px 0px;
     font-size: 1rem;
     font-weight: 700;
     color: #999;
     border-radius: 15px 15px 0 0;
     cursor: pointer;
     transition: all 0.2s ease;
+    flex:1;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .tab-item:hover:not(.locked) {
@@ -242,7 +244,7 @@ body {
 /* 화이트 카드 바디 */
 .white-card-body {
     background-color: var(--c-white);
-    border-radius: 20px;
+    border-radius: 0 0 20 20px;
     padding: 50px;
     box-shadow: 0 10px 40px rgba(0,0,0,0.1);
     position: relative;
@@ -326,6 +328,21 @@ body {
 .external-link-area {
     text-align: center;
     margin-bottom: 25px;
+}
+
+/* article header row: date on left, bookmark on right */
+.article-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.article-header-row .article-date-badge {
+    text-align: left;
+    font-size: 0.95rem;
+    color: #666;
+    font-weight: 600;
 }
 
 .original-link {
@@ -451,4 +468,20 @@ body {
 
 .word-sidebar-scroll-area::-webkit-scrollbar-thumb:hover {
     background: #ccc;
+}
+
+/* 북마크 버튼 스타일 (활성화 시 색 변경) */
+.bookmark-btn { background: none; border: none; padding: 5px; cursor: pointer; }
+.bookmark-btn svg {
+    color: #ccc;
+    fill: transparent;
+    transition: all 0.2s ease;
+}
+.bookmark-btn.active svg {
+    color: #f39c12; /* 활성화 시 테두리 색상 (노란색 계열) */
+    fill: #f39c12; /* 활성화 시 내부 채우기 */
+}
+.bookmark-btn:hover svg {
+    transform: scale(1.1);
+    color: #f39c12;
 }
