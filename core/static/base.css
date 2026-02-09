@@ -97,7 +97,6 @@ body.collapsed main {
 
 .sidebar-auth {
     width: 100%;
-    margin-top: 20px;
     padding-top: 15px;
     border-top: 1px solid rgba(255, 255, 255, 0.1); /* 위쪽 구분선 (선택사항) */
     text-align: center;

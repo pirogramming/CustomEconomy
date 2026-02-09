@@ -1,12 +1,154 @@
 from django.shortcuts import render
 from django.utils import timezone
-from datetime import timedelta
+from django.core.cache import cache
+from datetime import datetime, timedelta
 from django.db.models import Q, Case, When, Value, IntegerField, F
 from articles.models import Article
 from accounts.models import UserInterest
+import os
+import requests
 
-# Create your views here.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 한국은행 API 연동 함수들
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+def fetch_bok_data(api_key, stat_code, item_code, days_back=7):
+    """
+    한국은행 ECOS API에서 데이터 조회
+    
+    Args:
+        api_key: BOK API 키
+        stat_code: 통계표 코드 (예: 722Y001)
+        item_code: 통계항목 코드
+        days_back: 며칠 전부터 조회할지
+    
+    Returns:
+        최신 데이터 또는 None
+    """
+    try:
+        # 날짜 범위 계산
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=days_back)
+        start_str = start_date.strftime('%Y%m%d')
+        end_str = end_date.strftime('%Y%m%d')
+        
+        # API URL 구성
+        # 형식: /StatisticSearch/{인증키}/json/kr/1/100/{통계표코드}/{주기}/{시작일}/{종료일}/{통계항목코드}
+        url = f"https://ecos.bok.or.kr/api/StatisticSearch/{api_key}/json/kr/1/100/{stat_code}/D/{start_str}/{end_str}/{item_code}"
+        
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        # 응답 파싱
+        if 'StatisticSearch' in data and 'row' in data['StatisticSearch']:
+            rows = data['StatisticSearch']['row']
+            if rows and len(rows) > 0:
+                return rows[-1]  # 최신 데이터 반환
+        
+        return None
+        
+    except Exception as e:
+        print(f"❌ BOK API 요청 실패 ({item_code}): {e}")
+        return None
+
+
+def get_kospi_index():
+    """KOSPI 지수 조회"""
+    cache_key = 'bok_kospi'
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
+    
+    api_key = os.getenv('BOK_API_KEY')
+    if not api_key:
+        return {'value': 2500.0, 'label': 'KOSPI', 'unit': ''}
+    
+    data = fetch_bok_data(api_key, '902Y015', '0001000')  # KOSPI 지수
+    if data:
+        result = {
+            'value': float(data.get('DATA_VALUE', 0)),
+            'label': 'KOSPI',
+            'unit': ''
+        }
+        cache.set(cache_key, result, 3600)  # 1시간 캐시
+        return result
+    
+    return {'value': 2500.0, 'label': 'KOSPI', 'unit': ''}
+
+
+def get_exchange_rate():
+    """원/달러 환율 조회"""
+    cache_key = 'bok_exchange'
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
+    
+    api_key = os.getenv('BOK_API_KEY')
+    if not api_key:
+        return {'value': 1320.5, 'label': '환율', 'unit': '원/USD'}
+    
+    data = fetch_bok_data(api_key, '731Y001', '0000001')  # 원/달러 환율
+    if data:
+        result = {
+            'value': float(data.get('DATA_VALUE', 0)),
+            'label': '환율',
+            'unit': '원/USD'
+        }
+        cache.set(cache_key, result, 3600)
+        return result
+    
+    return {'value': 1320.5, 'label': '환율', 'unit': '원/USD'}
+
+
+def get_base_rate():
+    """기준금리 조회 (월별 데이터)"""
+    cache_key = 'bok_interest'
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
+    
+    api_key = os.getenv('BOK_API_KEY')
+    if not api_key:
+        return {'value': 3.25, 'label': '기준금리', 'unit': '%'}
+    
+    try:
+        # 기준금리는 월별 데이터이므로 다르게 처리
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=90)  # 3개월 전
+        start_str = start_date.strftime('%Y%m')
+        end_str = end_date.strftime('%Y%m')
+        
+        url = f"https://ecos.bok.or.kr/api/StatisticSearch/{api_key}/json/kr/1/100/722Y001/M/{start_str}/{end_str}/0101000"
+        
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        if 'StatisticSearch' in data and 'row' in data['StatisticSearch']:
+            rows = data['StatisticSearch']['row']
+            if rows and len(rows) > 0:
+                latest = rows[-1]
+                result = {
+                    'value': float(latest.get('DATA_VALUE', 0)),
+                    'label': '기준금리',
+                    'unit': '%'
+                }
+                cache.set(cache_key, result, 21600)  # 6시간 캐시 (금리는 자주 안 바뀜)
+                return result
+    except Exception as e:
+        print(f"❌ 기준금리 조회 실패: {e}")
+    
+    return {'value': 3.25, 'label': '기준금리', 'unit': '%'}
+
+
+def get_economic_indicators():
+    """모든 경제 지표 조회"""
+    return {
+        'kospi': get_kospi_index(),
+        'exchange': get_exchange_rate(),
+        'interest': get_base_rate()
+    }
 def main_view(request):
     user = request.user
     now = timezone.now()

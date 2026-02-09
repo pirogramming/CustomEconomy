@@ -12,6 +12,86 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
         rel="stylesheet">
+    
+    <style>
+        /* 경제 지표 티커 스타일 */
+        .economic-ticker {
+            width: 100%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a2332 0%, #2a3648 100%);
+            padding: 0;
+            position: relative;
+            border-top: 1px solid rgba(77, 208, 225, 0.2);
+        }
+
+        .ticker-wrapper {
+            display: flex;
+            animation: scroll-left 30s linear infinite;
+            width: max-content;
+        }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            margin: 0 40px;
+            white-space: nowrap;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .ticker-label {
+            color: #4dd0e1;
+            font-weight: 600;
+            font-size: 13px;
+            margin-right: 8px;
+        }
+
+        .ticker-value {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 15px;
+            margin-right: 4px;
+        }
+
+        .ticker-unit {
+            color: #a0aec0;
+            font-size: 12px;
+        }
+
+        .ticker-separator {
+            color: rgba(77, 208, 225, 0.3);
+            margin: 0 15px;
+        }
+
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-33.33%);
+            }
+        }
+
+        /* 마우스 호버 시 애니메이션 일시 정지 */
+        .economic-ticker:hover .ticker-wrapper {
+            animation-play-state: paused;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .ticker-item {
+                margin: 0 20px;
+            }
+            
+            .ticker-label {
+                font-size: 11px;
+            }
+            
+            .ticker-value {
+                font-size: 13px;
+            }
+        }
+    </style>
+    
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -108,10 +188,32 @@
             </div>
         </div>
 
-        <div class="sidebar-footer hide-on-collapse">
-            <div class="footer-item">
-                <span class="footer-label">KOSPI</span>
-                <span class="footer-value">5000</span>
+        <!-- 경제 지표 티커 (컨베이어벨트 스타일) -->
+        <div class="economic-ticker hide-on-collapse">
+            <div class="ticker-wrapper" id="tickerWrapper">
+                <!-- 3번 반복해서 끊김 없이 흐르도록 -->
+                {% for _ in "xxx" %}
+                    <div class="ticker-item">
+                        <span class="ticker-label">KOSPI</span>
+                        <span class="ticker-value" id="kospiValue">{{ economic_indicators.kospi.value|default:"2,500.00" }}</span>
+                        <span class="ticker-unit">{{ economic_indicators.kospi.unit|default:"" }}</span>
+                    </div>
+                    <span class="ticker-separator">|</span>
+                    
+                    <div class="ticker-item">
+                        <span class="ticker-label">환율</span>
+                        <span class="ticker-value" id="exchangeValue">{{ economic_indicators.exchange.value|default:"1,320.50" }}</span>
+                        <span class="ticker-unit">{{ economic_indicators.exchange.unit|default:"원/USD" }}</span>
+                    </div>
+                    <span class="ticker-separator">|</span>
+                    
+                    <div class="ticker-item">
+                        <span class="ticker-label">기준금리</span>
+                        <span class="ticker-value" id="interestValue">{{ economic_indicators.interest.value|default:"3.25" }}</span>
+                        <span class="ticker-unit">{{ economic_indicators.interest.unit|default:"%" }}</span>
+                    </div>
+                    <span class="ticker-separator">|</span>
+                {% endfor %}
             </div>
         </div>
 
@@ -158,6 +260,39 @@
             } else {
                 localStorage.setItem('sidebar-collapsed', 'false');
                 arrowIcon.innerText = '◀';
+            }
+        });
+
+        // 3. 경제 지표 숫자 포맷팅 (천 단위 쉼표)
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // 페이지 로드 시 숫자 포맷팅 적용
+        document.addEventListener('DOMContentLoaded', () => {
+            const kospiEl = document.getElementById('kospiValue');
+            const exchangeEl = document.getElementById('exchangeValue');
+            const interestEl = document.getElementById('interestValue');
+
+            if (kospiEl && kospiEl.textContent) {
+                const kospiNum = parseFloat(kospiEl.textContent.replace(/,/g, ''));
+                if (!isNaN(kospiNum)) {
+                    kospiEl.textContent = formatNumber(kospiNum.toFixed(2));
+                }
+            }
+
+            if (exchangeEl && exchangeEl.textContent) {
+                const exchangeNum = parseFloat(exchangeEl.textContent.replace(/,/g, ''));
+                if (!isNaN(exchangeNum)) {
+                    exchangeEl.textContent = formatNumber(exchangeNum.toFixed(2));
+                }
+            }
+
+            if (interestEl && interestEl.textContent) {
+                const interestNum = parseFloat(interestEl.textContent.replace(/,/g, ''));
+                if (!isNaN(interestNum)) {
+                    interestEl.textContent = interestNum.toFixed(2);
+                }
             }
         });
     </script>
