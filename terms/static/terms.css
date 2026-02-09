@@ -1,7 +1,3 @@
-/* ==================== */
-/* Economic Terms Page Styles */
-/* ==================== */
-
 :root {
     /* 색상 변수 */
     --c-orange: #EF9160;
@@ -11,6 +7,7 @@
     --c-text-dark: #333333;
     --c-text-light: #666666;
     --c-border-light: #E0E0E0;
+    --c-icon-gray: #CCCCCC; /* 아이콘 기본 색상 */
 }
 
 /* 기본 초기화 */
@@ -141,6 +138,13 @@ body {
     color: var(--c-text-light);
 }
 
+.search-info {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--c-text-light);
+}
+
 /* ==================== */
 /* 용어 리스트 */
 /* ==================== */
@@ -161,6 +165,10 @@ body {
     padding: 20px 24px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
     transition: all 0.3s ease;
+    
+    /* 북마크 버튼 위치를 위한 설정 */
+    position: relative;
+    padding-right: 50px; /* 제목이 버튼과 겹치지 않도록 우측 여백 확보 */
 }
 
 .term-card:hover {
@@ -180,7 +188,7 @@ body {
 }
 
 .term-content {
-    margin-bottom: 16px;
+    margin-bottom: 0; /* 설명글 아래 여백 조정 */
 }
 
 .term-description {
@@ -190,10 +198,41 @@ body {
     word-break: keep-all;
 }
 
-.term-divider {
+/* 북마크 버튼 스타일 */
+.bookmark-btn {
+    position: absolute;
+    top: 50%; /* 카드 세로 중앙에 배치 */
+    right: 20px; /* 카드의 우측 패딩과 동일하게 맞춤 */
+    transform: translateY(-50%); /* 정확한 중앙 정렬 */
+    background: none;
     border: none;
-    border-top: 1px solid var(--c-border-light);
-    margin: 0;
+    cursor: pointer;
+    color: var(--c-icon-gray);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    width: 24px;
+    height: 24px;
+    z-index: 30; /* 카드 위에 올라오도록 우선순위 설정 */
+}
+
+/* 호버 시 주황색으로 변경 및 약간 확대 */
+.bookmark-btn:hover {
+    color: var(--c-orange);
+    transform: translateY(-50%) scale(1.05); /* 위치 유지하고 약간 확대 */
+}
+
+/* 활성화(북마크 됨) 상태 */
+.bookmark-btn.active svg {
+    fill: var(--c-orange);  /* 내부 채우기 */
+    color: var(--c-orange); /* 선 색상 */
+}
+
+.bookmark-btn svg {
+    width: 24px;
+    height: 24px;
 }
 
 /* ==================== */
@@ -215,6 +254,14 @@ body {
     
     .term-card {
         padding: 16px 20px;
+        padding-right: 48px; /* 모바일 우측 여백 확보 */
+    }
+
+    /* 모바일 북마크 위치 조정 */
+    .bookmark-btn {
+        top: 50%;
+        right: 16px;
+        transform: translateY(-50%);
     }
     
     .term-title {
@@ -270,6 +317,14 @@ body {
     
     .term-card {
         padding: 24px 32px;
+        padding-right: 60px; /* 태블릿 우측 여백 확보 */
+    }
+
+    /* 태블릿 북마크 위치 조정 */
+    .bookmark-btn {
+        top: 50%;
+        right: 32px;
+        transform: translateY(-50%);
     }
     
     .term-title {
@@ -297,6 +352,14 @@ body {
     
     .term-card {
         padding: 28px 36px;
+        padding-right: 70px; /* 데스크탑 우측 여백 확보 */
+    }
+
+    /* 데스크탑 북마크 위치 조정 */
+    .bookmark-btn {
+        top: 50%;
+        right: 36px;
+        transform: translateY(-50%);
     }
     
     .term-title {

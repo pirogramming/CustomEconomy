@@ -18,3 +18,16 @@ class ArticleTerm(models.Model):
 
     class Meta:
         unique_together = (('article', 'term'),)
+
+
+class TermBookmark(models.Model):
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='term_bookmarks')
+    word = models.CharField(max_length=100)
+    definition = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = (('user', 'word'),)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.word}"
