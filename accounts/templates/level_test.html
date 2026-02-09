@@ -12,7 +12,11 @@
   <main style="max-width:720px;margin:40px auto;padding:0 16px;">
     <h1>레벨 테스트</h1>
 
-    <div id="progress" style="margin:12px 0;color:#666;"></div>
+    <div class="progress_area">
+      <img src="{% static 'icon/progress_unchecked.svg' %}" alt="레벨 테스트 배너" style="width:100%;border-radius:12px;margin-bottom:16px;">
+    </div>
+
+    <div id="progress"></div>
 
     <section id="card" style="border:1px solid #ddd;border-radius:12px;padding:16px;">
       <div id="qtype" style="font-size:12px;color:#888;margin-bottom:8px;"></div>

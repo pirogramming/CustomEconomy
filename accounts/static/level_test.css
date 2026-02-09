@@ -6,3 +6,6 @@ button {
 button:disabled {
   opacity: 0.5;
 }
+.progress_area>img{
+  width: 35px; height: 35px;
+}

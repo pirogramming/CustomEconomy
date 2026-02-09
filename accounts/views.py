@@ -82,6 +82,10 @@ def signup_view(request):
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
     return redirect("articleList")
 
+def signup_popup(request):
+    return render(request, "level_test_popup.html")
+
+
 # 2. 로그인
 def login_view(request):
     if request.method == "GET":
@@ -292,4 +296,6 @@ def result_page(request):
 @login_required
 def edit_view(request):
     return render(request, 'mypage_edit.html')
+
+
     
