@@ -155,7 +155,7 @@
     background-color: var(--mp-accent-green);
     border-radius: 7px;
 }
-.main-wrapper .progress-text {
+.main-wrapper .mypage-progress-text {
     font-size: 12px;
     color: #999;
     margin: 0;
@@ -235,13 +235,13 @@
 
 
 /* --- 3. 퀴즈 스타일 (가로 나열) --- */
-.main-wrapper .quiz-list {
+.main-wrapper .term-list {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
 }
 
-.main-wrapper .quiz-card {
+.main-wrapper .term-card {
     background: #f8f9fa;
     color: var(--mp-accent-green);
     padding: 12px 20px;
@@ -255,7 +255,7 @@
     min-width: 120px; /* 최소 너비 */
     text-align: center;
 }
-.main-wrapper .quiz-card:hover {
+.main-wrapper .term-card:hover {
     background: #e8f5e9;
     transform: translateY(-2px);
 }
@@ -303,7 +303,7 @@
     .main-wrapper {
         padding: 20px;
     }
-    
+
     .main-wrapper .user-profile {
         flex-direction: column;
         text-align: center;

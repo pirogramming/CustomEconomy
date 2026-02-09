@@ -401,3 +401,7 @@ def update_photo(request):
     messages.success(request, '프로필 사진이 변경되었습니다.')
     return redirect('edit')
     
+
+@login_required
+def scrap_term_view(request):
+    return render(request, 'mypage_scrapterm.html')

@@ -9,12 +9,10 @@
 
 {% block content %}
 <div class="terms-wrapper">
-    <!-- 헤더 영역 -->
     <header class="terms-header">
         <a class="page-title" href="{% url 'main' %}">Custom Economy</a>
     </header>
 
-    <!-- 검색바 -->
     <div class="search-bar-container">
         <form class="search-bar" method="get" action="{% url 'terms' %}">
             <input type="text" name="q" class="search-input" placeholder="단어를 검색하세요" value="{{ q|default:'' }}">
@@ -29,10 +27,15 @@
         {% endif %}
     </div>
 
-    <!-- 경제 용어 리스트 (master_dictionary.json에서 렌더링) -->
     <div class="terms-list">
         {% for word, definition in dictionary_items %}
         <article class="term-card">
+            <button class="bookmark-btn" aria-label="북마크" onclick="this.classList.toggle('active')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
             <div class="term-header">
                 <h2 class="term-title">{{ word }}</h2>
             </div>
