@@ -2,11 +2,73 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'term_scrap.css' %}">
+<link rel="stylesheet" href="{% static 'terms.css' %}">
 {% endblock %}
 
 {% block content %}
+<div class="terms-wrapper">
+	<header class="terms-header">
+		<a class="page-title" href="{% url 'main' %}">내가 스크랩한 단어</a>
+	</header>
 
-<div>내가 스크랩한 단어 페이지</div>
+	<div class="terms-list">
+		{% if bookmarks %}
+			{% for b in bookmarks %}
+			<article class="term-card">
+				<button class="bookmark-btn active" aria-label="북마크" data-word="{{ b.word|escapejs }}">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+					</svg>
+				</button>
 
+				<div class="term-header">
+					<h2 class="term-title">{{ b.word }}</h2>
+				</div>
+				<div class="term-content">
+					<p class="term-description">{{ b.definition }}</p>
+				</div>
+			</article>
+			{% endfor %}
+		{% else %}
+			<p class="term-card">스크랩한 단어가 없습니다.</p>
+		{% endif %}
+	</div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+	let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+	return v ? v[2] : null;
+}
+
+document.querySelectorAll('.bookmark-btn').forEach(btn => {
+	btn.addEventListener('click', function(e){
+		e.preventDefault();
+		const word = this.dataset.word;
+		fetch("{% url 'unbookmark_term' %}", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8',
+				'X-CSRFToken': getCookie('csrftoken')
+			},
+			body: JSON.stringify({word: word})
+		}).then(r=>r.json()).then(data=>{
+			if(data.ok){
+				// remove the card from DOM
+				const card = this.closest('.term-card');
+				if(card) card.remove();
+				// if no cards left, show empty message
+				const list = document.querySelector('.terms-list');
+				if(list && list.children.length === 0){
+					list.innerHTML = '<p class="term-card">스크랩한 단어가 없습니다.</p>';
+				}
+			} else {
+				alert('언스크랩 실패');
+			}
+		}).catch(()=>{ alert('네트워크 오류'); });
+	});
+});
+</script>
 {% endblock %}
