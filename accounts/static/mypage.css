@@ -181,19 +181,13 @@
     padding-bottom: 20px;
     border-bottom: 1px solid #f5f5f5;
 }
-.main-wrapper .news-item:last-child {
-    padding-bottom: 0;
-    border-bottom: none;
-}
-.main-wrapper .news-item:hover {
-    transform: translateY(-2px);
-}
-
+/* tag row above news body */
 .main-wrapper .news-tags-top {
-    margin-bottom: 10px;
+    margin-bottom: 18px; /* increased spacing between tags and news body */
     display: flex;
     gap: 8px;
 }
+
 .main-wrapper .tag {
     font-size: 11px;
     padding: 4px 10px;
@@ -202,15 +196,23 @@
     color: #555;
     font-weight: 500;
 }
-.main-wrapper .tag-economy {
-    background: var(--mp-tag-bg);
-    color: var(--mp-tag-text);
+
+/* main category: orange */
+.main-wrapper .tag.main-category {
+    background: #FFF3E0; /* light orange */
+    color: #EF6C00; /* orange */
+}
+
+/* sub category: green */
+.main-wrapper .tag.sub-category {
+    background: #E8F5E9; /* light green */
+    color: #43A047; /* green */
 }
 
 .main-wrapper .news-body {
     display: flex;
-    gap: 20px;
-    align-items: flex-start;
+    gap: 24px; /* a bit more horizontal gap for breathing room */
+    align-items: center; /* vertically center image and title/content */
 }
 
 .main-wrapper .news-image {
@@ -219,6 +221,7 @@
     border-radius: 10px;
     overflow: hidden;
     flex-shrink: 0;
+    margin-top: 6px; /* small gap from the tags above */
 }
 .main-wrapper .news-image img { width: 100%; height: 100%; object-fit: cover; }
 

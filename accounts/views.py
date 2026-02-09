@@ -124,6 +124,26 @@ def mypage_view(request):
         # session-stored term bookmarks (if any)
         context['term_bookmarks'] = request.session.get('term_bookmarks', [])
 
+        # include up to 3 random article bookmarks for preview on mypage
+        # build previews from user's bookmarked Article relation to avoid importing articles.models
+        try:
+            articles_qs = request.user.bookmarked_articles.select_related('category').prefetch_related('sub_interests').order_by('?')[:3]
+            preview_list = []
+            for art in articles_qs:
+                preview_list.append({
+                    'id': art.id,
+                    'title': art.title,
+                    'image_url': art.image_url,
+                    'source': art.source,
+                    'url': art.url,
+                    'category': getattr(art.category, 'name', ''),
+                    'sub_categories': list(art.sub_interests.values_list('name', flat=True)),
+                    'published_at': art.published_at.isoformat() if getattr(art, 'published_at', None) else None,
+                })
+            context['article_bookmarks_preview'] = preview_list
+        except Exception:
+            context['article_bookmarks_preview'] = []
+
     return render(request, 'mypage.html', context)
 
 # 5. 리그 페이지 (중복 제거 및 로직 통합 완료)
@@ -181,7 +201,32 @@ def wrongquiz_view(request):
 
 @login_required
 def scrap_article_view(request):
-    return render(request, 'mypage_scraparticle.html')
+    # include user's article bookmarks for initial render
+    from articles.models import UserBookmark
+    bookmarks = []
+    if request.user.is_authenticated:
+        qs = (
+            UserBookmark.objects
+            .filter(user=request.user)
+            .order_by('-created_at')
+            .select_related('article__category', 'article')
+            .prefetch_related('article__sub_interests')
+        )
+        bookmarks = []
+        for b in qs:
+            art = b.article
+            bookmarks.append({
+                'id': art.id,
+                'title': art.title,
+                'image_url': art.image_url,
+                'source': art.source,
+                'url': art.url,
+                'category': getattr(art.category, 'name', ''),
+                'sub_categories': list(art.sub_interests.values_list('name', flat=True)),
+                'published_at': art.published_at.isoformat() if getattr(art, 'published_at', None) else None,
+            })
+
+    return render(request, 'mypage_scraparticle.html', {'article_bookmarks': bookmarks})
     
     
     
