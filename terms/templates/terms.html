@@ -30,7 +30,7 @@
     <div class="terms-list">
         {% for word, definition in dictionary_items %}
         <article class="term-card">
-            <button class="bookmark-btn" aria-label="북마크" onclick="this.classList.toggle('active')">
+            <button class="bookmark-btn {% if word in bookmarked_words %}active{% endif %}" aria-label="북마크" data-word="{{ word|escapejs }}" data-definition="{{ definition|escapejs }}">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -48,4 +48,56 @@
         {% endfor %}
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+}
+
+document.querySelectorAll('.bookmark-btn').forEach(btn => {
+    btn.addEventListener('click', function(e){
+        e.preventDefault();
+        const word = this.dataset.word;
+        const definition = this.dataset.definition;
+        const isActive = this.classList.contains('active');
+        const url = isActive ? "{% url 'unbookmark_term' %}" : "{% url 'bookmark_term' %}";
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({word: word, definition: definition})
+        }).then(r => r.json()).then(data => {
+            if (data.ok) {
+                if (isActive) this.classList.remove('active'); else this.classList.add('active');
+
+                // If mypage bookmark list exists on the page, refresh it using returned bookmarks
+                const container = document.getElementById('term-bookmark-list');
+                if (container) {
+                    const bookmarks = data.bookmarks || [];
+                    container.innerHTML = '';
+                    if (!bookmarks.length) {
+                        container.innerHTML = '<div class="term-card">스크랩한 단어가 없습니다.</div>';
+                    } else {
+                        bookmarks.forEach(b => {
+                            const div = document.createElement('div');
+                            div.className = 'term-card';
+                            div.innerHTML = `${b.word}<div class="term-card-desc">${b.definition || ''}</div>`;
+                            container.appendChild(div);
+                        });
+                    }
+                }
+            } else {
+                alert('스크랩 실패: ' + (data.error || ''));
+            }
+        }).catch(()=>{
+            alert('네트워크 오류 또는 인증 필요');
+        });
+    });
+});
+</script>
 {% endblock %}

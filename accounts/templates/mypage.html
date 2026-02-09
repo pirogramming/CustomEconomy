@@ -95,10 +95,8 @@
         </div>
         
         <section class="term-section">
-            <div class="term-list">
-                <div class="term-card">기회비용</div>
-                <div class="term-card">기회비용</div>
-                <div class="term-card">기회비용</div>
+            <div class="term-list" id="term-bookmark-list">
+                <div class="term-card">스크랩한 단어를 불러오는 중입니다...</div>
             </div>
         </section>
 
@@ -139,4 +137,42 @@
         </section>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+}
+
+function renderBookmarks(bookmarks){
+    const container = document.getElementById('term-bookmark-list');
+    container.innerHTML = '';
+    if(!bookmarks.length){
+        container.innerHTML = '<div class="term-card">스크랩한 단어가 없습니다.</div>';
+        return;
+    }
+    bookmarks.forEach(b => {
+        const div = document.createElement('div');
+        div.className = 'term-card';
+        div.innerHTML = `${b.word}<div class="term-card-desc">${b.definition || ''}</div>`;
+        container.appendChild(div);
+    });
+}
+
+fetch("{% url 'bookmarks_json' %}", {
+    headers: {
+        'X-CSRFToken': getCookie('csrftoken')
+    },
+    credentials: 'same-origin'
+}).then(r=>r.json()).then(data=>{
+    if(data.ok){
+        renderBookmarks(data.bookmarks);
+    }
+}).catch(()=>{
+    const container = document.getElementById('term-bookmark-list');
+    container.innerHTML = '<div class="term-card">스크랩한 단어를 불러오지 못했습니다.</div>';
+});
+</script>
 {% endblock %}

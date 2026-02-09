@@ -121,6 +121,8 @@ def mypage_view(request):
         context['user_selected_interests'] = selected
         context['user_nickname'] = request.user.nickname
         context['user_image_url'] = request.user.image_url
+        # session-stored term bookmarks (if any)
+        context['term_bookmarks'] = request.session.get('term_bookmarks', [])
 
     return render(request, 'mypage.html', context)
 
