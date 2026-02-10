@@ -19,7 +19,7 @@
             <a href="{% url 'edit' %}" class="icon-btn dot-btn">•••</a>
         </div>
         
-        <section class="card-section my-info-card">
+        <section class="card-section my-info-card" onclick="window.location.href='{% url 'edit' %}'" style="cursor: pointer;">
             <div class="user-profile">
                 <div class="profile-image">
                     <img src="{% if user_image_url %}{{ user_image_url }}{% else %}{% static 'img/profile-default.png' %}{% endif %}" alt="프로필">
