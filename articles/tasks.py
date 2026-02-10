@@ -108,7 +108,7 @@ class MKNewsFetcher:
         for entry in feed.entries:
             if success >= limit: break
             actual_category = self._get_category_by_url(entry.link)
-            if "[표]" in entry.title or "외국환율고시표" in entry.title:
+            if "[표]" in entry.title or "[포토]" in entry.title:
                 print(f"  ⏩ [제목 스킵] {entry.title[:15]}...")
                 continue
             if not actual_category:
@@ -163,7 +163,7 @@ class MKNewsFetcher:
 
         for entry in feed.entries:
             if success >= limit: break
-            if "[표]" in entry.title or "외국환율고시표" in entry.title:
+            if "[표]" in entry.title or "[포토]" in entry.title:
                 print(f"  ⏩ [제목 스킵] {entry.title[:15]}...")
                 continue
             actual_category = self._get_category_by_url(entry.link)
@@ -176,7 +176,7 @@ class MKNewsFetcher:
             try:
                 news = NewsArticle(entry.link, language='ko')
                 news.download(); news.parse()
-                if "[표]" in news.title or "외국환율고시표" in news.title:
+                if "[표]" in news.title or "[포토]" in news.title:
                     print(f"  ⏩ [제목 스킵] {news.title[:15]}...")
                     continue
                 content = self._clean_content(news.text)
@@ -239,7 +239,7 @@ class MKNewsFetcher:
                 news = NewsArticle(link, language='ko')
                 news.download(); news.parse()
                 content = self._clean_content(news.text)
-                if "[표]" in news.title or "외국환율고시표" in news.title:
+                if "[표]" in news.title or "[포토]" in news.title:
                     print(f"  ⏩ [제목 스킵] {news.title[:15]}...")
                     continue
                 if content is None:
