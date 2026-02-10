@@ -49,8 +49,21 @@
 
             <div class="white-card-body">
                 
-                <div class="article-date-badge">
-                    {{ article.published_at|date:"Y.m.d" }}
+                <div class="article-header-row">
+                    <div class="article-date-badge">
+                        {{ article.published_at|date:"Y.m.d" }}
+                    </div>
+                    <div>
+                        <button class="bookmark-btn {% if request.user in article.bookmarked_by.all %}active{% endif %}"
+                                data-article-id="{{ article.id }}"
+                                onclick="handleBookmark(this, event)"
+                                aria-label="북마크">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <h2 class="content-title">{{ article.title }}</h2>
@@ -262,6 +275,43 @@ window.addEventListener('DOMContentLoaded', async function() {
         }
     }
 });
+
+// -----------------------------
+// 북마크 처리 함수 (articleList과 동일한 동작)
+function getCookie(name) {
+    let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+}
+
+function handleBookmark(btn, event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const articleId = btn.getAttribute('data-article-id');
+    const isActive = btn.classList.contains('active');
+    const url = isActive ? "{% url 'unbookmark_article' %}" : "{% url 'bookmark_article' %}";
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ article_id: articleId })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            if (isActive) btn.classList.remove('active'); else btn.classList.add('active');
+        } else {
+            alert("실패: " + (data.error || "로그인이 필요할 수 있습니다."));
+        }
+    })
+    .catch(err => {
+        console.error('북마크 처리 에러:', err);
+        alert('로그인이 필요한 서비스입니다');
+    });
+}
 
 //---------------------------------
 // 퀴즈 생성 중 화면 추가

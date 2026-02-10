@@ -21,13 +21,20 @@ class ArticleTerm(models.Model):
 
 
 class TermBookmark(models.Model):
-    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE, related_name='term_bookmarks')
-    word = models.CharField(max_length=100)
-    definition = models.TextField(blank=True)
+    user = models.ForeignKey(
+        'accounts.User',
+        on_delete=models.CASCADE,
+        related_name='term_bookmarks'
+    )
+    term = models.ForeignKey(
+        Term,
+        on_delete=models.CASCADE,
+        related_name='bookmarked_by'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = (('user', 'word'),)
+        unique_together = (('user', 'term'),)
 
     def __str__(self):
-        return f"{self.user.email} - {self.word}"
+        return f"{self.user.email} - {self.term.name}"
