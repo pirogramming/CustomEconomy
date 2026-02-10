@@ -218,6 +218,14 @@ def mypage_view(request):
         except Exception:
             context['article_bookmarks_preview'] = []
 
+        wrong_results = (
+            QuizResult.objects
+            .filter(user=request.user, is_correct=False)
+            .select_related("quiz")
+            .order_by("-created_at")[:10]
+        )
+        context['wrong_results'] = wrong_results
+
     return render(request, 'mypage.html', context)
 
 # 5. 리그 페이지 (중복 제거 및 로직 통합 완료)
