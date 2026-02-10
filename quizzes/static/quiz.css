@@ -176,49 +176,38 @@
 
 /* 7. 하단 버튼 */
 .quiz-footer {
+    text-align: center;
     margin-top: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
 }
 
 .finish-button {
-    background: linear-gradient(135deg, #EF9160 0%, #d97d4d 100%);
+    background: #EF9160; /* 제출 버튼 주황색 */
     color: white;
     border: none;
-    padding: 18px 0;
+    padding: 22px;
     width: 100%;
-    border-radius: 14px;
-    font-size: 1.05rem;
+    border-radius: 16px;
+    font-size: 1.1rem;
     font-weight: 800;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(239, 145, 96, 0.25);
+    transition: background 0.2s, transform 0.1s;
 }
 
 .finish-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(239, 145, 96, 0.35);
+    background: #d97d4d;
+    transform: translateY(-1px);
 }
 
 .finish-button:active {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 10px rgba(239, 145, 96, 0.2);
+    transform: translateY(0);
 }
 
 .back-link {
-    color: #80B27F;
+    display: block;
+    margin-top: 25px;
+    color: #94a3b8;
     text-decoration: none;
     font-size: 0.95rem;
-    font-weight: 600;
-    transition: all 0.2s ease;
-    padding: 8px 12px;
-}
-
-.back-link:hover {
-    color: #5f9560;
-    text-decoration: underline;
 }
 
 /* 8. 컨셉/용어 정보 박스: 연두색 포인트 */

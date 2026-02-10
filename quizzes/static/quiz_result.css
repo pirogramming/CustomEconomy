@@ -225,69 +225,58 @@
     margin-top: 50px;
 }
 
-/* 버튼 컨테이너 */
+/* 버튼 컨테이너 (버튼들을 가운데로 모으고 너비를 조절) */
 .footer-buttons {
     display: flex;
     flex-direction: column;
-    gap: 14px;
-    max-width: 340px;
-    margin: 0 auto;
+    gap: 12px;
+    max-width: 320px; /* 버튼이 너무 길지 않게 너비 제한 */
+    margin: 0 auto;   /* 중앙 정렬 */
 }
 
-/* 주 버튼: 연두색 그라데이션 */
+/* 오답노트 버튼: 연두색 그라데이션 스타일 */
 .wrongAnswer-btn {
-    background: linear-gradient(135deg, #80B27F 0%, #5f9560 100%);
+    background-color: rgba(160, 178, 127, 0.7);
     color: white;
     text-align: center;
-    padding: 18px 32px;
-    border-radius: 14px;
+    padding: 16px; /* 높이를 살짝 줄임 */
+    border-radius: 12px; /* 너무 둥글지 않게 적당히 */
     text-decoration: none;
-    font-weight: 800;
-    font-size: 1.05rem;
+    font-weight: 700;
+    font-size: 1rem;
     display: block;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(128, 178, 127, 0.3);
-    border: none;
+    box-shadow: 0 4px 10px rgba(128, 178, 127, 0.15);
 }
 
-.wrongAnswer-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(128, 178, 127, 0.4);
-}
-
-.wrongAnswer-btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 10px rgba(128, 178, 127, 0.2);
-}
-
-/* 보조 버튼: 주황색 테두리 스타일 */
+/* 목록 이동 버튼: 테두리만 있는 연한 스타일 (무게감 감소) */
 .articleList-btn {
     background: transparent;
-    color: #EF9160;
-    border: 2px solid #EF9160;
+    color: #EF9160; /* 글자색만 주황색 */
+    border: 1.5px solid #EF9160; /* 테두리만 주황색 */
     text-align: center;
-    padding: 16px 32px;
-    border-radius: 14px;
+    padding: 15px; 
+    border-radius: 12px;
     text-decoration: none;
-    font-weight: 800;
-    font-size: 1.05rem;
+    font-weight: 700;
+    font-size: 1rem;
     display: block;
     transition: all 0.3s ease;
+}
+
+/* 호버 효과: 색감을 더 연하게 혹은 부드럽게 */
+.wrongAnswer-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(128, 178, 127, 0.2);
 }
 
 .articleList-btn:hover {
-    background: #EF9160;
-    color: white;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(239, 145, 96, 0.25);
-}
-
-.articleList-btn:active {
-    transform: translateY(-1px);
+    background: #fef8f5; /* 아주 연한 주황색 배경 살짝 */
+    transform: translateY(-2px);
 }
 
 /* 클릭 피드백 */
-.wrongAnswer-btn:active,
-.articleList-btn:active {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+.wrongAnswer-btn:active, .articleList-btn:active {
+    transform: translateY(0);
 }
