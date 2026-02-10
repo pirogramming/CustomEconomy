@@ -113,6 +113,11 @@
         font-size: 13px;
         margin-bottom: 10px;
     }
+    .field-error {
+        color: #ef9160;
+        font-size: 13px;
+        margin-top: 6px;
+    }
     img{
         width:60px;
         height:60px;
@@ -132,20 +137,24 @@
 <div class="auth-container">
     <div class="auth-card">
         <h2 class="auth-title">로그인</h2>
-        
-
 
             <form method="post" class="auth-form" action="{% url 'login' %}">
                 {% csrf_token %}
 
                 <p>
                     <label for="email">이메일</label>
-                    <input type="email" id="email" name="email" required />
+                    <input type="email" id="email" name="email" required maxlength="254" value="{{ email|default_if_none:'' }}" />
+                    {% if email_error %}
+                    <div class="field-error">등록된 이메일이 없습니다</div>
+                    {% endif %}
                 </p>
 
                 <p>
                     <label for="password">비밀번호</label>
                     <input type="password" id="password" name="password" required />
+                    {% if password_error %}
+                    <div class="field-error">{{ password_error }}</div>
+                    {% endif %}
                 </p>
 
                 <button type="submit" class="submit-btn">로그인</button>

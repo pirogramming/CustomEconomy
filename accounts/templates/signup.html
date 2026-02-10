@@ -27,16 +27,16 @@
         <div class="signup_input_area">
             <div class="field">
                 <div class="icon" id="email-icon">
-                   <img src="{% static 'icon/mark_email_unread.svg' %}" alt="email icon" width="24">
+                   <img src="{% static 'icon/person.svg' %}" alt="email icon" width="24">
                 </div>
-                <input type="email" id="email" placeholder="E-mail" name="email" required maxlength="40" />
+                <input type="text" id="name" placeholder="username" name="username" required maxlength="15" />
+                <br>
             </div>
             <div class="field">
                 <div class="icon" id="email-icon">
-                   <img src="{% static 'icon/person.svg' %}" alt="email icon" width="24">
+                   <img src="{% static 'icon/mark_email_unread.svg' %}" alt="email icon" width="24">
                 </div>
-                <input type="text" id="name" placeholder="이름" name="name" required maxlength="15" />
-                <br>
+                <input type="email" id="email" placeholder="E-mail" name="email" required maxlength="40" />
             </div>
             <div class="field">
                 <div class="icon" id="lock-icon">

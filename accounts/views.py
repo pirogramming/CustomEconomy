@@ -26,7 +26,7 @@ def signup_view(request):
         return render(request, "signup.html")
 
     email = request.POST.get("email", "").strip()
-    name = request.POST.get("name", "").strip()
+    username = request.POST.get("username", "").strip()
     password = request.POST.get("password", "")
     password_confirm = request.POST.get("password_confirm", "")
 
@@ -56,11 +56,19 @@ def signup_view(request):
     
 
 
-    # --- 유저 생성 (nickname은 manager에서 자동 생성되는 구조라고 가정) ---
+    # --- 유저 생성 (username을 전달) ---
+    if not username:
+        messages.error(request, "사용하실 이름(username)을 입력해 주세요.")
+        return redirect("signup")
+
+    if User.objects.filter(username=username).exists():
+        messages.error(request, "이미 사용 중인 사용자 이름입니다.")
+        return redirect("signup")
+
     user = User.objects.create_user(
         email=email,
         password=password,
-        name=name
+        username=username
     )
 
     # --- 관심사 저장 (MAIN 8개 중 선택된 것만 is_selected=True) ---
@@ -86,8 +94,8 @@ def signup_view(request):
     
     
     return render(request, "main.html", {
-        "signup_success": True,   # ⭐ 무조건 True
-        "user_name": user.name,   # ⭐ 또는 name
+        "signup_success": True,
+        "user_name": user.username,
     })
     
 
@@ -100,16 +108,35 @@ def signup_popup(request):
 def login_view(request):
     if request.method == "GET":
         return render(request, "login.html")
-
+    # accept email input for login (with fallback)
     email = request.POST.get("email", "").strip()
     password = request.POST.get("password", "")
 
-    # ⭐ 핵심: authenticate는 인자명이 username임
-    user = authenticate(request, username=email, password=password)
+    # Try authenticating via email (allauth backend) first
+    user = authenticate(request, email=email, password=password)
+    if user is None:
+        # fallback: try authenticating using username field
+        user = authenticate(request, username=email, password=password)
 
     if user is None:
-        messages.error(request, "이메일 또는 비밀번호가 올바르지 않습니다.")
-        return redirect("login")
+        # Determine whether the failure is due to unknown email/username or wrong password
+        email_exists = User.objects.filter(email=email).exists()
+        username_exists = User.objects.filter(username=email).exists()
+
+        if email_exists or username_exists:
+            # account exists, so it's a password issue
+            context = {
+                'password_error': '비밀번호가 올바르지 않습니다.',
+                'email': email,
+            }
+        else:
+            # no such account
+            context = {
+                'email_error': '등록된 이메일 또는 사용자 이름이 없습니다.',
+                'email': email,
+            }
+
+        return render(request, 'login.html', context)
 
     login(request, user)
     return redirect("articleList")
@@ -132,7 +159,8 @@ def mypage_view(request):
             ).values_list('interest__name', flat=True)
         )
         context['user_selected_interests'] = selected
-        context['user_nickname'] = request.user.nickname
+        # legacy context key kept as `user_nickname` for templates; populate with username
+        context['user_nickname'] = request.user.username
         context['user_image_url'] = request.user.image_url
         # session-stored term bookmarks (if any)
         context['term_bookmarks'] = request.session.get('term_bookmarks', [])
@@ -385,23 +413,23 @@ def edit_view(request):
 
 @login_required
 @require_POST
-def update_nickname(request):
-    new_nick = request.POST.get('nickname', '').strip()
-    if not new_nick:
-        messages.error(request, '닉네임을 입력해 주세요.')
+def update_username(request):
+    new_username = request.POST.get('username', '').strip()
+    if not new_username:
+        messages.error(request, '사용자 이름(username)을 입력해 주세요.')
         return redirect('edit')
 
-    if len(new_nick) > 20:
-        messages.error(request, '닉네임은 20자 이내여야 합니다.')
+    if len(new_username) > 20:
+        messages.error(request, '사용자 이름은 20자 이내여야 합니다.')
         return redirect('edit')
 
-    if User.objects.exclude(pk=request.user.pk).filter(nickname=new_nick).exists():
-        messages.error(request, '이미 사용 중인 닉네임입니다.')
+    if User.objects.exclude(pk=request.user.pk).filter(username=new_username).exists():
+        messages.error(request, '이미 사용 중인 사용자 이름입니다.')
         return redirect('edit')
 
-    request.user.nickname = new_nick
-    request.user.save(update_fields=['nickname'])
-    messages.success(request, '닉네임이 변경되었습니다.')
+    request.user.username = new_username
+    request.user.save(update_fields=['username'])
+    messages.success(request, '사용자 이름이 변경되었습니다.')
     return redirect('edit')
 
 

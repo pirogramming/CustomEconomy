@@ -30,14 +30,14 @@
             
             <div class="profile-img-box">
                 {% if user.image_url %}
-                    <img src="{{ user.image_url }}" alt="{{ user.nickname }}">
+                    <img src="{{ user.image_url }}" alt="{{ user.username }}">
                 {% else %}
                     <img src="{% static 'img/fox-avatar.png' %}" alt="기본">
                 {% endif %}
             </div>
 
             <div class="user-info">
-                <div class="nickname">{{ user.nickname }}</div>
+                <div class="nickname">{{ user.username }}</div>
                 <div class="score">{{ user.total_score }}점</div>
             </div>
             <div class="rank-badge">{{ user.rank }}위</div>
@@ -57,7 +57,7 @@
                 {% else %}
                     <img src="{% static 'img/fox-avatar.png' %}" alt="기본">
                 {% endif %}
-                <span class="nickname">{{ user.nickname }}</span>
+                <span class="nickname">{{ user.username }}</span>
             </div>
             <div class="rank-score">{{ user.total_score }}점</div>
         </div>

@@ -9,13 +9,8 @@ class MySocialAccountAdapter(DefaultSocialAccountAdapter):
         email = data.get('email')
         if email:
             auto_name = email.split('@')[0]
-            # 1. 시현님 모델의 ID 필드인 nickname 채우기
-            user.nickname = auto_name
-            # 2. 필수 필드인 name 채우기 (네이버 이름 없으면 이메일 앞부분)
-            user.name = data.get('name', auto_name)
-            # 3. 나머지 필수 필드 기본값
-            user.age = 20
-            user.job = "unknown"
+            # fill username from email prefix if provider didn't supply one
+            user.username = data.get('username', auto_name)
             
         return user
 

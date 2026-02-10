@@ -35,9 +35,9 @@
     <section class="interest-news-section">
         <h2 class="section-title interest-title">
             {% if user.is_authenticated %}
-                {% if user_has_interests %} {{ user.nickname|default:user.get_username }}님께서 관심있어 할 뉴스들을 모아봤어요!
+                {% if user_has_interests %} {{ user.username|default:user.get_username }}님께서 관심있어 할 뉴스들을 모아봤어요!
                 {% else %}
-                    {{ user.nickname|default:user.get_username }}님, 첫 기사를 읽고 맞춤 추천을 받아보세요!
+                    {{ user.username|default:user.get_username }}님, 첫 기사를 읽고 맞춤 추천을 받아보세요!
                 {% endif %}
             {% else %}
                 많은 분들이 요즘 관심 갖는 뉴스들을 모아봤어요!
@@ -64,9 +64,9 @@
     <section class="weak-news-section" style="margin-top: 60px;">
         <h2 class="section-title weak-title">
             {% if has_learning_history %}
-                {{ user.nickname|default:user.get_username }}님께서 취약한 분야의 뉴스들을 모아봤어요!
+                {{ user.username|default:user.get_username }}님께서 취약한 분야의 뉴스들을 모아봤어요!
             {% else %}
-                {{ user.nickname|default:user.get_username }}님, 아직 취약 분야가 없네요!
+                {{ user.username|default:user.get_username }}님, 아직 취약 분야가 없네요!
             {% endif %}
         </h2>
         
