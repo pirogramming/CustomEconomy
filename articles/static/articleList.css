@@ -223,7 +223,8 @@
 }
 .articleListBody .middleFloat .articleCards .article-card .article-info .smallTag .tag{
     background-color: white; border-radius: 10px;
-    padding: 5px; margin: 3px; width: 100px; height: auto;
+    /* 태그 가로폭 auto로 바꿨음. 다시 바꾸지 마셈!! */
+    padding: 5px; margin: 3px; width: auto; height: auto;
     color: #80B27F; font-family: 'Roboto'; font-weight: 600; font-size: 13px;
     text-align: center;
 }
