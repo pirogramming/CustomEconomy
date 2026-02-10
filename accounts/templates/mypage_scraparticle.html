@@ -10,12 +10,15 @@
 <div class="page-main-title">내가 스크랩한 기사</div>
 
 <div class="sort-container">
-    <label for="scrapSort">정렬:</label>
-    <select id="scrapSort">
-        <option value="newest">최신순</option>
-        <option value="oldest">오래된순</option>
-        <option value="title">제목순</option>
-    </select>
+    <label>정렬:</label>
+    <div class="sort-dropdown">
+        <button id="scrapSort" class="sort-btn">최신순 ▼</button>
+        <div id="sortMenu" class="sort-menu" style="display: none;">
+            <button class="sort-option" data-value="newest">최신순</button>
+            <button class="sort-option" data-value="oldest">오래된순</button>
+            <button class="sort-option" data-value="title">제목순</button>
+        </div>
+    </div>
 </div>
 
 {% if article_bookmarks %}
@@ -162,10 +165,35 @@ function sortAndRender(by){
 
 document.addEventListener('DOMContentLoaded', function(){
     currentBookmarks = parseInitialBookmarks();
-    const sel = document.getElementById('scrapSort');
-    if(sel) {
-        sel.addEventListener('change', (e) => sortAndRender(e.target.value));
-        sortAndRender(sel.value);
+    const btn = document.getElementById('scrapSort');
+    const menu = document.getElementById('sortMenu');
+    const options = document.querySelectorAll('.sort-option');
+    
+    if(btn && menu) {
+        // 버튼 클릭 시 드롭다운 토글
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('show');
+        });
+        
+        // 옵션 선택
+        options.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const value = opt.getAttribute('data-value');
+                const labels = { newest: '최신순', oldest: '오래된순', title: '제목순' };
+                btn.textContent = labels[value] + ' ▼';
+                menu.classList.remove('show');
+                sortAndRender(value);
+            });
+        });
+        
+        // 외부 클릭 시 메뉴 닫기
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+        
+        sortAndRender('newest');
     }
 });
 </script>

@@ -33,7 +33,7 @@
             <div class="profile-right">
                 <div class="info-group">
                     <div class="info-row">
-                        <span class="nickname">{{ request.user.nickname }}</span>
+                        <span class="nickname">{{ request.user.username }}</span>
                         <button class="edit-icon-btn" onclick="openModal('modal-nickname')">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M12 20h9"></path>
@@ -73,13 +73,13 @@
             <button class="close-btn" onclick="closeModal('modal-nickname')">x</button>
             <h3 class="modal-title">닉네임 수정하기</h3>
             <div class="modal-body">
-                <form action="{% url 'update_nickname' %}" method="POST">
+                <form action="{% url 'update_username' %}" method="POST">
                     {% csrf_token %}
                     <label class="input-label">현재 닉네임</label>
-                    <input type="text" class="modal-input" value="{{ request.user.nickname }}" readonly>
+                    <input type="text" class="modal-input" value="{{ request.user.username }}" readonly>
                     
                     <label class="input-label">변경 닉네임</label>
-                    <input type="text" name="nickname" class="modal-input" placeholder="새로운 닉네임을 입력하세요">
+                    <input type="text" name="username" class="modal-input" placeholder="새로운 사용자 이름을 입력하세요" maxlength="20">
                     
                     <button type="submit" class="confirm-btn">확인</button>
                 </form>

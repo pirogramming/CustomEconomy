@@ -46,7 +46,7 @@
                 <div class="profile-greeting">반가워요,</div>
                 <div class="profile-name">
                     {% if user.is_authenticated %}
-                        {{ user.nickname }} <span class="highlight">님!</span>
+                        {{ user.username }} <span class="highlight">님!</span>
                     {% else %}
                         <span class="highlight">게스트</span>님!
                     {% endif %}
@@ -138,7 +138,7 @@
         <div class="sidebar-auth hide-on-collapse">
             {% if user.is_authenticated %}
             <div class="auth-text-group">
-                <span class="user-name-small">{{ user.nickname }}님</span>
+                <span class="user-name-small">{{ user.username }}님</span>
                 <a href="{% url 'logout' %}" class="auth-link">로그아웃</a>
             </div>
             {% else %}
