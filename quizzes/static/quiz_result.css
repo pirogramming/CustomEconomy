@@ -1,286 +1,282 @@
-/* 기본 초기화 */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    background-color: #F1F7FF;
-    font-family: "Roboto-Regular", Helvetica, sans-serif;
-}
-
-/* --- 메인 콘텐츠 스타일 --- */
-.main-content {
-    background-color: #F1F7FF;
-    font-family: 'Noto Sans KR', sans-serif;
-    width: 100%;             /* 부모(main) 영역을 가득 채움 */
-    max-width: 1200px;       /* 하지만 1200px 이상은 커지지 않게 제한 */
-    margin: 0 auto;          /* 남은 공간에서 자동으로 중앙 정렬 */
-    min-height: 100vh;       /* 높이 유지 */
-    padding: 40px 50px;      /* 내부 여백 */
-    box-sizing: border-box;  /* padding이 너비에 포함되도록 설정 (중요) */
+/* 1. 레이아웃 */
+.quiz-main-content {
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    background-color: #ffffff;
 }
 
-.main-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;
+/* 2. 브랜드 헤더 */
+.brand-header {
+    padding: 40px 20px 20px;
+    text-align: center;
     position: relative;
+    border-bottom: 1px solid #f1f5f9;
 }
 
-.page-title {
-    font-family: 'Merriweather', serif;
-    color: #1A2137;
-    font-size: 3rem;
+.brand-logo {
+    font-size: 2.2rem;
     font-weight: 900;
-    margin-bottom: 40px;
-    text-align: center;
-    letter-spacing: -0.5px;
+    color: #1e293b;
     text-decoration: none;
+    letter-spacing: -1.5px;
 }
 
-
-/* 퀴즈 컨테이너 */
-.quiz-container {
-    max-width: 935px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    background-color: #192237;
-    border-radius: 20px;
-    overflow: hidden;
-    padding: 40px 48px;
-    position: relative;
+.brand-logo .point-color {
+    color: #EF9160; /* 포인트 주황색 */
 }
 
-/* Quiz 배지 */
-.quiz-badge {
+.exit-link {
     position: absolute;
-    top: 20px;
-    left: 30px;
-    background-color: #ffffff;
-    color: #192237;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    font-size: 16px;
+    right: 40px;
+    top: 50px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9rem;
 }
 
-/* 기사 제목 */
-.quiz-article-title {
-    width: 100%;
-    max-width: 857px;
-    margin: 50px auto 0;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    color: #ffffff;
-    font-size: 28px;
-    letter-spacing: 0;
+/* 3. 히어로 섹션: 연두색 배지 */
+.quiz-hero-section {
+    padding: 60px 20px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.hero-inner {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quiz-label-badge {
+    background: #f1f7f1; /* 연한 연두빛 배경 */
+    color: #80B27F;      /* 포인트 연두색 */
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.quiz-main-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #0f172a;
     line-height: 1.4;
-    text-align: center;
 }
 
-/* 태그 섹션 */
-.tags-wrapper {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
+/* 4. 퀴즈 본문 영역 (연회색) */
+.quiz-body-area {
+    background-color: #f8fafc;
+    padding: 60px 20px;
+    flex-grow: 1;
+    border-top: 1px solid #e2e8f0;
+}
+
+.quiz-inner-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+/* 5. 결과 요약 카드 스타일 */
+.result-summary-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
     margin-bottom: 30px;
-}
-
-.tag {
-    padding: 5px 20px;
-    background-color: #f4f4f4;
-    border-radius: 40px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-.tag-text {
-    color: #ef9160;
-    font-size: 16px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-}
-
-.tag.tag-green .tag-text {
-    color: #80b27f;
-}
-
-/* 문제 카드 */
-.question-card {
-    width: 100%;
-    background-color: #fffbf5;
-    border-radius: 20px;
-    padding: 25px 10px;
-    margin-bottom: 20px;
-    position: relative;
-    padding: 30px;
-}
-
-.question-card.with-explanation {
-    padding-bottom: 30px;
-}
-
-/* 질문 헤더 */
-.question-header {
-    margin-bottom: 20px;
-}
-
-.question-number {
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    color: #000000;
-    font-size: 20px;
-    margin: 0;
-}
-
-/* 답안 그리드 */
-.answers-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-.answer-option-result {
-    background-color: #ffffff;
-    border-radius: 20px;
-    padding: 15px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.answer-text {
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    color: #000000;
-    font-size: 18px;
-    text-align: center;
-}
-
-/* 정답 스타일 */
-.answer-option-result.correct {
-    background-color: #d2edd1;
-    border-color: #80b27f;
-}
-
-/* 오답 스타일 */
-.answer-option-result.wrong {
-    background-color: #fbbeb0;
-    border-color: #ff0303;
-}
-
-/* 해설 박스 */
-.explanation-box {
-    background-color: #ffffff;
-    border-radius: 15px;
-    padding: 20px;
-    margin-top: 15px;
-}
-
-.explanation-text {
-    color: #000000;
-    font-size: 16px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    line-height: 1.6;
-    margin: 0;
-}
-.explanation-box{
-    border-color: black;
-    border-width: 1px;
-}
-/* 결과 요약 */
-.result-summary {
-    width: 100%;
-    max-width: 450px;
-    margin: 30px auto;
-    padding: 30px;
-    background-color: rgba(255, 255, 255, 0.55);
-    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
     text-align: center;
 }
 
 .result-text {
-    color: #ffffff;
-    font-size: 20px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    line-height: 1.6;
-    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+    margin-bottom: 30px;
 }
 
-
-/* 선택한 답(클릭된 보기) 강조 */
-.answer-option-result .selected {
-  border: 3px solid #14213E;   /* 짙은 남색 띠 */
-  border-radius: 12px;         /* 카드 느낌 유지 */
-  box-sizing: border-box;
+.result-text .highlight {
+    color: #EF9160; /* 결과 강조 주황색 */
 }
 
-/* 선택했을 때 살짝 떠 보이게(선택) */
-.answer-option-result .selected {
-  box-shadow: 0 0 0 2px rgba(20, 33, 62, 0.15);
-}
-
-.answer-option-result .correct {
-  border: 3px solid #2E7D32;
-  background: #e8f5e9;
-}
-
-.answer-option-result .wrong {
-  border: 3px solid #c62828;
-  background: #ffebee;
-}
-
-.main-content .quiz-container .back-to-list-area{
+.score-detail-list {
     display: flex;
-    flex-direction: row;
-
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     gap: 10px;
 }
-.main-content .quiz-container .back-to-list-area .articleList-btn{
-    display: flex; justify-content: center; align-items: center;
-    margin-right: 12px;
 
-    width: 130px; height: 50px; background-color: white;
-    border-color: #F4B132; 
-    border-width: 3px; border-style: solid;
-    border-radius: 30px; 
+.score-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: #f8fafc;
+    border-radius: 12px;
+    font-weight: 600;
+    color: #64748b;
+}
 
+.xp-val {
+    color: #1e293b;
+    font-weight: 800;
+}
+
+.score-row.bonus-text {
+    background: #f1f7f1;
+    color: #80B27F; /* 보너스 텍스트 연두색 */
+}
+
+.score-row.total-highlight {
+    background: #fef8f5;
+    border: 1px solid #EF9160;
+    margin-top: 10px;
+}
+
+.score-row.total-highlight span:first-child { color: #EF9160; }
+.score-row.total-highlight .xp-val { color: #EF9160; font-size: 1.2rem; }
+
+.level-progress-box {
+    margin-top: 30px;
+    padding-top: 25px;
+    border-top: 2px dashed #e2e8f0;
+}
+
+.levelup-badge {
+    display: inline-block;
+    background: #EF9160;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 100px;
+    font-weight: 800;
+    margin-top: 10px;
+}
+
+/* 6. 개별 문제 카드 */
+.quiz-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 35px;
+    margin-bottom: 25px;
+    border: 1px solid #eef2f6;
+}
+
+.question-index {
+    font-weight: 800;
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 15px;
+}
+
+.correct-text { color: #80B27F; } /* 정답 시 연두색 */
+.wrong-text { color: #ff4d4f; }   /* 오답은 가독성을 위해 붉은색 유지 */
+
+.question-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* 정답/오답 그리드 */
+.answers-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.answer-option-result {
+    padding: 18px;
+    border-radius: 14px;
+    border: 1.5px solid #e2e8f0;
+    text-align: center;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.answer-option-result.correct {
+    border-color: #80B27F;
+    background: #f1f7f1;
+    color: #80B27F;
+}
+
+.answer-option-result.wrong {
+    border-color: #ff4d4f;
+    background: #fff1f0;
+    color: #ff4d4f;
+}
+
+/* 해설 박스 */
+.explanation-box {
+    background: #f9fbf9;
+    border-left: 4px solid #80B27F; /* 해설 포인트 연두색 */
+    padding: 15px 20px;
+    margin-top: 20px;
+    border-radius: 0 12px 12px 0;
+}
+
+.explanation-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    color: #475569;
+}
+
+/* 7. 하단 버튼 디자인 */
+.quiz-footer {
+    margin-top: 50px;
+}
+
+/* 버튼 컨테이너 (버튼들을 가운데로 모으고 너비를 조절) */
+.footer-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 320px; /* 버튼이 너무 길지 않게 너비 제한 */
+    margin: 0 auto;   /* 중앙 정렬 */
+}
+
+/* 오답노트 버튼: 연두색 그라데이션 스타일 */
+.wrongAnswer-btn {
+    background-color: rgba(160, 178, 127, 0.7);
+    color: white;
+    text-align: center;
+    padding: 16px; /* 높이를 살짝 줄임 */
+    border-radius: 12px; /* 너무 둥글지 않게 적당히 */
     text-decoration: none;
-    color: black;
-    font-family: NanumGothic;
+    font-weight: 700;
+    font-size: 1rem;
+    display: block;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(128, 178, 127, 0.15);
 }
-.main-content .quiz-container .back-to-list-area .articleList-btn:hover{
-    background-color: #F4B132;
-    color: black;
-}
-.main-content .quiz-container .back-to-list-area .wrongAnswer-btn{
-    display: flex; justify-content: center; align-items: center;
-    margin-right: 12px;
 
-    width: 130px; height: 50px; background-color: white;
-    border-color: #F4B132; 
-    border-width: 3px; border-style: solid;
-    border-radius: 30px; 
-
+/* 목록 이동 버튼: 테두리만 있는 연한 스타일 (무게감 감소) */
+.articleList-btn {
+    background: transparent;
+    color: #EF9160; /* 글자색만 주황색 */
+    border: 1.5px solid #EF9160; /* 테두리만 주황색 */
+    text-align: center;
+    padding: 15px; 
+    border-radius: 12px;
     text-decoration: none;
-    color: black;
-    font-family: NanumGothic;
+    font-weight: 700;
+    font-size: 1rem;
+    display: block;
+    transition: all 0.3s ease;
 }
-.main-content .quiz-container .back-to-list-area .wrongAnswer-btn:hover{
-    background-color: #F4B132;
-    color: black;
+
+/* 호버 효과: 색감을 더 연하게 혹은 부드럽게 */
+.wrongAnswer-btn:hover {
+    filter: brightness(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(128, 178, 127, 0.2);
+}
+
+.articleList-btn:hover {
+    background: #fef8f5; /* 아주 연한 주황색 배경 살짝 */
+    transform: translateY(-2px);
+}
+
+/* 클릭 피드백 */
+.wrongAnswer-btn:active, .articleList-btn:active {
+    transform: translateY(0);
 }
