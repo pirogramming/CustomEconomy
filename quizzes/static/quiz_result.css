@@ -6,13 +6,13 @@
 }
 
 body {
-    background-color: #eeefee;
+    background-color: #F1F7FF;
     font-family: "Roboto-Regular", Helvetica, sans-serif;
 }
 
 /* --- 메인 콘텐츠 스타일 --- */
 .main-content {
-    background-color: var(--c-bg-gray);
+    background-color: #F1F7FF;
     font-family: 'Noto Sans KR', sans-serif;
     width: 100%;             /* 부모(main) 영역을 가득 채움 */
     max-width: 1200px;       /* 하지만 1200px 이상은 커지지 않게 제한 */

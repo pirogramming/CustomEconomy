@@ -5,7 +5,7 @@
 /* [핵심] 네임스페이스: base.css와 충돌 방지 */
 .main-wrapper {
     /* 로컬 색상 변수 */
-    --mp-bg-color: #eeefee;       /* 배경색 */
+    --mp-bg-color: #F1F7FF;       /* 배경색 */
     --mp-card-bg: #ffffff;        /* 카드 배경 */
     --mp-text-main: #333333;
     --mp-text-sub: #666666;

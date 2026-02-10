@@ -8,7 +8,7 @@
 
 /* 기본 리셋 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Noto Sans KR', sans-serif; background-color: #eeefee; min-height: 100vh; }
+body { font-family: 'Noto Sans KR', sans-serif; background-color: #F1F7FF; min-height: 100vh; }
 
 /* --- 레이아웃 (Main) --- */
 main {
