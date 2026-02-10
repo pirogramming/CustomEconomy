@@ -1,11 +1,156 @@
 from django.shortcuts import render
 from django.utils import timezone
-from datetime import timedelta
+from django.core.cache import cache
+from datetime import datetime, timedelta
 from django.db.models import Q, Case, When, Value, IntegerField, F
 from articles.models import Article
 from accounts.models import UserInterest
+import os
+import requests
 
-# Create your views here.
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 한국은행 API 연동 함수들
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+def fetch_bok_data(api_key, stat_code, item_code, days_back=7):
+    """
+    한국은행 ECOS API에서 데이터 조회
+    """
+    try:
+        # 날짜 범위 계산
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=days_back)
+        start_str = start_date.strftime('%Y%m%d')
+        end_str = end_date.strftime('%Y%m%d')
+        
+        # API URL 구성
+        url = f"https://ecos.bok.or.kr/api/StatisticSearch/{api_key}/json/kr/1/100/{stat_code}/D/{start_str}/{end_str}/{item_code}"
+        
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        
+        # 응답 파싱
+        if 'StatisticSearch' in data and 'row' in data['StatisticSearch']:
+            rows = data['StatisticSearch']['row']
+            if rows and len(rows) > 0:
+                print(f"✅ 데이터 발견: {rows[-1]}")
+                return rows[-1]
+        
+        print(f"⚠️ StatisticSearch.row가 없거나 비어있음")
+        return None
+        
+    except Exception as e:
+        print(f"❌ BOK API 요청 실패 ({item_code}): {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
+def get_kospi_index():
+    """KOSPI 지수 조회"""
+    cache_key = 'bok_kospi'
+    cached = cache.get(cache_key)
+    if cached:
+        print(f"✅ KOSPI 캐시 사용: {cached}")
+        return cached
+    
+    api_key = os.getenv('BOK_API_KEY')
+    if not api_key:
+        print("⚠️ BOK_API_KEY가 없습니다")
+        return {'value': 2500.0, 'label': 'KOSPI', 'unit': ''}
+    
+    # 🔍 디버깅용 로그 추가
+    print(f"🔍 KOSPI API 호출 중... (통계표: 802Y001, 항목: 0001000)")
+    data = fetch_bok_data(api_key, '802Y001', '0001000')
+    
+    if data:
+        print(f"✅ KOSPI API 응답: {data}")
+        result = {
+            'value': float(data.get('DATA_VALUE', 0)),
+            'label': 'KOSPI',
+            'unit': ''
+        }
+        cache.set(cache_key, result, 3600)
+        return result
+    else:
+        print("❌ KOSPI API 응답 없음 - 기본값 사용")
+    
+    return {'value': 2500.0, 'label': 'KOSPI', 'unit': ''}
+
+
+def get_exchange_rate():
+    """원/달러 환율 조회"""
+    cache_key = 'bok_exchange'
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
+    
+    api_key = os.getenv('BOK_API_KEY')
+    if not api_key:
+        return {'value': 1320.5, 'label': '환율', 'unit': '원/USD'}
+    
+    data = fetch_bok_data(api_key, '731Y001', '0000001')  # 원/달러 환율
+    if data:
+        result = {
+            'value': float(data.get('DATA_VALUE', 0)),
+            'label': '환율',
+            'unit': '원/USD'
+        }
+        cache.set(cache_key, result, 3600)
+        return result
+    
+    return {'value': 1320.5, 'label': '환율', 'unit': '원/USD'}
+
+
+def get_base_rate():
+    """기준금리 조회 (월별 데이터)"""
+    cache_key = 'bok_interest'
+    cached = cache.get(cache_key)
+    if cached:
+        return cached
+    
+    api_key = os.getenv('BOK_API_KEY')
+    if not api_key:
+        return {'value': 3.25, 'label': '기준금리', 'unit': '%'}
+    
+    try:
+        # 기준금리는 월별 데이터이므로 다르게 처리
+        end_date = datetime.now()
+        start_date = end_date - timedelta(days=90)  # 3개월 전
+        start_str = start_date.strftime('%Y%m')
+        end_str = end_date.strftime('%Y%m')
+        
+        url = f"https://ecos.bok.or.kr/api/StatisticSearch/{api_key}/json/kr/1/100/722Y001/M/{start_str}/{end_str}/0101000"
+        
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()
+        data = response.json()
+        
+        if 'StatisticSearch' in data and 'row' in data['StatisticSearch']:
+            rows = data['StatisticSearch']['row']
+            if rows and len(rows) > 0:
+                latest = rows[-1]
+                result = {
+                    'value': float(latest.get('DATA_VALUE', 0)),
+                    'label': '기준금리',
+                    'unit': '%'
+                }
+                cache.set(cache_key, result, 21600)  # 6시간 캐시 (금리는 자주 안 바뀜)
+                return result
+    except Exception as e:
+        print(f"❌ 기준금리 조회 실패: {e}")
+    
+    return {'value': 3.25, 'label': '기준금리', 'unit': '%'}
+
+
+def get_economic_indicators():
+    """모든 경제 지표 조회"""
+    return {
+        'kospi': get_kospi_index(),
+        'exchange': get_exchange_rate(),
+        'interest': get_base_rate()
+    }
 
 def main_view(request):
     user = request.user
@@ -15,12 +160,19 @@ def main_view(request):
     interest_articles = Article.objects.none()
     weak_articles = Article.objects.none()
     user_sub_interests = UserInterest.objects.none()
-    has_learning_history = False # 학습 이력 여부 판단 플래그
+    has_learning_history = False
 
     # 상단 인기 뉴스
     latest_articles = Article.objects.filter(is_popular=True).order_by('-published_at')[:1]
     if not latest_articles.exists():
         latest_articles = Article.objects.order_by('-published_at')[:1]
+    
+    # 🆕 경제 지표 가져오기
+    economic_data = get_economic_indicators()
+    print(f"📊 경제 지표 조회 결과:")
+    print(f"  KOSPI: {economic_data['kospi']}")
+    print(f"  환율: {economic_data['exchange']}")
+    print(f"  금리: {economic_data['interest']}")
         
     if user.is_authenticated:
         # --- [1단계] 점수 및 가중치 계산 시간 설정 ---
@@ -109,4 +261,8 @@ def main_view(request):
         'latest_articles': latest_articles,
         'user_has_interests': user_sub_interests.filter(interest_score__gt=0).exists(),
         'has_learning_history': has_learning_history,
+        # 🆕 경제 지표 데이터 추가
+        'kospi': economic_data['kospi'],
+        'exchange_rate': economic_data['exchange'],
+        'interest_rate': economic_data['interest'],
     })

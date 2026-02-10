@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Kadwa:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
         rel="stylesheet">
+    
     {% block extra_css %}{% endblock %}
 </head>
 
@@ -108,10 +109,29 @@
             </div>
         </div>
 
-        <div class="sidebar-footer hide-on-collapse">
-            <div class="footer-item">
-                <span class="footer-label">KOSPI</span>
-                <span class="footer-value">5000</span>
+        <!-- 경제 지표 티커 (컨베이어벨트 스타일) -->
+        <div class="economic-ticker hide-on-collapse">
+            <div class="ticker-wrapper" id="tickerWrapper">
+                <!-- 3번 반복해서 끊김 없이 흐르도록 -->
+                {% for _ in "xxx" %}
+                    <div class="ticker-item">
+                        <span class="ticker-label">KOSPI</span>
+                        <span class="ticker-value" id="kospiValue">{{ kospi.value }}{{ kospi.unit }}</span>
+                    </div>
+                    <span class="ticker-separator">|</span>
+                    
+                    <div class="ticker-item">
+                        <span class="ticker-label">환율</span>
+                        <span class="ticker-value" id="exchangeValue"> {{ exchange_rate.value }}{{ exchange_rate.unit }}</span>
+                    </div>
+                    <span class="ticker-separator">|</span>
+                    
+                    <div class="ticker-item">
+                        <span class="ticker-label">기준금리</span>
+                        <span class="ticker-value" id="interestValue">{{ interest_rate.value }}{{ interest_rate.unit }}</span>
+                    </div>
+                    <span class="ticker-separator">|</span>
+                {% endfor %}
             </div>
         </div>
 
@@ -158,6 +178,39 @@
             } else {
                 localStorage.setItem('sidebar-collapsed', 'false');
                 arrowIcon.innerText = '◀';
+            }
+        });
+
+        // 3. 경제 지표 숫자 포맷팅 (천 단위 쉼표)
+        function formatNumber(num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        }
+
+        // 페이지 로드 시 숫자 포맷팅 적용
+        document.addEventListener('DOMContentLoaded', () => {
+            const kospiEl = document.getElementById('kospiValue');
+            const exchangeEl = document.getElementById('exchangeValue');
+            const interestEl = document.getElementById('interestValue');
+
+            if (kospiEl && kospiEl.textContent) {
+                const kospiNum = parseFloat(kospiEl.textContent.replace(/,/g, ''));
+                if (!isNaN(kospiNum)) {
+                    kospiEl.textContent = formatNumber(kospiNum.toFixed(2));
+                }
+            }
+
+            if (exchangeEl && exchangeEl.textContent) {
+                const exchangeNum = parseFloat(exchangeEl.textContent.replace(/,/g, ''));
+                if (!isNaN(exchangeNum)) {
+                    exchangeEl.textContent = formatNumber(exchangeNum.toFixed(2));
+                }
+            }
+
+            if (interestEl && interestEl.textContent) {
+                const interestNum = parseFloat(interestEl.textContent.replace(/,/g, ''));
+                if (!isNaN(interestNum)) {
+                    interestEl.textContent = interestNum.toFixed(2);
+                }
             }
         });
     </script>

@@ -3,9 +3,11 @@ import json
 import re
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
+from dotenv import load_dotenv
 
 class GeminiFinancialTutor:
     def __init__(self):
+        load_dotenv(override=True)       
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
             print("⚠️ API Key가 설정되지 않았습니다.")
@@ -297,16 +299,25 @@ class GeminiFinancialTutor:
         Returns:
             {
                 "selected_interest": "투자",
-                "reason": "코스피 지수와 직접 관련"
+                "reason": "코스피 지수와 직접 관련",
+                "display_text": "관심분야: [투자]"
             }
         """
         
         if not user_interests or len(user_interests) == 0:
-            return {"selected_interest": "투자", "reason": "기본값"}
+            return {
+                "selected_interest": "투자", 
+                "reason": "기본값",
+                "display_text": "관심분야: [투자]"
+            }
         
         # 관심사가 1개면 바로 반환
         if len(user_interests) == 1:
-            return {"selected_interest": user_interests[0], "reason": "유일한 관심사"}
+            return {
+                "selected_interest": user_interests[0], 
+                "reason": "유일한 관심사",
+                "display_text": f"관심분야: [{user_interests[0]}]"
+            }
         
         print(f"🤖 AI에게 최적 관심사 선택 요청...")
         print(f"   후보: {user_interests}")
@@ -329,13 +340,23 @@ class GeminiFinancialTutor:
 위 관심사 중 이 기사와 **가장 관련성이 높은 1개**를 선택하고,
 이유를 1문장으로 간단히 설명하세요.
 
-**중요**: selected_interest는 반드시 위 목록 중 하나를 그대로 사용.
+**중요**: 
+- selected_interest는 반드시 위 목록 중 하나를 그대로 사용
+- display_text는 "관심분야: [선택된 관심사]" 형식으로 작성
 
 **JSON 출력:**
 
 {{
   "selected_interest": "선택된 관심사",
-  "reason": "선택 이유 (1문장)"
+  "reason": "선택 이유 (1문장)",
+  "display_text": "관심분야: [선택된 관심사]"
+}}
+
+예시:
+{{
+  "selected_interest": "투자",
+  "reason": "코스피 지수 급등과 직접 관련",
+  "display_text": "관심분야: [투자]"
 }}
 
 JSON만 출력. ```json 금지."""
@@ -352,7 +373,11 @@ JSON만 출력. ```json 금지."""
             )
             
             if response.candidates[0].finish_reason != 1:
-                return {"selected_interest": user_interests[0], "reason": "AI 실패"}
+                return {
+                    "selected_interest": user_interests[0], 
+                    "reason": "AI 실패",
+                    "display_text": f"관심분야: [{user_interests[0]}]"
+                }
             
             raw_text = response.text.strip()
             cleaned = re.sub(r'^```json\s*', '', raw_text, flags=re.MULTILINE)
@@ -366,11 +391,23 @@ JSON만 출력. ```json 금지."""
             selected = data.get('selected_interest', '')
             if selected not in user_interests:
                 print(f"⚠️ AI가 잘못된 관심사 반환: {selected}")
-                return {"selected_interest": user_interests[0], "reason": "검증 실패"}
+                return {
+                    "selected_interest": user_interests[0], 
+                    "reason": "검증 실패",
+                    "display_text": f"관심분야: [{user_interests[0]}]"
+                }
+            
+            # display_text가 없으면 생성
+            if 'display_text' not in data:
+                data['display_text'] = f"관심분야: [{selected}]"
             
             print(f"✅ AI 선택: {selected}")
             return data
             
         except Exception as e:
             print(f"❌ 에러: {e}")
-            return {"selected_interest": user_interests[0], "reason": "에러"}
+            return {
+                "selected_interest": user_interests[0], 
+                "reason": "에러",
+                "display_text": f"관심분야: [{user_interests[0]}]"
+            }
