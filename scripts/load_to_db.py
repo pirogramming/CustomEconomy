@@ -88,6 +88,16 @@ def load_c_quiz():
 
     print(f"✅ 기초 퀴즈(C유형): {total_quiz}개 신규 이식, {updated_quiz}개 레벨 업데이트 완료.")
 
+if __name__ == "__main__":
+    print("🚀 데이터베이스 이식을 시작합니다...")
+    try:
+        load_master_dictionary()
+        load_c_quiz()
+        print("\n✨ 모든 데이터가 통합된 Quiz 모델 구조에 맞춰 저장되었습니다.")
+    except Exception as e:
+        print(f"\n❌ 작업 중 오류 발생: {e}")
+
+# 레벨 구분 X C 유형 (c_quiz.json)
 # def load_c_quiz():
 #     """[C유형] 대분류와 소분류를 구분하여 DB 적재"""
 #     file_path = 'scripts/data/c_quiz.json'
@@ -131,12 +141,3 @@ def load_c_quiz():
 #                 total_quiz += 1
 
 #     print(f"✅ 기초 퀴즈(C유형): {total_quiz}세트 이식 완료.")
-
-if __name__ == "__main__":
-    print("🚀 데이터베이스 이식을 시작합니다...")
-    try:
-        load_master_dictionary()
-        load_c_quiz()
-        print("\n✨ 모든 데이터가 통합된 Quiz 모델 구조에 맞춰 저장되었습니다.")
-    except Exception as e:
-        print(f"\n❌ 작업 중 오류 발생: {e}")

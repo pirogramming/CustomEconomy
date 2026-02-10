@@ -10,6 +10,7 @@ from accounts.models import Interest, UserInterest
 from .models import Quiz, QuizChoice
 from terms.models import Term 
 from dotenv import load_dotenv
+from explanations.models import ArticleExplanation
 
 # .env 파일 로드
 load_dotenv()
@@ -181,6 +182,8 @@ def get_quiz_session_set(article_obj):
     
     # [C] 카테고리 맞춤 상식
     quiz_c = None
+    explanation = ArticleExplanation.objects.filter(article=article_obj).first()
+    target_level = explanation.level
     
     # 1순위: 기사에 연결된 소분류(Interest) 중 하나를 랜덤하게 골라 C유형 퀴즈 찾기
     sub_interest = article_obj.sub_interests.all().order_by('?').first()
@@ -188,7 +191,7 @@ def get_quiz_session_set(article_obj):
         quiz_c = Quiz.objects.filter(
             type='C', 
             interest=sub_interest, 
-            level=article_obj.level  # 기사 레벨과 일치하는 퀴즈만
+            level=target_level  # 기사 레벨과 일치하는 퀴즈만
         ).order_by('?').first()
 
     # 2순위: 소분류 퀴즈가 없다면, 기사의 대분류(Category) 기반 C유형 퀴즈 찾기
@@ -196,7 +199,7 @@ def get_quiz_session_set(article_obj):
         quiz_c = Quiz.objects.filter(
             type='C', 
             category=article_obj.category,
-            level=article_obj.level  # 기사 레벨과 일치하는 퀴즈만
+            level=target_level  # 기사 레벨과 일치하는 퀴즈만
         ).order_by('?').first()
 
     if quiz_c:
