@@ -118,6 +118,26 @@
         font-size: 13px;
         margin-top: 6px;
     }
+    .social-hint {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #444;
+    }
+    .social-btns {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-start;
+    }
+    .social-btns a {
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: #f2f2f2;
+        color: #222;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+    }
     img{
         width:60px;
         height:60px;
@@ -144,8 +164,17 @@
                 <p>
                     <label for="email">이메일</label>
                     <input type="email" id="email" name="email" required maxlength="254" value="{{ email|default_if_none:'' }}" />
+                    
                     {% if email_error %}
-                    <div class="field-error">등록된 이메일이 없습니다</div>
+                        {% if social_providers %}
+                            {% if social_providers|length == 1 %}
+                                <div class="field-error">이 이메일로는 {{ social_providers.0|capfirst }} 소셜로그인을 사용하세요.</div>
+                            {% else %}
+                                <div class="field-error">이 이메일로는 {{ social_providers|join:", " }} 소셜로그인을 사용하세요.</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="field-error">{{ email_error }}</div>
+                        {% endif %}
                     {% endif %}
                 </p>
 

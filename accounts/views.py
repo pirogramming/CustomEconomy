@@ -25,78 +25,94 @@ def signup_view(request):
     if request.method == "GET":
         return render(request, "signup.html")
 
+    # 1. 데이터 가져오기
     email = request.POST.get("email", "").strip()
     username = request.POST.get("username", "").strip()
     password = request.POST.get("password", "")
     password_confirm = request.POST.get("password_confirm", "")
-
     raw = request.POST.get("selected_interests", "")
     selected_names = [s.strip() for s in raw.split(",") if s.strip()]
 
-    # --- 서버 검증 ---
+    # 입력값 유지 및 에러 전달을 위한 기본 context
+    ctx = {
+        'email': email,
+        'username': username,
+        'selected_interests': selected_names, # 기존 선택한 관심사 유지용
+    }
+
+    # 에러 여부를 판단할 플래그
+    has_error = False
+
+    # --- 서버 검증 (이제 팝업 대신 주황색 글씨로 뜹니다) ---
+
+    # 1. 이메일 체크
     if not email:
-        messages.error(request, "이메일을 입력해 주세요.")
-        return redirect("signup")
+        ctx['email_error'] = "이메일을 입력해 주세요."
+        has_error = True
+    elif User.objects.filter(email=email).exists():
+        from allauth.socialaccount.models import SocialAccount
+        existing_user = User.objects.get(email=email)
+        if SocialAccount.objects.filter(user=existing_user).exists():
+            providers = list(SocialAccount.objects.filter(user=existing_user).values_list('provider', flat=True))
+            ctx.update({'email_error': '이미 소셜 로그인으로 등록된 이메일입니다.', 'social_providers': providers})
+        else:
+            ctx['email_error'] = "이미 사용 중인 이메일입니다."
+        has_error = True
 
-    if password != password_confirm:
-        messages.error(request, "비밀번호가 일치하지 않습니다.")
-        return redirect("signup")
-
-    if len(password) < 8:
-        messages.error(request, "비밀번호는 8자 이상이어야 합니다.")
-        return redirect("signup")
-
-    if User.objects.filter(email=email).exists():
-        messages.error(request, "이미 사용 중인 이메일입니다.")
-        return redirect("signup")
-
-    if not selected_names:
-        messages.error(request, "관심분야를 최소 1개 선택해 주세요.")
-        return redirect("signup")
-    
-
-
-    # --- 유저 생성 (username을 전달) ---
+    # 2. 사용자 이름(닉네임) 체크
     if not username:
-        messages.error(request, "사용하실 이름(username)을 입력해 주세요.")
-        return redirect("signup")
+        ctx['username_error'] = "사용하실 이름을 입력해 주세요."
+        has_error = True
+    elif User.objects.filter(username=username).exists():
+        ctx['username_error'] = "이미 사용 중인 이름입니다."
+        has_error = True
 
-    if User.objects.filter(username=username).exists():
-        messages.error(request, "이미 사용 중인 사용자 이름입니다.")
-        return redirect("signup")
-
-    user = User.objects.create_user(
-        email=email,
-        password=password,
-        username=username
-    )
-
-    # --- 관심사 저장 (MAIN 8개 중 선택된 것만 is_selected=True) ---
-    interests = list(Interest.objects.filter(category_type="MAIN", name__in=selected_names))
+    # 3. 비밀번호 일치 및 길이 체크
+    if password != password_confirm:
+        ctx['password_confirm_error'] = "비밀번호가 일치하지 않습니다."
+        has_error = True
     
-    print("selected_names:", selected_names)  # ← 여기 OK
-    print("matched interests:", [i.name for i in interests])  # ⭐ 여기!
+    if len(password) < 8:
+        ctx['password_error'] = "비밀번호는 8자 이상이어야 합니다."
+        has_error = True
 
-    # 프론트에서 이상한 값이 오면 방어
-    if len(interests) != len(set(selected_names)):
-        messages.error(request, "유효하지 않은 관심분야가 포함되어 있습니다.")
-        raise ValueError("Invalid interest names")
+    # 4. 관심분야 체크
+    if not selected_names:
+        ctx['selected_interests_error'] = "관심분야를 최소 1개 선택해 주세요."
+        has_error = True
 
-    UserInterest.objects.bulk_create([
-        UserInterest(user=user, interest=i, is_selected=True)
-        for i in interests
-    ])
+    # 만약 하나라도 에러가 있다면, 회원가입 페이지로 다시 렌더링 (ctx에 담긴 에러메시지들과 함께)
+    if has_error:
+        return render(request, 'signup.html', ctx)
 
+    # --- 모든 검증 통과 시 유저 생성 ---
+    try:
+        user = User.objects.create_user(
+            email=email,
+            password=password,
+            username=username
+        )
 
-    
-    # --- 가입 후 자동 로그인 ---
-    login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    
-    
-    return render(request, "main.html", {
-        "signup_success": True,
-        "user_name": user.username,
-    })
+        # 관심사 저장 로직
+        interests = list(Interest.objects.filter(category_type="MAIN", name__in=selected_names))
+        UserInterest.objects.bulk_create([
+            UserInterest(user=user, interest=i, is_selected=True)
+            for i in interests
+        ])
+
+        # 로그인 처리
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        
+        # 가입 성공 시 메인 페이지로 이동하면서 성공 데이터 전달
+        return render(request, "main.html", {
+            "signup_success": True,
+            "user_name": user.username,
+        })
+        
+    except Exception as e:
+        # 혹시 모를 DB 에러 등을 대비
+        ctx['email_error'] = "회원가입 중 오류가 발생했습니다. 다시 시도해 주세요."
+        return render(request, 'signup.html', ctx)
     
 
 
@@ -119,23 +135,39 @@ def login_view(request):
         user = authenticate(request, username=email, password=password)
 
     if user is None:
-        # Determine whether the failure is due to unknown email/username or wrong password
-        email_exists = User.objects.filter(email=email).exists()
-        username_exists = User.objects.filter(username=email).exists()
+        # Determine whether the failure is due to unknown email/username, wrong password,
+        # or the account being social-only (no usable password)
+        user_obj = None
+        if email:
+            user_obj = User.objects.filter(email=email).first()
+        if not user_obj:
+            user_obj = User.objects.filter(username=email).first()
 
-        if email_exists or username_exists:
-            # account exists, so it's a password issue
+        if user_obj:
+            # If the user has no usable password (social-only), treat as unregistered for password login
+            if not user_obj.has_usable_password():
+                # find which social providers are linked for this user
+                from allauth.socialaccount.models import SocialAccount
+                providers = list(SocialAccount.objects.filter(user=user_obj).values_list('provider', flat=True))
+                context = {
+                    'email_error': '가입되지 않은 이메일입니다. 소셜 로그인을 사용해 주세요.',
+                    'email': email,
+                    'social_providers': providers,
+                }
+                return render(request, 'login.html', context)
+
+            # account exists and has a password -> password issue
             context = {
                 'password_error': '비밀번호가 올바르지 않습니다.',
                 'email': email,
             }
-        else:
-            # no such account
-            context = {
-                'email_error': '등록된 이메일 또는 사용자 이름이 없습니다.',
-                'email': email,
-            }
+            return render(request, 'login.html', context)
 
+        # no such account at all
+        context = {
+            'email_error': '등록된 이메일 또는 사용자 이름이 없습니다.',
+            'email': email,
+        }
         return render(request, 'login.html', context)
 
     login(request, user)

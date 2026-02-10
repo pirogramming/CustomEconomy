@@ -79,9 +79,10 @@
 .signup_float .signup_input_area .field>input{
   background-color: #FFE4D6;
   /* background-color: turquoise; */
-  padding: 5px; margin: 0px 5px; 
+  padding: 5px; margin: 0px 5px;
   border-style: none;
   outline: none;
+  width:90%;
 }
 
 .signup_float .signup_input_area .email{}
