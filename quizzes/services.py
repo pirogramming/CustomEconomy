@@ -185,11 +185,19 @@ def get_quiz_session_set(article_obj):
     # 1순위: 기사에 연결된 소분류(Interest) 중 하나를 랜덤하게 골라 C유형 퀴즈 찾기
     sub_interest = article_obj.sub_interests.all().order_by('?').first()
     if sub_interest:
-        quiz_c = Quiz.objects.filter(type='C', interest=sub_interest).order_by('?').first()
+        quiz_c = Quiz.objects.filter(
+            type='C', 
+            interest=sub_interest, 
+            level=article_obj.level  # 기사 레벨과 일치하는 퀴즈만
+        ).order_by('?').first()
 
     # 2순위: 소분류 퀴즈가 없다면, 기사의 대분류(Category) 기반 C유형 퀴즈 찾기
     if not quiz_c:
-        quiz_c = Quiz.objects.filter(type='C', category=article_obj.category).order_by('?').first()
+        quiz_c = Quiz.objects.filter(
+            type='C', 
+            category=article_obj.category,
+            level=article_obj.level  # 기사 레벨과 일치하는 퀴즈만
+        ).order_by('?').first()
 
     if quiz_c:
         final_quiz_set.append(quiz_c)
@@ -200,7 +208,7 @@ def get_quiz_session_set(article_obj):
         
         # 타 기사의 A유형은 절대 안 되므로, B(용어)나 해당 카테고리의 C(상식) 중에서만 추가 보충
         extra_quizzes = Quiz.objects.filter(
-            models.Q(type='B') | models.Q(type='C', category=article_obj.category)
+            models.Q(type='B') | models.Q(type='C', category=article_obj.category, level=article_obj.level)
         ).exclude(id__in=already_ids).order_by('?')[:(3 - len(final_quiz_set))]
         
         final_quiz_set.extend(extra_quizzes)
