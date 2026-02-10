@@ -211,7 +211,7 @@ def get_quiz_session_set(article_obj):
         
         # 타 기사의 A유형은 절대 안 되므로, B(용어)나 해당 카테고리의 C(상식) 중에서만 추가 보충
         extra_quizzes = Quiz.objects.filter(
-            models.Q(type='B') | models.Q(type='C', category=article_obj.category, level=article_obj.level)
+            models.Q(type='B') | models.Q(type='C', category=article_obj.category, level=target_level)
         ).exclude(id__in=already_ids).order_by('?')[:(3 - len(final_quiz_set))]
         
         final_quiz_set.extend(extra_quizzes)
