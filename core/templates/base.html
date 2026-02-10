@@ -55,6 +55,11 @@
         </div>
 
         <div class="sidebar-menu">
+            <a href="{% url 'main' %}"
+                class="menu-item {% if request.resolver_match.url_name == 'main' %}active{% endif %}">
+                <span class="menu-icon">🏠</span>
+                <span class="menu-text hide-on-collapse">홈</span>
+            </a>
             <a href="{% url 'articleList' %}"
                 class="menu-item {% if request.resolver_match.url_name == 'articleList' %}active{% endif %}">
                 <span class="menu-icon">📰</span>
