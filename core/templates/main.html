@@ -24,7 +24,7 @@
                         <p class="featured-excerpt">{{ latest.content|truncatechars:150 }}</p>
                     </div>
                     <div class="featured-image">
-                        <img src="{% static 'img/default_news.png' %}" alt="뉴스 이미지" />
+                        <img src="{{ latest.image_url }}" alt="{{ latest.title }}">
                     </div>
                 </div>
             </article>
