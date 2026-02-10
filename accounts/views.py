@@ -179,6 +179,7 @@ def logout_view(request):
     return redirect('login')
 
 # 4. 마이페이지
+@login_required
 def mypage_view(request):
     context = {}
     if request.user.is_authenticated:

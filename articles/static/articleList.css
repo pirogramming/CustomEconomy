@@ -221,7 +221,7 @@
   padding: 13px;
   box-shadow: 0 8px 18px rgba(0,0,0,0.1);
   border-radius: 12px;
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 .articleListBody .middleFloat .articleCards .article-card:hover{
   cursor: pointer;
@@ -235,9 +235,26 @@
   color: #7D7D7D;
   margin-bottom: 7px;
 }
-.articleListBody .middleFloat .articleCards .article-card .thumb{
-  width: 100%; height: 150px;
+.articleListBody .middleFloat .articleCards .article-card .thumb-wrap{
+  width: 100%;
+  height: 150px;
   background-color: #C4C4C4;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.articleListBody .middleFloat .articleCards .article-card .thumb{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform 0.2s ease;
+  transform-origin: center top;
+  display: block;
+}
+
+.articleListBody .middleFloat .articleCards .article-card:hover .thumb{
+  transform: scale(1.04);
 }
 .articleListBody .middleFloat .articleCards .article-card .article-info{
   /* background-color: pink; */
