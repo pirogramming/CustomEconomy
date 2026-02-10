@@ -79,9 +79,22 @@ def signup_view(request):
         for i in interests
     ])
 
+
+    
     # --- 가입 후 자동 로그인 ---
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    return redirect("articleList")
+    
+    
+    return render(request, "main.html", {
+        "signup_success": True,   # ⭐ 무조건 True
+        "user_name": user.name,   # ⭐ 또는 name
+    })
+    
+
+
+def signup_popup(request):
+    return render(request, "level_test_popup.html")
+
 
 # 2. 로그인
 def login_view(request):
@@ -123,6 +136,26 @@ def mypage_view(request):
         context['user_image_url'] = request.user.image_url
         # session-stored term bookmarks (if any)
         context['term_bookmarks'] = request.session.get('term_bookmarks', [])
+
+        # include up to 3 random article bookmarks for preview on mypage
+        # build previews from user's bookmarked Article relation to avoid importing articles.models
+        try:
+            articles_qs = request.user.bookmarked_articles.select_related('category').prefetch_related('sub_interests').order_by('?')[:3]
+            preview_list = []
+            for art in articles_qs:
+                preview_list.append({
+                    'id': art.id,
+                    'title': art.title,
+                    'image_url': art.image_url,
+                    'source': art.source,
+                    'url': art.url,
+                    'category': getattr(art.category, 'name', ''),
+                    'sub_categories': list(art.sub_interests.values_list('name', flat=True)),
+                    'published_at': art.published_at.isoformat() if getattr(art, 'published_at', None) else None,
+                })
+            context['article_bookmarks_preview'] = preview_list
+        except Exception:
+            context['article_bookmarks_preview'] = []
 
     return render(request, 'mypage.html', context)
 
@@ -181,13 +214,40 @@ def wrongquiz_view(request):
 
 @login_required
 def scrap_article_view(request):
-    return render(request, 'mypage_scraparticle.html')
+    # include user's article bookmarks for initial render
+    from articles.models import UserBookmark
+    bookmarks = []
+    if request.user.is_authenticated:
+        qs = (
+            UserBookmark.objects
+            .filter(user=request.user)
+            .order_by('-created_at')
+            .select_related('article__category', 'article')
+            .prefetch_related('article__sub_interests')
+        )
+        bookmarks = []
+        for b in qs:
+            art = b.article
+            bookmarks.append({
+                'id': art.id,
+                'title': art.title,
+                'image_url': art.image_url,
+                'source': art.source,
+                'url': art.url,
+                'category': getattr(art.category, 'name', ''),
+                'sub_categories': list(art.sub_interests.values_list('name', flat=True)),
+                'published_at': art.published_at.isoformat() if getattr(art, 'published_at', None) else None,
+            })
+
+    return render(request, 'mypage_scraparticle.html', {'article_bookmarks': bookmarks})
     
     
     
 from .services import (
     load_bank, pick_self_ids, next_question, grade_and_advance, score_to_level
 )
+
+from terms.models import TermBookmark
 
 SESSION_KEY = "level_test_state"
 
@@ -236,6 +296,8 @@ def api_next(request):
         total = float(state["total_self"]) + float(state["total_knowledge"])
         level = score_to_level(total)
         return JsonResponse({"done": True, "total": total, "level": level})
+    
+    
 
     # 프론트에 필요한 최소 정보만 내려줌
     payload = {
@@ -406,4 +468,8 @@ def update_photo(request):
 
 @login_required
 def scrap_term_view(request):
-    return render(request, 'mypage_scrapterm.html')
+    bookmarks = []
+    if request.user.is_authenticated:
+        qs = TermBookmark.objects.filter(user=request.user).select_related('term').order_by('-created_at')
+        bookmarks = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at} for b in qs]
+    return render(request, 'mypage_scrapterm.html', {'bookmarks': bookmarks})

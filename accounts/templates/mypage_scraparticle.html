@@ -2,11 +2,171 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'mypage_wrongquiz.css' %}">
+<link rel="stylesheet" href="{% static 'articleList.css' %}">
+<link rel="stylesheet" href="{% static 'mypage_scraparticle.css' %}">
 {% endblock %}
 
 {% block content %}
+<div class="page-main-title">내가 스크랩한 기사</div>
 
-<div>내가 스크랩한 기사 페이지</div>
+<div class="sort-container">
+    <label for="scrapSort">정렬:</label>
+    <select id="scrapSort">
+        <option value="newest">최신순</option>
+        <option value="oldest">오래된순</option>
+        <option value="title">제목순</option>
+    </select>
+</div>
 
+{% if article_bookmarks %}
+    {{ article_bookmarks|json_script:"initial-bookmarks" }}
+{% else %}
+    <script id="initial-bookmarks" type="application/json">[]</script>
+{% endif %}
+
+<div class="scrap-list" id="article-bookmark-list"></div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+}
+
+let currentBookmarks = [];
+let currentSort = 'newest';
+
+function parseInitialBookmarks(){
+    try{
+        const el = document.getElementById('initial-bookmarks');
+        return el ? JSON.parse(el.textContent || '[]') : [];
+    }catch(e){ return []; }
+}
+
+function sortBookmarksArray(arr, by){
+    const copy = arr.slice();
+    if (by === 'title'){
+        copy.sort((a,b)=> (a.title||'').localeCompare(b.title||'') );
+    } else {
+        copy.sort((a,b)=>{
+            const da = a.published_at ? new Date(a.published_at) : new Date(0);
+            const db = b.published_at ? new Date(b.published_at) : new Date(0);
+            return by === 'newest' ? db - da : da - db;
+        });
+    }
+    return copy;
+}
+
+function renderArticleBookmarks(bookmarks){
+    const container = document.getElementById('article-bookmark-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (!bookmarks.length){
+        container.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 100px 0; color: #999;">스크랩한 기사가 없습니다.</div>';
+        return;
+    }
+
+    bookmarks.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'article-card';
+        
+        const imgSrc = b.image_url || '/static/img/default_news.png'; 
+        
+        card.innerHTML = `
+            <img class="thumb" src="${imgSrc}" alt="뉴스 이미지">
+            <div class="article-info">
+                <div class="meta">${b.source || '경제 뉴스'}</div>
+                <h3 class="title">${b.title}</h3>
+                <div class="smallTag">
+                    <div class="tag-container"></div>
+                    <button class="bookmark-btn" data-article-id="${b.id}">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" 
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        `;
+
+        const tagBox = card.querySelector('.tag-container');
+        let hasTag = false;
+
+        // 대분류 (# 붙여서 추가)
+        if (b.category) {
+            const mSpan = document.createElement('span');
+            mSpan.className = 'tag main-category';
+            mSpan.textContent = '#' + b.category;
+            tagBox.appendChild(mSpan);
+            hasTag = true;
+        }
+
+        // 소분류 (# 붙여서 추가)
+        if (b.sub_categories && Array.isArray(b.sub_categories)) {
+            b.sub_categories.forEach(sub => {
+                const sSpan = document.createElement('span');
+                sSpan.className = 'tag sub-category';
+                sSpan.textContent = '#' + sub;
+                tagBox.appendChild(sSpan);
+                hasTag = true;
+            });
+        }
+
+        // 데이터가 아예 없을 때 기본 태그
+        if (!hasTag) {
+            const dSpan = document.createElement('span');
+            dSpan.className = 'tag main-category';
+            dSpan.textContent = '#경제';
+            tagBox.appendChild(dSpan);
+        }
+
+        card.addEventListener('click', function(e) {
+            if (e.target.closest('.bookmark-btn')) return;
+            window.location.href = `/api/explanations/${b.id}/`;
+        });
+
+        const btn = card.querySelector('.bookmark-btn');
+        btn.addEventListener('click', (e) => handleBookmark(btn, e));
+
+        container.appendChild(card);
+    });
+}
+
+function handleBookmark(btn, event){
+    event.preventDefault();
+    event.stopPropagation();
+    const articleId = btn.getAttribute('data-article-id');
+    
+    fetch("{% url 'unbookmark_article' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ article_id: articleId })
+    }).then(r=>r.json()).then(data=>{
+        if (data.ok){
+            currentBookmarks = data.bookmarks || currentBookmarks.filter(b => b.id != articleId);
+            sortAndRender(currentSort);
+        }
+    }).catch(()=> alert('통신 실패'));
+}
+
+function sortAndRender(by){
+    currentSort = by;
+    const sorted = sortBookmarksArray(currentBookmarks, by);
+    renderArticleBookmarks(sorted);
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+    currentBookmarks = parseInitialBookmarks();
+    const sel = document.getElementById('scrapSort');
+    if(sel) {
+        sel.addEventListener('change', (e) => sortAndRender(e.target.value));
+        sortAndRender(sel.value);
+    }
+});
+</script>
 {% endblock %}

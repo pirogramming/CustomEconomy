@@ -49,42 +49,38 @@
         
         <section class="news-section">
             <div class="news-list">
-                <a href="{% url 'wrongquiz' %}" class="news-item">
-                    <div class="news-tags-top">
-                        <span class="tag tag-economy">#경제</span>
-                        <span class="tag">#이거는 소분류</span>
-                    </div>
-                    <div class="news-body">
-                        <div class="news-image">
-                            <img src="{% static 'img/news-sample-1.png' %}" alt="뉴스 썸네일">
+                {% if article_bookmarks_preview %}
+                    {% for a in article_bookmarks_preview %}
+                    <a href="/api/explanations/{{ a.id }}/" class="news-item">
+                        <div class="news-tags-top">
+                            <!-- show main category first -->
+                            {% if a.category %}
+                                <span class="tag main-category">#{{ a.category }}</span>
+                            {% endif %}
+                            <!-- then show any sub-categories -->
+                            {% if a.sub_categories and a.sub_categories|length > 0 %}
+                                {% for sub in a.sub_categories %}
+                                    <span class="tag sub-category">#{{ sub }}</span>
+                                {% endfor %}
+                            {% endif %}
                         </div>
-                        <div class="news-content">
-                            <p class="news-title">
-                                뉴스제목이 길 수도 있고 짧을수도 있는데 얼마나 길 수 있을까 과연? 어디까지 길어질래? 
-                                짧아지면? 어떡하니?[속보]이런식이면 겁나 길텐데 아 스크랩 안 하려나 아무리 길어도 이정도?아닌가 아무튼 최소 사진 사이즈나 글자 길이에 박스 맞추기
-                            </p>
+                        <div class="news-body">
+                            {% if a.image_url %}
+                            <div class="news-image">
+                                <img src="{{ a.image_url }}" alt="뉴스 썸네일">
+                            </div>
+                            {% endif %}
+                            <div class="news-content">
+                                <p class="news-title">{{ a.title }}</p>
+                            </div>
                         </div>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="news-list">
+                        <div class="news-item">스크랩한 기사가 없습니다.</div>
                     </div>
-                </a>
-
-                <a href="#" class="news-item">
-                    <div class="news-tags-top">
-                        <span class="tag tag-economy">#경제</span>
-                        <span class="tag">#이거는 소분류</span>
-                        <span class="tag">#이거는 소분류</span>
-                    </div>
-                    <div class="news-body">
-                        <div class="news-image">
-                            <img src="{% static 'img/news-sample-2.png' %}" alt="뉴스 썸네일">
-                        </div>
-                        <div class="news-content">
-                            <p class="news-title">
-                                사진의 윗부분과 글씨의 윗 부분이 맞으면 좋겠는데 피그마로 어케하는지 모르겟어요ㅜㅜ 
-                                프레임 패디 조정 다 너무 어려움 못해
-                            </p>
-                        </div>
-                    </div>
-                </a>
+                {% endif %}
             </div>
         </section>
 

@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json as _json
-from .models import TermBookmark
+from .models import TermBookmark, Term
 
 
 def terms_view(request):
@@ -43,7 +43,7 @@ def terms_view(request):
 
 	bookmarked_words = set()
 	if request.user.is_authenticated:
-		bookmarked_words = set(TermBookmark.objects.filter(user=request.user).values_list('word', flat=True))
+		bookmarked_words = set(TermBookmark.objects.filter(user=request.user).values_list('term__name', flat=True))
 
 	return render(request, 'terms.html', {
 		'dictionary_items': dictionary_items,
@@ -69,25 +69,24 @@ def bookmark_term(request):
 		return JsonResponse({'ok': False, 'error': 'no_word'}, status=400)
 
 	# store in DB
+	# find or create Term
+	term_obj, _ = Term.objects.get_or_create(name=word, defaults={'explanation': definition or ''})
+
 	obj, created = TermBookmark.objects.get_or_create(
 		user=request.user,
-		word=word,
-		defaults={'definition': definition or ''}
+		term=term_obj
 	)
-	if not created and definition and obj.definition != definition:
-		obj.definition = definition
-		obj.save(update_fields=['definition'])
 
-	# return updated bookmark list
+	# return updated bookmark list (serialize as word/definition for compatibility)
 	qs = TermBookmark.objects.filter(user=request.user).order_by('-created_at')
-	data = [{'word': b.word, 'definition': b.definition, 'created_at': b.created_at.isoformat()} for b in qs]
+	data = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at.isoformat()} for b in qs]
 	return JsonResponse({'ok': True, 'created': created, 'bookmarks': data})
 
 
 @login_required
 def bookmarks_json(request):
 	qs = TermBookmark.objects.filter(user=request.user).order_by('-created_at')
-	data = [{'word': b.word, 'definition': b.definition, 'created_at': b.created_at.isoformat()} for b in qs]
+	data = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at.isoformat()} for b in qs]
 	return JsonResponse({'ok': True, 'bookmarks': data})
 
 
@@ -103,9 +102,10 @@ def unbookmark_term(request):
 	if not word:
 		return JsonResponse({'ok': False, 'error': 'no_word'}, status=400)
 
-	deleted_count, _ = TermBookmark.objects.filter(user=request.user, word=word).delete()
+	# delete by related term name
+	deleted_count, _ = TermBookmark.objects.filter(user=request.user, term__name=word).delete()
 	deleted = deleted_count > 0
 
 	qs = TermBookmark.objects.filter(user=request.user).order_by('-created_at')
-	data = [{'word': b.word, 'definition': b.definition, 'created_at': b.created_at.isoformat()} for b in qs]
+	data = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at.isoformat()} for b in qs]
 	return JsonResponse({'ok': True, 'deleted': deleted, 'bookmarks': data})
