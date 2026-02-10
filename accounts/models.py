@@ -3,28 +3,19 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseU
 
 class UserManager(BaseUserManager):
 
-    def _generate_nickname(self):
-        last_user = self.model.objects.order_by('-id').first()
-
-        if not last_user:
-            number = 1
-        else:
-            number = last_user.id + 1
-
-        return f"user{number:04d}"   # user0001 형식
-
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError('이메일은 필수입니다')
 
         email = self.normalize_email(email)
-
-
-        nickname = self._generate_nickname()
+        # prefer provided username, otherwise derive from email local-part
+        username = extra_fields.pop('username', None)
+        if not username:
+            username = email.split('@')[0]
 
         user = self.model(
             email=email,
-            nickname=nickname,
+            username=username,
             **extra_fields
         )
 
@@ -41,12 +32,9 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    nickname = models.CharField(max_length=20, unique=True)
+    username= models.CharField(max_length=20, unique=True)
     email = models.EmailField(max_length=40, unique=True)
-    name = models.CharField(max_length=15)
     image_url = models.URLField(max_length=500, null=True, blank=True)
-    age = models.IntegerField(default=20)
-    job = models.CharField(max_length=30, default="unknown")
     level = models.IntegerField(default=1, help_text="1~5")
     level_score = models.IntegerField(default=0)
     total_score = models.IntegerField(default=0)
@@ -110,4 +98,4 @@ class UserInterest(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.nickname} - {self.interest.name} (I:{self.interest_score}, W:{self.weakness_score})"
+        return f"{self.user.username} - {self.interest.name} (I:{self.interest_score}, W:{self.weakness_score})"

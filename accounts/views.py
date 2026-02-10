@@ -25,70 +25,94 @@ def signup_view(request):
     if request.method == "GET":
         return render(request, "signup.html")
 
+    # 1. 데이터 가져오기
     email = request.POST.get("email", "").strip()
-    name = request.POST.get("name", "").strip()
+    username = request.POST.get("username", "").strip()
     password = request.POST.get("password", "")
     password_confirm = request.POST.get("password_confirm", "")
-
     raw = request.POST.get("selected_interests", "")
     selected_names = [s.strip() for s in raw.split(",") if s.strip()]
 
-    # --- 서버 검증 ---
+    # 입력값 유지 및 에러 전달을 위한 기본 context
+    ctx = {
+        'email': email,
+        'username': username,
+        'selected_interests': selected_names, # 기존 선택한 관심사 유지용
+    }
+
+    # 에러 여부를 판단할 플래그
+    has_error = False
+
+    # --- 서버 검증 (이제 팝업 대신 주황색 글씨로 뜹니다) ---
+
+    # 1. 이메일 체크
     if not email:
-        messages.error(request, "이메일을 입력해 주세요.")
-        return redirect("signup")
+        ctx['email_error'] = "이메일을 입력해 주세요."
+        has_error = True
+    elif User.objects.filter(email=email).exists():
+        from allauth.socialaccount.models import SocialAccount
+        existing_user = User.objects.get(email=email)
+        if SocialAccount.objects.filter(user=existing_user).exists():
+            providers = list(SocialAccount.objects.filter(user=existing_user).values_list('provider', flat=True))
+            ctx.update({'email_error': '이미 소셜 로그인으로 등록된 이메일입니다.', 'social_providers': providers})
+        else:
+            ctx['email_error'] = "이미 사용 중인 이메일입니다."
+        has_error = True
 
+    # 2. 사용자 이름(닉네임) 체크
+    if not username:
+        ctx['username_error'] = "사용하실 이름을 입력해 주세요."
+        has_error = True
+    elif User.objects.filter(username=username).exists():
+        ctx['username_error'] = "이미 사용 중인 이름입니다."
+        has_error = True
+
+    # 3. 비밀번호 일치 및 길이 체크
     if password != password_confirm:
-        messages.error(request, "비밀번호가 일치하지 않습니다.")
-        return redirect("signup")
-
+        ctx['password_confirm_error'] = "비밀번호가 일치하지 않습니다."
+        has_error = True
+    
     if len(password) < 8:
-        messages.error(request, "비밀번호는 8자 이상이어야 합니다.")
-        return redirect("signup")
+        ctx['password_error'] = "비밀번호는 8자 이상이어야 합니다."
+        has_error = True
 
-    if User.objects.filter(email=email).exists():
-        messages.error(request, "이미 사용 중인 이메일입니다.")
-        return redirect("signup")
-
+    # 4. 관심분야 체크
     if not selected_names:
-        messages.error(request, "관심분야를 최소 1개 선택해 주세요.")
-        return redirect("signup")
-    
+        ctx['selected_interests_error'] = "관심분야를 최소 1개 선택해 주세요."
+        has_error = True
 
+    # 만약 하나라도 에러가 있다면, 회원가입 페이지로 다시 렌더링 (ctx에 담긴 에러메시지들과 함께)
+    if has_error:
+        return render(request, 'signup.html', ctx)
 
-    # --- 유저 생성 (nickname은 manager에서 자동 생성되는 구조라고 가정) ---
-    user = User.objects.create_user(
-        email=email,
-        password=password,
-        name=name
-    )
+    # --- 모든 검증 통과 시 유저 생성 ---
+    try:
+        user = User.objects.create_user(
+            email=email,
+            password=password,
+            username=username
+        )
 
-    # --- 관심사 저장 (MAIN 8개 중 선택된 것만 is_selected=True) ---
-    interests = list(Interest.objects.filter(category_type="MAIN", name__in=selected_names))
-    
-    print("selected_names:", selected_names)  # ← 여기 OK
-    print("matched interests:", [i.name for i in interests])  # ⭐ 여기!
+        # 관심사 저장 로직
+        interests = list(Interest.objects.filter(category_type="MAIN", name__in=selected_names))
+        UserInterest.objects.bulk_create([
+            UserInterest(user=user, interest=i, is_selected=True)
+            for i in interests
+        ])
 
-    # 프론트에서 이상한 값이 오면 방어
-    if len(interests) != len(set(selected_names)):
-        messages.error(request, "유효하지 않은 관심분야가 포함되어 있습니다.")
-        raise ValueError("Invalid interest names")
-
-    UserInterest.objects.bulk_create([
-        UserInterest(user=user, interest=i, is_selected=True)
-        for i in interests
-    ])
-
-
-    
-    # --- 가입 후 자동 로그인 ---
-    login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    
-    
-    return render(request, "main.html", {
-        "signup_success": True,   # ⭐ 무조건 True
-        "user_name": user.name,   # ⭐ 또는 name
-    })
+        # 로그인 처리
+        login(request, user, backend="django.contrib.auth.backends.ModelBackend")
+        
+        # 가입 성공 시 메인 페이지로 이동하면서 성공 데이터 전달
+        return render(request, "main.html", {
+            "signup_success": True,
+            "user_name": user.username,
+        })
+        
+    except Exception as e:
+        # 혹시 모를 DB 에러 등을 대비
+        ctx['email_error'] = "회원가입 중 오류가 발생했습니다. 다시 시도해 주세요."
+        return render(request, 'signup.html', ctx)
     
 
 
@@ -100,16 +124,51 @@ def signup_popup(request):
 def login_view(request):
     if request.method == "GET":
         return render(request, "login.html")
-
+    # accept email input for login (with fallback)
     email = request.POST.get("email", "").strip()
     password = request.POST.get("password", "")
 
-    # ⭐ 핵심: authenticate는 인자명이 username임
-    user = authenticate(request, username=email, password=password)
+    # Try authenticating via email (allauth backend) first
+    user = authenticate(request, email=email, password=password)
+    if user is None:
+        # fallback: try authenticating using username field
+        user = authenticate(request, username=email, password=password)
 
     if user is None:
-        messages.error(request, "이메일 또는 비밀번호가 올바르지 않습니다.")
-        return redirect("login")
+        # Determine whether the failure is due to unknown email/username, wrong password,
+        # or the account being social-only (no usable password)
+        user_obj = None
+        if email:
+            user_obj = User.objects.filter(email=email).first()
+        if not user_obj:
+            user_obj = User.objects.filter(username=email).first()
+
+        if user_obj:
+            # If the user has no usable password (social-only), treat as unregistered for password login
+            if not user_obj.has_usable_password():
+                # find which social providers are linked for this user
+                from allauth.socialaccount.models import SocialAccount
+                providers = list(SocialAccount.objects.filter(user=user_obj).values_list('provider', flat=True))
+                context = {
+                    'email_error': '가입되지 않은 이메일입니다. 소셜 로그인을 사용해 주세요.',
+                    'email': email,
+                    'social_providers': providers,
+                }
+                return render(request, 'login.html', context)
+
+            # account exists and has a password -> password issue
+            context = {
+                'password_error': '비밀번호가 올바르지 않습니다.',
+                'email': email,
+            }
+            return render(request, 'login.html', context)
+
+        # no such account at all
+        context = {
+            'email_error': '등록된 이메일 또는 사용자 이름이 없습니다.',
+            'email': email,
+        }
+        return render(request, 'login.html', context)
 
     login(request, user)
     return redirect("articleList")
@@ -132,7 +191,8 @@ def mypage_view(request):
             ).values_list('interest__name', flat=True)
         )
         context['user_selected_interests'] = selected
-        context['user_nickname'] = request.user.nickname
+        # legacy context key kept as `user_nickname` for templates; populate with username
+        context['user_nickname'] = request.user.username
         context['user_image_url'] = request.user.image_url
         # session-stored term bookmarks (if any)
         context['term_bookmarks'] = request.session.get('term_bookmarks', [])
@@ -386,23 +446,23 @@ def edit_view(request):
 
 @login_required
 @require_POST
-def update_nickname(request):
-    new_nick = request.POST.get('nickname', '').strip()
-    if not new_nick:
-        messages.error(request, '닉네임을 입력해 주세요.')
+def update_username(request):
+    new_username = request.POST.get('username', '').strip()
+    if not new_username:
+        messages.error(request, '사용자 이름(username)을 입력해 주세요.')
         return redirect('edit')
 
-    if len(new_nick) > 20:
-        messages.error(request, '닉네임은 20자 이내여야 합니다.')
+    if len(new_username) > 20:
+        messages.error(request, '사용자 이름은 20자 이내여야 합니다.')
         return redirect('edit')
 
-    if User.objects.exclude(pk=request.user.pk).filter(nickname=new_nick).exists():
-        messages.error(request, '이미 사용 중인 닉네임입니다.')
+    if User.objects.exclude(pk=request.user.pk).filter(username=new_username).exists():
+        messages.error(request, '이미 사용 중인 사용자 이름입니다.')
         return redirect('edit')
 
-    request.user.nickname = new_nick
-    request.user.save(update_fields=['nickname'])
-    messages.success(request, '닉네임이 변경되었습니다.')
+    request.user.username = new_username
+    request.user.save(update_fields=['username'])
+    messages.success(request, '사용자 이름이 변경되었습니다.')
     return redirect('edit')
 
 

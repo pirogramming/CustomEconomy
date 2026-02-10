@@ -4,63 +4,187 @@
 {% block title %}로그인 | Custom Economy{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'login.css' %}">
+<style>
+    /* 화면 중앙 정렬을 위한 컨테이너 */
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* 80vh에서 100vh로 변경 */
+        width: 100%;       /* 800px 제거하고 100%로 변경 */
+    }
+
+    /* 2. 카드 박스 너비 조정 및 마진 제거 */
+    .auth-card {
+        background: white;
+        padding: 50px 40px;
+        border-radius: 30px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        width: 100%;
+        max-width: 480px; /* 카드를 조금 더 넓게 (420px -> 480px) */
+        text-align: center;
+    }
+
+    /* 제목 스타일 */
+    .auth-title {
+        font-family: 'Kadwa', sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        color: #192237;
+        margin-bottom: 30px;
+    }
+
+    /* 폼 내부 스타일 (Django form.as_p 대응) */
+    .auth-form {
+        text-align: left;
+    }
+    
+    .auth-form p {
+        margin-bottom: 20px;
+    }
+
+    .auth-form label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #555;
+        font-size: 14px;
+    }
+
+    /* 입력창 디자인 */
+    .auth-form input {
+        width: 100%;
+        padding: 14px;
+        border: 1px solid #ddd;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+        box-sizing: border-box; /* 패딩 포함 너비 계산 */
+    }
+
+    .auth-form input:focus {
+        border-color: #ef9160; /* 포인트 컬러 */
+        outline: none;
+    }
+
+    /* 로그인 버튼 */
+    .submit-btn {
+        width: 100%;
+        padding: 15px;
+        background-color: #ef9160;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .submit-btn:hover {
+        background-color: #e67e4d;
+    }
+
+    /* 하단 링크 (회원가입 등) */
+    .auth-footer {
+        margin-top: 25px;
+        font-size: 14px;
+        color: #888;
+    }
+
+    .auth-footer a {
+        color: #192237;
+        text-decoration: none;
+        font-weight: 700;
+        margin-left: 5px;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+        color: #ef9160;
+    }
+    
+    /* 에러 메시지 스타일 (로그인 실패 시) */
+    .errorlist {
+        color: #ef9160;
+        list-style: none;
+        padding: 0;
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    .field-error {
+        color: #ef9160;
+        font-size: 13px;
+        margin-top: 6px;
+    }
+    .social-hint {
+        margin-top: 8px;
+        font-size: 13px;
+        color: #444;
+    }
+    .social-btns {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        justify-content: flex-start;
+    }
+    .social-btns a {
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: #f2f2f2;
+        color: #222;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+    }
+    img{
+        width:60px;
+        height:60px;
+        border-radius: 30px;
+        margin:10px;
+        margin-top:20px;
+        border : 1px solid #19223723;
+    }
+    a{
+        text-decoration: none;
+        color: inherit;
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="auth-container">
-    <div class="login_float">
-        <div class="login_logo" onclick="location.href='{% url 'main' %}'">
-            <p>Custom Economy</p>
-        </div>
-
-        <div class="login_toggle">
-            <div class="login_toggle_btn" onclick="location.href='{% url 'login' %}'">Login</div>
-            <div class="signup_toggle_btn" onclick="location.href='{% url 'signup' %}'">Sign up</div>
-        </div>
-
-
-        <form method="post" class="auth-form" action="{% url 'login' %}">
-            {% csrf_token %}
-            <div class="login_input_area">
-                <div class="field">
-                    <div class="icon" id="email-icon">
-                    <img src="{% static 'icon/mark_email_unread.svg' %}" alt="email icon" width="24">
-                    </div>
-                    <input type="email" id="email" placeholder="E-mail" name="email" required maxlength="40" />
-                </div>
-
-                <div class="field">
-                    <div class="icon" id="lock-icon">
-                    <img src="{% static 'icon/Lock.svg' %}" alt="email icon" width="24">
-                    </div>
-                    <input type="password" id="password" placeholder="비밀번호" name="password" required minlength="8" />
-                    <br>
-                </div>
-
-            </div>
-
-
-            <div class="signup_submit_btn">
-                <button type="submit" class="submit-btn">Login</button>
-            </div>
-            
-        </form>
-        
-
+    <div class="auth-card">
+        <h2 class="auth-title">로그인</h2>
 
         {% comment %} <form method="post" class="auth-form" action="{% url 'login' %}">
             {% csrf_token %}
 
-            <p>
-                <label for="email">이메일</label>
-                <input type="email" id="email" name="email" required />
-            </p>
+                <p>
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" required maxlength="254" value="{{ email|default_if_none:'' }}" />
+                    
+                    {% if email_error %}
+                        {% if social_providers %}
+                            {% if social_providers|length == 1 %}
+                                <div class="field-error">이 이메일로는 {{ social_providers.0|capfirst }} 소셜로그인을 사용하세요.</div>
+                            {% else %}
+                                <div class="field-error">이 이메일로는 {{ social_providers|join:", " }} 소셜로그인을 사용하세요.</div>
+                            {% endif %}
+                        {% else %}
+                            <div class="field-error">{{ email_error }}</div>
+                        {% endif %}
+                    {% endif %}
+                </p>
 
-            <p>
-                <label for="password">비밀번호</label>
-                <input type="password" id="password" name="password" required />
-            </p>
+                <p>
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" required />
+                    {% if password_error %}
+                    <div class="field-error">{{ password_error }}</div>
+                    {% endif %}
+                </p>
 
             <button type="submit" class="submit-btn">로그인</button>
         </form>
