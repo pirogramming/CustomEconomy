@@ -77,6 +77,7 @@ class MKNewsFetcher:
 
     def _clean_content(self, text):
         if not text: return ""
+        
         if text.strip().startswith("Key Points"): return None
         lines = text.split('\n')
         cleaned = [l for l in lines if not (l.strip().startswith("사진 확대") or l.strip().startswith("▶") or ("@" in l and "mk.co.kr" in l))]
@@ -107,6 +108,9 @@ class MKNewsFetcher:
         for entry in feed.entries:
             if success >= limit: break
             actual_category = self._get_category_by_url(entry.link)
+            if "[표]" in entry.title or "외국환율고시표" in entry.title:
+                print(f"  ⏩ [제목 스킵] {entry.title[:15]}...")
+                continue
             if not actual_category:
                 skip_reasons["분류불가"] += 1
                 continue
@@ -159,6 +163,9 @@ class MKNewsFetcher:
 
         for entry in feed.entries:
             if success >= limit: break
+            if "[표]" in entry.title or "외국환율고시표" in entry.title:
+                print(f"  ⏩ [제목 스킵] {entry.title[:15]}...")
+                continue
             actual_category = self._get_category_by_url(entry.link)
             if not actual_category:
                 skip_reasons["분류불가"] += 1
@@ -169,6 +176,9 @@ class MKNewsFetcher:
             try:
                 news = NewsArticle(entry.link, language='ko')
                 news.download(); news.parse()
+                if "[표]" in news.title or "외국환율고시표" in news.title:
+                    print(f"  ⏩ [제목 스킵] {news.title[:15]}...")
+                    continue
                 content = self._clean_content(news.text)
                 if content is None:
                     skip_reasons["키포인트제외"] += 1
@@ -229,6 +239,9 @@ class MKNewsFetcher:
                 news = NewsArticle(link, language='ko')
                 news.download(); news.parse()
                 content = self._clean_content(news.text)
+                if "[표]" in news.title or "외국환율고시표" in news.title:
+                    print(f"  ⏩ [제목 스킵] {news.title[:15]}...")
+                    continue
                 if content is None:
                     skip_reasons["키포인트제외"] += 1
                     continue
@@ -252,7 +265,7 @@ class MKNewsFetcher:
                     article.sub_interests.add(*target_interests)
 
                 success += 1
-                print(f"  ✅ [금융][{category_name}] 소분류:{sub_cats} | {news.title[:15]}...")
+                print(f"  ✅ [일반][{category_name}] 소분류:{sub_cats} | {news.title[:15]}...")
                 time.sleep(0.3)
             except: skip_reasons["에러"] += 1
         print(f"  ⚠️ 요약: {success}/{limit} 저장 (스킵이유: {skip_reasons})")
