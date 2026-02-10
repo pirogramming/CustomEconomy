@@ -169,6 +169,7 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    align-items: flex-start;
 }
 
 .main-wrapper .news-item {
@@ -180,6 +181,18 @@
     /* 뉴스 아이템 사이에 구분선 추가 (선택사항) */
     padding-bottom: 20px;
     border-bottom: 1px solid #f5f5f5;
+}
+.main-wrapper .news-item:last-child {
+    border-bottom: none;
+}
+
+/* 기사가 없을 때 메시지: 정가운데 정렬 */
+.main-wrapper .news-empty {
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--mp-text-sub);
+    font-size: 16px;
 }
 /* tag row above news body */
 .main-wrapper .news-tags-top {
@@ -299,6 +312,15 @@
     font-size: 13px;
     line-height: 1.4;
     text-align: left;
+}
+
+/* 용어가 없을 때 메시지 스타일 */
+.main-wrapper .term-card {
+    width: 100%;
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--mp-text-sub);
+    font-size: 16px;
 }
 
 .main-wrapper .term-card-desc {

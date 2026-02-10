@@ -20,50 +20,79 @@
 .sort-container label {
     font-size: 14px; 
     color: #666;
+    margin-right: 8px;
 }
 
-.sort-container select {
-        margin-left: auto;
-        margin-top: 0;
-
-        padding: 6px 12px;
-
-        border-radius: 10px;
-        border: 1px solid #dcdcdc;
-
-        background-color: #ffffff;
-        color: #192237;
-
-        font-size: 14px;
-        font-weight: 600;
-
-        cursor: pointer;
-
-        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-
-        transition: all 0.2s ease;
-
-        appearance: none;              /* 기본 화살표 제거 */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-
-        background-image: url("data:image/svg+xml;utf8,<svg fill='%23192237' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-        background-repeat: no-repeat;
-        background-position: right 8px center;
-        padding-right: 30px;
-        margin-right: 20px;
+.sort-container .sort-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
 }
 
-/* hover */
-.sort-container select:hover{
+.sort-container .sort-btn {
+    padding: 6px 12px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc;
+    background-color: #ffffff;
+    color: #192237;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: all 0.2s ease;
+}
+
+.sort-container .sort-btn:hover {
     border-color: #80B27F;
 }
 
-/* focus */
-.sort-container select:focus{
-    outline: none;
-    border-color: #80B27F;
-    box-shadow: 0 0 0 3px rgba(128,178,127,0.15);
+.sort-container .sort-btn:active {
+    background-color: #f5f5f5;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.sort-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    min-width: 100px;
+    margin-top: 4px;
+    z-index: 100;
+}
+
+.sort-menu.show {
+    display: block !important;
+}
+
+.sort-option {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    color: #192237;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.sort-option:first-child {
+    border-radius: 9px 9px 0 0;
+}
+
+.sort-option:last-child {
+    border-radius: 0 0 9px 9px;
+}
+
+.sort-option:hover {
+    background-color: #f0f0f0;
+    color: #80B27F;
 }
 
 /* 카드뉴스 그리드 */
@@ -165,5 +194,6 @@
 }
 
 .bookmark-btn svg {
+    color: #f39c12;
     fill: #f39c12;
 }
