@@ -166,13 +166,6 @@ def main_view(request):
     latest_articles = Article.objects.filter(is_popular=True).order_by('-published_at')[:1]
     if not latest_articles.exists():
         latest_articles = Article.objects.order_by('-published_at')[:1]
-    
-    # 🆕 경제 지표 가져오기
-    economic_data = get_economic_indicators()
-    print(f"📊 경제 지표 조회 결과:")
-    print(f"  KOSPI: {economic_data['kospi']}")
-    print(f"  환율: {economic_data['exchange']}")
-    print(f"  금리: {economic_data['interest']}")
         
     if user.is_authenticated:
         # --- [1단계] 점수 및 가중치 계산 시간 설정 ---
@@ -261,8 +254,14 @@ def main_view(request):
         'latest_articles': latest_articles,
         'user_has_interests': user_sub_interests.filter(interest_score__gt=0).exists(),
         'has_learning_history': has_learning_history,
-        # 🆕 경제 지표 데이터 추가
-        'kospi': economic_data['kospi'],
-        'exchange_rate': economic_data['exchange'],
-        'interest_rate': economic_data['interest'],
     })
+    
+def economic_indicators(request):
+    """
+    모든 페이지에서 사용할 수 있는 경제 지표 Context Processor
+    """
+    return {
+        'kospi': get_kospi_index(),
+        'exchange_rate': get_exchange_rate(),
+        'interest_rate': get_base_rate(),
+    }
