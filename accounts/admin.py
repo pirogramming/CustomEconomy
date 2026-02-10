@@ -3,8 +3,8 @@ from django.contrib.auth.admin import UserAdmin
 from .models import User, Interest, UserInterest
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    # 1. 목록 화면에서 보여줄 필드 (username 제외)
-    list_display = ('email', 'nickname', 'name', 'is_staff')
+    # 1. 목록 화면에서 보여줄 필드 (username 제외) (level, total_score 추가)
+    list_display = ('email', 'nickname', 'name', 'level', 'total_score', 'is_staff')
     
     # 2. 정렬 기준을 email로 변경 (에러 admin.E033 해결)
     ordering = ('email',)
@@ -14,7 +14,8 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('email', 'password')}),
         ('개인정보', {'fields': ('nickname', 'name', 'age', 'job')}),
         ('권한', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('중요 날짜', {'fields': ('last_login', 'date_joined')}),
+        ('중요 날짜', {'fields': ('last_login',)}), # 'date_joined' 제거
+        ('활동 정보', {'fields': ('level', 'total_score',)}), # 레벨, 누적 점수 보기 위해 추가
     )
 
     # 4. 유저 생성 시 보여줄 필드

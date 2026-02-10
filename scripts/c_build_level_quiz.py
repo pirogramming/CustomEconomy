@@ -96,7 +96,7 @@ def run_main():
                 lv_existing = [q for q in current_quizzes if q.get('level') == lv]
                 
                 if len(lv_existing) >= target_num:
-                    print(f"  ⏩ Lv.{lv}: 이미 {len(lv_existing)}개가 있어 건너뜜.")
+                    print(f"  ⏩ Lv.{lv}: 이미 {len(lv_existing)}개가 있어 건너뜀.")
                     continue
 
                 needed = target_num - len(lv_existing)
