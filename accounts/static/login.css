@@ -138,4 +138,5 @@
   margin: 0;
   display: block;
   border-radius: 50%;
+  border: 1px solid #DDDADA;
 }
