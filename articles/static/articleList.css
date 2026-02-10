@@ -109,48 +109,73 @@
 .articleListBody .middleFloat{
   border-radius: 0 0 35px 35px;
 }
-.articleListBody .middleFloat select{
+.articleListBody .middleFloat .sort-dropdown{
+  position: relative;
+  display: inline-block;
   margin-left: auto;
   margin-top: 10px;
+  margin-right: 50px;
+}
 
+.articleListBody .middleFloat .sort-btn{
   padding: 6px 12px;
-
   border-radius: 10px;
   border: 1px solid #dcdcdc;
-
   background-color: #ffffff;
   color: #192237;
-
   font-size: 14px;
   font-weight: 600;
-
   cursor: pointer;
-
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-
   transition: all 0.2s ease;
-
-  appearance: none;              /* 기본 화살표 제거 */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  background-image: url("data:image/svg+xml;utf8,<svg fill='%23192237' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  padding-right: 30px;
-  margin-right:50px;
 }
 
-/* hover */
-.articleListBody .middleFloat select:hover{
+.articleListBody .middleFloat .sort-btn:hover{
   border-color: #80B27F;
 }
 
-/* 클릭/포커스 */
-.articleListBody .middleFloat select:focus{
-  outline: none;
-  border-color: #80B27F;
-  box-shadow: 0 0 0 3px rgba(128,178,127,0.15);
+.articleListBody .middleFloat .sort-menu{
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #ffffff;
+  border: 1px solid #dcdcdc;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  min-width: 120px;
+  margin-top: 4px;
+  z-index: 100;
+}
+
+.articleListBody .middleFloat .sort-menu.show{
+  display: block !important;
+}
+
+.articleListBody .middleFloat .sort-option{
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  background: none;
+  color: #192237;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.articleListBody .middleFloat .sort-option:first-child{
+  border-radius: 9px 9px 0 0;
+}
+
+.articleListBody .middleFloat .sort-option:last-child{
+  border-radius: 0 0 9px 9px;
+}
+
+.articleListBody .middleFloat .sort-option:hover{
+  background-color: #f0f0f0;
+  color: #80B27F;
 }
 
 .articleListBody .middleFloat .articleCards{
@@ -222,24 +247,40 @@
   padding: 5px; margin: 5px;
 }
 .articleListBody .middleFloat .articleCards .article-card .article-info .smallTag .tag{
-    background-color: white; border-radius: 10px;
-    padding: 5px; margin: 3px; width: 100px; height: auto;
-    color: #80B27F; font-family: 'Roboto'; font-weight: 600; font-size: 13px;
-    text-align: center;
+  background-color: white;
+  border-radius: 999px;
+  padding: 6px 10px;
+  margin: 3px;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  color: #80B27F;
+  font-family: 'Roboto';
+  font-weight: 600;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 /* layout for tags + bookmark button */
 .articleListBody .middleFloat .articleCards .article-card .article-info .smallTagRow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:start;
   gap:8px;
 }
 .articleListBody .middleFloat .articleCards .article-card .article-info .smallTag{
   display:flex;
-  gap:6px;
   flex-wrap:wrap;
+  gap:6px;
   align-items:center;
+}
+.articleListBody .middleFloat .articleCards .article-card .article-info .smallTag .tag{
+  display:inline-block;
+  white-space:nowrap;
+}
+.articleListBody .middleFloat .articleCards .article-card .article-info .smallTagRow .bookmark-btn{
+  align-self:start;
 }
 .bookmark-btn{ background: none; border: none; padding: 4px; cursor: pointer; }
 .articleListBody .middleFloat .articleCards .article-card .article-info .title{padding: 5px;}

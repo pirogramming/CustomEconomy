@@ -26,11 +26,14 @@
     </div>
 
     <div class="middleFloat">
-        <select id="sortSelect">
-            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>최신순</option>
-            <option value="oldest" {% if current_sort == 'oldest' %}selected{% endif %}>오래된순</option>
-            <option value="title" {% if current_sort == 'title' %}selected{% endif %}>이름순</option>
-        </select>
+        <div class="sort-dropdown">
+            <button id="sortBtn" class="sort-btn">최신순 ▼</button>
+            <div id="sortMenu" class="sort-menu" style="display: none;">
+                <button class="sort-option" data-value="newest">최신순</button>
+                <button class="sort-option" data-value="oldest">오래된순</button>
+                <button class="sort-option" data-value="title">이름순</button>
+            </div>
+        </div>
 
         <div class="articleCards">
             {% for article in articles %}
@@ -96,18 +99,35 @@
 
 <!-- ✅ select 바꾸면 sort 쿼리만 바꿔서 page=1로 이동 -->
 <script>
-    const sortSelect = document.getElementById("sortSelect");
-    sortSelect.addEventListener("change", (e) => {
-        const newSort = e.target.value;
-        const params = new URLSearchParams(window.location.search);
+    const sortBtn = document.getElementById('sortBtn');
+    const sortMenu = document.getElementById('sortMenu');
+    const sortOptions = document.querySelectorAll('.sort-option');
 
-        // category 유지 (없으면 기본값)
-        if (!params.get("category")) params.set("category", "{{ current_category }}");
+    if (sortBtn && sortMenu) {
+        sortBtn.addEventListener('click', () => {
+            sortMenu.classList.toggle('show');
+        });
 
-        params.set("sort", newSort);
-        params.set("page", "1");  // 정렬 바꾸면 첫 페이지로
-        window.location.search = params.toString();
-    });
+        sortOptions.forEach(opt => {
+            opt.addEventListener('click', () => {
+                const value = opt.getAttribute('data-value');
+                const labels = { newest: '최신순', oldest: '오래된순', title: '이름순' };
+                sortBtn.textContent = labels[value] + ' ▼';
+
+                const params = new URLSearchParams(window.location.search);
+                if (!params.get('category')) params.set('category', "{{ current_category }}");
+                params.set('sort', value);
+                params.set('page', '1');
+                window.location.search = params.toString();
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!sortBtn.contains(e.target) && !sortMenu.contains(e.target)) {
+                sortMenu.classList.remove('show');
+            }
+        });
+    }
 
     // bookmark
     console.log("시현님, 북마크 스크립트 최종 준비 완료!");
