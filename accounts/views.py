@@ -366,6 +366,7 @@ def result_page(request):
         "total_knowledge": state["total_knowledge"],
         "total": total,
         "level": level,
+        "user_name": request.user.name,
     })
 
 @login_required
