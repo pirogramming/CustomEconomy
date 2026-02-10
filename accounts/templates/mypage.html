@@ -84,15 +84,15 @@
             </div>
         </section>
 
-        <!-- 단어 섹션 -->
+        <!-- 용어 섹션 -->
         <div class="section-header-outside">
-            <h2>스크랩한 단어</h2>
+            <h2>스크랩한 용어</h2>
             <a href="{% url 'scrapterm' %}" class="icon-btn dot-btn">•••</a>
         </div>
         
         <section class="term-section">
             <div class="term-list" id="term-bookmark-list">
-                <div class="term-card">스크랩한 단어를 불러오는 중입니다...</div>
+                <div class="term-card">스크랩한 용어를 불러오는 중입니다...</div>
             </div>
         </section>
 
@@ -146,7 +146,7 @@ function renderBookmarks(bookmarks){
     const container = document.getElementById('term-bookmark-list');
     container.innerHTML = '';
     if(!bookmarks.length){
-        container.innerHTML = '<div class="term-card">스크랩한 단어가 없습니다.</div>';
+        container.innerHTML = '<div class="term-card">스크랩한 용어가 없습니다.</div>';
         return;
     }
     bookmarks.forEach(b => {
@@ -189,7 +189,7 @@ fetch("{% url 'bookmarks_json' %}", {
     }
 }).catch(()=>{
     const container = document.getElementById('term-bookmark-list');
-    container.innerHTML = '<div class="term-card">스크랩한 단어를 불러오지 못했습니다.</div>';
+    container.innerHTML = '<div class="term-card">스크랩한 용어를 불러오지 못했습니다.</div>';
 });
 </script>
 {% endblock %}

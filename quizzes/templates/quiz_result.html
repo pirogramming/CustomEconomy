@@ -22,9 +22,42 @@
     <div class="result-summary">
       <p class="result-text">
         3문제 중 {{ correct_count }}문제를 맞혔습니다!<br><br>
-        획득 점수: +{{ points }} XP
-        {% if is_levelup %}<br><br>🎉 레벨업 했어요!{% endif %}
       </p>
+     <!-- 추가 (css없음) --> 
+      <div class="score-detail-list">
+        <div class="score-row">
+          <span>기사 분석 (유형 A)</span>
+          <span>+{{ xp_breakdown.type_a }} XP</span>
+        </div>
+        <div class="score-row">
+          <span>용어 학습 (유형 B)</span>
+          <span>+{{ xp_breakdown.type_b }} XP</span>
+        </div>
+        <div class="score-row">
+          <span>경제 상식 (유형 C)</span>
+          <span>+{{ xp_breakdown.type_c }} XP</span>
+        </div>
+        {% if bonus_xp > 0 %}
+        <div class="score-row bonus-text">
+          <span>✨ 연속 정답 보너스</span>
+          <span>+{{ bonus_xp }} XP</span>
+        </div>
+        {% endif %}
+        <div class="score-row total-highlight">
+          <span>총 획득 점수</span>
+          <span>+{{ total_final_xp }} XP</span>
+        </div>
+
+        <div class="level-progress">
+          현재 총 점수: {{ current_total_xp }} XP <br>
+          {% if is_levelup %}
+            <br><br>🎉 레벨업 했어요!
+          {% else %}
+            다음 레벨까지 <strong>{{ remaining_xp }} XP</strong> 남았습니다.
+          {% endif %}
+        </div>
+      </div>
+      <!-- 추가 끝 -->
     </div>
 
     {% for res in results_detail %}

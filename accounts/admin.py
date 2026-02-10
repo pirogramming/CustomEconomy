@@ -14,7 +14,8 @@ class CustomUserAdmin(UserAdmin):
         (None, {'fields': ('email', 'password')}),
         ('개인정보', {'fields': ('username',)}),
         ('권한', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('중요 날짜', {'fields': ('last_login', 'date_joined')}),
+        ('중요 날짜', {'fields': ('last_login',)}), # 'date_joined' 제거
+        ('활동 정보', {'fields': ('level', 'total_score',)}), # 레벨, 누적 점수 보기 위해 추가
     )
 
     # 4. 유저 생성 시 보여줄 필드

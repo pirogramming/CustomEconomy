@@ -1,0 +1,96 @@
+.leveltest_result_body{
+    background-color: #F1F7FF;
+    width: 100%; 
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    
+
+    flex-wrap: wrap;
+}
+.leveltest_result_body .logo{
+    /* background-color: pink;  */
+    margin-top: 10px;
+}
+.leveltest_result_body .logo > p{
+    font-family: Kadwa;
+    font-size: 60px;
+    color: #192237;
+}
+.leveltest_result_body .float{
+    background-color: white;
+    width: 1018px; height: 547px;
+    /* padding: 200px; */
+    margin: 0px;
+
+    border-style: solid;
+    border-width: 1px;
+    border-color: #696969;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.leveltest_result_body .float .test_result{
+    /* background-color: aqua; */
+    display: flex;
+    justify-content: flex-start;
+    align-self: top;
+    /* flex-direction: column; */
+    padding: 10px;
+    /* margin-bottom: 90px; */
+
+    flex-wrap: wrap;
+
+}
+.leveltest_result_body .float .test_result > p{
+    font-size: 16px;
+    font-family: NanumGothic;
+    color: #696969;
+    
+    text-align: center;
+}
+.leveltest_result_body .float .level_result{
+    /* background-color: #018797; */
+    text-align: center;
+}
+.leveltest_result_body .float .level_result > p{
+    font-size: 24px;
+    font-family: NanumGothic;
+
+    /* background-color: pink; */
+    margin: 3px;
+}
+.leveltest_result_body .float .level_result #level{
+    color: #EF9160;
+}
+.leveltest_result_body .float .btn_area{
+    /* background-color: rgb(61, 52, 41); */
+    padding: 10px;
+}
+.leveltest_result_body .float .btn_area .article_btn{
+    background-color: #EF9160;
+    width: 239px; height: 63px;
+    border-radius: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.leveltest_result_body .float .btn_area .article_btn:hover{
+    cursor: pointer;
+}
+
+.leveltest_result_body .float .btn_area .article_btn>a{
+    color: white; 
+    font-family: NanumGothic;
+    font-size: 20px;
+
+    text-decoration: none;
+}

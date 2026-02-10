@@ -7,19 +7,37 @@
 
 {% block content %}
 
-<body>
-  <main style="max-width:720px;margin:40px auto;padding:0 16px;">
-    <h1>테스트 결과</h1>
-    <p>SELF 점수: {{ total_self }}</p>
-    <p>KNOWLEDGE 점수: {{ total_knowledge }}</p>
-    <hr>
-    <p><strong>총점: {{ total }}</strong></p>
-    <p><strong>추천 레벨: Lv{{ level }}</strong></p>
+<div class="leveltest_result_body">
+  <div class="logo">
+    <p>Custom Economy</p>
+  </div>
 
-    {% comment %} <div style="margin-top:16px;">
-      <a href="{% url 'level_test:page' %}">다시 하기</a>
-    </div> {% endcomment %}
-  </main>
-</body>
+  <div class="float">
+    <div class="test_result">
+      <p>테스트 결과 </p>
+      <p>SELF 점수: {{ total_self }} </p>
+      <p>KNOWLEDGE 점수: {{ total_knowledge }} </p><br>
+      <p><strong>총점: {{ total }} </strong> </p><br>
+    </div>
+
+    <br>
+
+    <div class="level_result">
+      <p>{{user_name}}님의 레벨은</p><br>
+      <p id="level">Lv{{ level }}</p><br>
+      <p>입니다!</p>
+    </div>
+
+    <br>
+
+
+    <div class="btn_area">
+      <div class="article_btn">
+        <a href="{% url 'articleList' %}">기사 보러 가기</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 {% endblock %}

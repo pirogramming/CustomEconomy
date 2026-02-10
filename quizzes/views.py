@@ -10,7 +10,7 @@ from .services import get_quiz_session_set
 @login_required
 def quiz_view(request, article_id):
     """
-    1. 퀴즈 화면: 기사와 관련된 3문제를 생성하거나 가져와서 보여줌
+    퀴즈 화면: 기사와 관련된 3문제를 생성하거나 가져와서 보여줌
     """
     article = get_object_or_404(Article, id=article_id)
     quiz_set = get_quiz_session_set(article)
@@ -39,7 +39,7 @@ def quiz_view(request, article_id):
 @transaction.atomic
 def submit_quiz_session(request, article_id):
     """
-    2. 퀴즈 제출: 결과 저장 및 약점 점수/날짜 업데이트
+    퀴즈 제출: 결과 저장 및 약점 점수/날짜 업데이트
     """
     if request.method == "POST":
         user = request.user
@@ -142,12 +142,17 @@ def submit_quiz_session(request, article_id):
         
         return render(request, 'quiz_result.html', {
             'results_detail': results_detail,
-            'correct_count': correct_count,
+            'correct_count': correct_count, # 문제 정답 개수
             'is_levelup': is_levelup,
-            'base_xp': session_earned_xp,
-            'bonus_xp': bonus_xp,
-            'total_final_xp': total_final_xp,
-            'current_total_xp': user.total_score,
-            'remaining_xp': remaining_xp,
+            'base_xp': session_earned_xp, # 순수 문제 정답 점수 합
+            'xp_breakdown': { # 각 유형 별 정답 점수
+                'type_a': sum(r['earned_xp'] for r in results_detail if r['quiz_type'] == 'A'),
+                'type_b': sum(r['earned_xp'] for r in results_detail if r['quiz_type'] == 'B'),
+                'type_c': sum(r['earned_xp'] for r in results_detail if r['quiz_type'] == 'C'),
+            },
+            'bonus_xp': bonus_xp, # 2개 or 3개 맞췄을 때 보너스
+            'total_final_xp': total_final_xp, # 이번에 얻은 총 점수
+            'current_total_xp': user.total_score, # 현재 총 점수
+            'remaining_xp': remaining_xp, # 레벨 업까지 남은 점수
             'article': article,         
         })

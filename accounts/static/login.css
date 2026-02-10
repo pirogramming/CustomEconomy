@@ -1,4 +1,141 @@
-.login {
-  margin-left: 258px;
-  padding: 20px;      
+.auth-container{
+  display: flex;
+  justify-content: center; /* 가로 중앙 */
+  align-items: center;     /* 세로 중앙 */     
+  background-color: #F1F7FF;
+  width: 100%; height: 100%;
+  padding: 120px;
+}
+.auth-container .login_float{
+  background-color: white; padding: 20px;
+  width: 515px; height: 681px;
+  display: flex; flex-direction: column; align-items: center;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px
+}
+.auth-container .login_float .login_logo{
+  margin-top: 20px;
+}
+.auth-container .login_float .login_logo>p{
+  font-family: 'Kadwa', serif;
+  font-size: 36px; font-weight: 700;
+}
+.auth-container .login_float .login_toggle{
+  display: flex; flex-wrap: nowrap;
+  margin-bottom: 50px;
+}
+.auth-container .login_float .login_toggle .login_toggle_btn{
+  width: 177px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+
+  font-family: 'Kadwa'; font-size: 20px; font-weight: 600; color: #EF9160;
+
+  border-style: solid;
+  border-width: 0px 0px 3px 0px;
+}
+.auth-container .login_float .login_toggle .login_toggle_btn:hover{
+  cursor: pointer;
+}
+.auth-container .login_float .login_toggle .signup_toggle_btn{
+   /* background-color: aqua; */
+  width: 177px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+
+  
+
+  font-family: 'Kadwa'; font-size: 20px; font-weight: 600; color: #737373;
+
+
+}
+.auth-container .login_float .login_toggle .signup_toggle_btn:hover{
+  cursor: pointer;
+}
+.auth-container .login_float .auth-form{}
+.auth-container .login_float .auth-form .login_input_area{
+  /* background-color: yellow; */
+}
+.auth-container .login_float .auth-form .login_input_area .field{
+  display: flex;
+  flex-wrap: nowrap;
+  background-color: #DDDADA;
+  padding: 10px; margin: 10px;
+  border-radius: 15px; border-style: none;
+  width: 374px;
+
+  margin: 10px;
+}
+.auth-container .login_float .auth-form .login_input_area .field .icon{
+  padding: 2px 5px;
+  /* background-color: pink; */
+  display: flex; align-items: center; justify-content: center;
+}
+.auth-container .login_float .auth-form .login_input_area .field #email-icon{}
+.auth-container .login_float .auth-form .login_input_area .field #lock-icon{}
+.auth-container .login_float .auth-form .login_input_area .field > input{
+  background-color: #DDDADA;
+  /* background-color: turquoise; */
+  padding: 5px; margin: 0px 5px; 
+  border-style: none;
+  outline: none;
+}
+.auth-container .login_float .auth-form .signup_submit_btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.auth-container .login_float .auth-form .signup_submit_btn > button{
+  width: 210px; height: 36px;
+  background-color: #EF9160; color: black;
+  border-radius: 20px;border: none;
+  margin-top: 50px;
+
+  font-family: Kadwa; font-weight: 600; font-size: 16px;
+
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+.auth-container .login_float .auth-form .signup_submit_btn > button:hover{
+  cursor: pointer;
+}
+.auth-container .login_float .login_divider{
+  /* background-color: pink; */
+  padding: 10px; margin-top: 20px;
+
+  display: flex;
+  flex-wrap: nowrap;
+
+  justify-content: center;
+  align-items: center;
+}
+.auth-container .login_float .login_divider > hr{
+  border: none;
+  height: 1px; width: 124px;
+  background-color: #000000;
+}
+.auth-container .login_float .login_divider > p{
+  padding: 10px;
+  font-size: 10px; font-family: 'NanumGothic';
+}
+.auth-container .login_float .login_social_area{
+  display: flex;
+  flex-wrap: nowrap;
+  /* background-color: aqua; */
+  margin: 10px;
+}
+.auth-container .login_float .login_social_area .social_signup_btn > a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* background-color: pink; */
+  width: 55px; height: 55px;
+  margin: 10px;
+  padding: 0;
+  text-decoration: none;
+
+  border-radius: 100%;
+}
+.auth-container .login_float .login_social_area .social_signup_btn a>img{
+  width: 50px; height: 50px;
+  margin: 0;
+  display: block;
+  border-radius: 50%;
 }

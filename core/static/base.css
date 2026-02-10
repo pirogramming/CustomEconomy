@@ -192,74 +192,88 @@ body.collapsed .toggle-btn {
     transform: translateX(50%);
 }
 
-/* 경제 지표 티커 스타일 */
+/* =========================================
+   경제 지표 티커 스타일 (수정됨)
+   ========================================= */
 .economic-ticker {
-            width: 100%;
-            overflow: hidden;
-            background: linear-gradient(135deg, #1a2332 0%, #2a3648 100%);
-            padding: 5px 0 30px 0;
-            position: relative;
-            border-top: 1px solid rgba(77, 208, 225, 0.2);
-        }
+    width: 100%;
+    height: 60px; /* 고정 높이 */
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a2332 0%, #2a3648 100%);
+    position: relative;
+    border-top: 1px solid rgba(77, 208, 225, 0.2);
+    display: flex; /* flexbox로 변경 */
+    align-items: center; /* 수직 중앙 정렬 */
+}
 
-        .ticker-wrapper {
-            display: flex;
-            animation: scroll-left 30s linear infinite;
-            width: max-content;
-        }
+.ticker-wrapper {
+    display: flex;
+    align-items: center; /* 내부 아이템들도 수직 중앙 정렬 */
+    animation: scroll-left 30s linear infinite;
+    width: max-content;
+    height: 100%; /* 부모 높이에 맞춤 */
+}
 
-        .ticker-item {
-            display: flex;
-            align-items: center;
-            margin: 0 40px;
-            white-space: nowrap;
-            font-family: 'Noto Sans KR', sans-serif;
-        }
+.ticker-item {
+    display: flex;
+    align-items: center; /* 수직 중앙 정렬 */
+    margin: 0 40px;
+    white-space: nowrap;
+    font-family: 'Noto Sans KR', sans-serif;
+    height: 100%; /* 부모 높이에 맞춰서 중앙 정렬 기준 맞추기 */
+}
 
-        .ticker-label {
-            color: #4dd0e1;
-            font-weight: 600;
-            font-size: 13px;
-            margin-right: 8px;
-        }
+.ticker-label {
+    color: #4dd0e1;
+    font-weight: 600;
+    font-size: 13px;
+    margin-right: 8px;
+}
 
-        .ticker-value {
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 15px;
-            margin-right: 4px;
-        }
+.ticker-value {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 15px;
+    margin-right: 4px;
+}
 
-        .ticker-unit {
-            color: #a0aec0;
-            font-size: 12px;
-        }
+.ticker-unit {
+    color: #a0aec0;
+    font-size: 12px;
+}
 
-        .ticker-separator {
-            color: rgba(77, 208, 225, 0.3);
-            margin: 0 15px;
-        }
+.ticker-separator {
+    color: rgba(77, 208, 225, 0.3);
+    margin: 0 15px;
+    display: flex;
+    align-items: center; /* 구분선도 중앙 정렬 */
+    height: 100%;
+}
 
-        @keyframes scroll-left {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-33.33%);
-            }
-        }
+@keyframes scroll-left {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-33.33%);
+    }
+}
 
-        /* 반응형 디자인 */
-        @media (max-width: 768px) {
-            .ticker-item {
-                margin: 0 20px;
-            }
-            
-            .ticker-label {
-                font-size: 11px;
-            }
-            
-            .ticker-value {
-                font-size: 13px;
-            }
-        }
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .economic-ticker {
+        height: 50px; /* 모바일에서는 약간 줄임 */
+    }
+    
+    .ticker-item {
+        margin: 0 20px;
+    }
+    
+    .ticker-label {
+        font-size: 11px;
+    }
+    
+    .ticker-value {
+        font-size: 13px;
+    }
+}

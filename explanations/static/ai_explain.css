@@ -160,6 +160,22 @@ body {
     border-bottom: 2px solid var(--c-bg-gray);
 }
 
+/* 제목을 클릭하면 terms 페이지로 이동: 링크 기본 스타일 제거 */
+.word-sidebar-title-link {
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+    cursor: pointer;
+}
+.word-sidebar-title-link:hover {
+    color: var(--c-orange);
+    text-decoration: none;
+}
+.word-sidebar-title-link:focus {
+    outline: none;
+    text-decoration: none;
+}
+
 .word-sidebar-scroll-area {
     max-height: 75vh;
     overflow-y: auto;
@@ -169,6 +185,43 @@ body {
 .word-card {
     margin-bottom: 20px;
 }
+
+/* 단어 카드 헤더: 이름과 북마크 버튼을 같은 줄에 배치 */
+.word-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.term-bookmark-btn {
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    transition: all 0.15s ease;
+    border-radius: 6px;
+}
+.term-bookmark-btn svg { display: block; }
+.term-bookmark-btn:hover { color: var(--c-orange); transform: scale(1.05); }
+.term-bookmark-btn.active { color: #f39c12; }
+
+/* SVG 내부 경로 초기 상태 및 활성화 시 채우기 애니메이션 */
+.term-bookmark-btn svg path {
+    fill: transparent;
+    stroke: currentColor;
+    transition: fill 180ms ease, stroke 180ms ease, transform 120ms ease;
+}
+.term-bookmark-btn.active svg path {
+    fill: currentColor;
+    stroke: currentColor;
+}
+
 
 .word-name {
     display: block;
