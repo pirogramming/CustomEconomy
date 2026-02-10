@@ -121,12 +121,25 @@
         </div>
 
         <aside class="word-sidebar">
-            <h3 class="word-sidebar-title">📌 핵심 용어 사전</h3>
+            <h3 class="word-sidebar-title">
+                <a href="{% url 'terms' %}" class="word-sidebar-title-link">📌 핵심 용어 사전</a>
+            </h3>
             <div class="word-sidebar-scroll-area">
                 {% if related_words %}
                     {% for item in related_words %}
                         <div class="word-card">
-                            <strong class="word-name">{{ item.word }}</strong>
+                            <div class="word-card-header">
+                                <strong class="word-name">{{ item.word }}</strong>
+                                <button class="term-bookmark-btn {% if item.bookmarked %}active{% endif %}"
+                                    data-word="{{ item.word }}"
+                                    onclick="handleTermBookmark(this, event)"
+                                    aria-label="북마크 용어">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z"
+                                              stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            </div>
                             <p class="word-desc">{{ item.definition }}</p>
                         </div>
                     {% endfor %}
@@ -309,6 +322,37 @@ function handleBookmark(btn, event) {
     })
     .catch(err => {
         console.error('북마크 처리 에러:', err);
+        alert('로그인이 필요한 서비스입니다');
+    });
+}
+
+// 용어 북마크 처리: terms 앱의 bookmark_term / unbookmark_term 사용
+function handleTermBookmark(btn, event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const word = btn.getAttribute('data-word');
+    const isActive = btn.classList.contains('active');
+    const url = isActive ? "{% url 'unbookmark_term' %}" : "{% url 'bookmark_term' %}";
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ word: word })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.ok) {
+            if (isActive) btn.classList.remove('active'); else btn.classList.add('active');
+        } else {
+            alert("실패: " + (data.error || "로그인이 필요할 수 있습니다."));
+        }
+    })
+    .catch(err => {
+        console.error('용어 북마크 처리 에러:', err);
         alert('로그인이 필요한 서비스입니다');
     });
 }

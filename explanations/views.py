@@ -83,12 +83,25 @@ def explanation_detail(request, article_id):
             
             full_text = f"{article.title} {article.content}"
             
+            from terms.models import Term, TermBookmark
+
             for word, definition in master_dict.items():
                 safe_word = re.escape(word)
                 if re.search(safe_word, full_text, re.IGNORECASE):
+                    # Check if a Term exists and whether current user bookmarked it
+                    term_obj = Term.objects.filter(name=word).first()
+                    bookmarked = False
+                    term_id = None
+                    if term_obj:
+                        term_id = term_obj.id
+                        if request.user.is_authenticated:
+                            bookmarked = TermBookmark.objects.filter(user=request.user, term=term_obj).exists()
+
                     related_words.append({
                         'word': word,
-                        'definition': definition
+                        'definition': definition,
+                        'bookmarked': bookmarked,
+                        'term_id': term_id,
                     })
             
             related_words.sort(key=lambda x: x['word'])
