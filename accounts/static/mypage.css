@@ -344,6 +344,8 @@
     border-bottom: 1px solid #f0f0f0;
     cursor: pointer;
     transition: background-color 0.2s;
+    text-decoration: none;
+    color: inherit;
 }
 .main-wrapper .wrong-item:hover {
     background-color: #fafafa;
