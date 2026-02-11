@@ -538,3 +538,11 @@ body {
     transform: scale(1.1);
     color: #f39c12;
 }
+
+.smallTag .tag{
+    background-color: rgb(222, 222, 222);
+    width: auto; height: auto; padding: 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 5px;
+}
