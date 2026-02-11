@@ -28,7 +28,12 @@ SECRET_KEY = "django-insecure-t)3207-6i%a1*n=2mjzyt-$_6-2t15+_76mo82f)gf)4np%*^6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "customeconomytest1.ap-northeast-2.elasticbeanstalk.com",
+    "localhost",
+    "127.0.0.1",
+]
+
 
 
 # Application definition
@@ -93,8 +98,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT", "3306"),
     }
 }
 
@@ -221,3 +230,9 @@ LOGIN_REDIRECT_URL = 'articleList'
 
 # 3. 로그아웃 후 이동할 URL
 LOGOUT_REDIRECT_URL = 'login'
+
+
+ALLOWED_HOSTS = [
+    "customeconomytest1.ap-northeast-2.elasticbeanstalk.com",
+    ".elasticbeanstalk.com",
+]

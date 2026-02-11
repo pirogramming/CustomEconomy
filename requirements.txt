@@ -19,3 +19,5 @@ pdfplumber==0.11.4
 pytz
 PyJWT
 yfinance
+gunicorn
+mysqlclient
