@@ -1,227 +1,343 @@
-/* 1. 레이아웃: 사이드바 오른쪽 영역 꽉 채우기 */
-.quiz-main-content {
-    width: 100%;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: #ffffff;
+:root {
+    --primary-orange: #EF9160;
+    --primary-green: #80B27F;
+    --bg-light: #f8fafc;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border-soft: #e2e8f0;
+    --c-navy: #1e293b; /* Merriweather용 컬러 유지 */
 }
 
-/* 2. 브랜드 헤더 스타일 */
-.brand-header {
-    padding: 40px 20px 20px;
-    text-align: center;
-    position: relative;
-    border-bottom: 1px solid #f1f5f9;
+/* =========================
+   기본 세팅 (유지)
+========================= */
+body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    font-family: 'Pretendard', sans-serif;
+    margin: 0;
 }
 
-.brand-logo {
-    font-size: 2.2rem;
+.page-main-title {
+    font-family: 'Merriweather', serif;
+    color: var(--c-navy);
+    font-size: 3rem;
     font-weight: 900;
-    color: #1e293b;
-    text-decoration: none;
-    letter-spacing: -1.5px;
-}
-
-.exit-link {
-    position: absolute;
-    right: 40px;
-    top: 50px;
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-/* 3. 히어로 섹션 (제목 영역) */
-.quiz-hero-section {
-    padding: 60px 20px;
-    background-color: #ffffff;
+    margin-top:40px;
+    margin-bottom: 40px;
     text-align: center;
+    letter-spacing: -0.5px;
+    text-decoration: none;
+    display: block; /* 링크일 경우 대비 */
 }
 
-.hero-inner {
-    max-width: 800px;
-    margin: 0 auto;
+/* =========================
+   레이아웃 (시현님의 넓은 설정 유지)
+========================= */
+.quiz-container {
+    display: grid;
+    grid-template-columns: 1fr 300px;   /* 메인 사이드바 비율 유지 */
+    gap: 60px;
+    max-width: 1500px;                  /* 요청하신 1500px 유지 */
+    margin: 70px auto;
+    padding: 0 40px;
 }
 
-.quiz-label-badge {
-    background: #f1f7f1; /* 연한 연두색 배경 */
-    color: #80B27F;      /* 포인트 연두색 */
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 0.75rem;
-    font-weight: 800;
+/* =========================
+   헤더 (디자인 유지)
+========================= */
+.quiz-header {
+    background: #fff;
+    padding: 60px;
+    border-radius: 28px;
+    text-align: center;
+    margin-bottom: 50px;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.04);
+}
+
+.badge {
     display: inline-block;
+    background: var(--primary-orange);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+}
+
+.article-title {
+    font-size: 1.9rem;
+    font-weight: 700;
+    margin: 22px 0;
+    line-height: 1.4;
+}
+
+.tag {
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700; /* 글자를 조금 더 진하게 하면 색상이 더 잘 살아요 */
+}
+
+/* 첫 번째 태그: 주황색 포인트 */
+.tags .tag:nth-child(1) {
+    background: #fff5ef;        /* 연한 주황 배경 */
+    color: var(--primary-orange); /* 기존 주황색 변수 활용 */
+    border: 1px solid #ffdecb;   /* 아주 연한 테두리 추가 가능 */
+}
+
+/* 두 번째 태그: 초록색 포인트 */
+.tags .tag:nth-child(2) {
+    background: #f0fdf4;        /* 연한 초록 배경 */
+    color: var(--primary-green);  /* 기존 초록색 변수 활용 */
+    border: 1px solid #dcfce7;
+}
+
+.tags{
+    margin-bottom:30px;
+}
+
+/* =========================
+   스텝 UI (유지)
+========================= */
+.steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    transition: 0.2s ease;
+}
+
+.step.active {
+    background: var(--primary-orange);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.step-line {
+    width: 55px;
+    height: 3px;
+    background: var(--border-soft);
+    border-radius: 4px;
+}
+
+.question-count {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-top:20px;
+}
+
+/* =========================
+   퀴즈 카드 (애니메이션 및 여백 유지)
+========================= */
+.question-card {
+    display: none;
+    background: #fff;
+    padding: 70px;
+    border-radius: 28px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+    min-height: 450px;
+    animation: fadeIn 0.25s ease;
+}
+
+.question-card.is-visible {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.question-type {
+    font-size: 0.9rem;
+    color: var(--primary-green);
+    font-weight: 600;
     margin-bottom: 20px;
 }
 
-.quiz-main-title {
-    font-size: 2.2rem;
-    font-weight: 800;
-    line-height: 1.4;
-    color: #0f172a;
-    word-break: keep-all;
-    margin: 0 0 20px 0;
-}
-
-.meta-tag {
-    font-weight: 600;
-    margin: 0 8px;
-    padding: 6px 16px;
-    border-radius: 4px;
-    display: inline-block;
-    font-size: 0.9rem;
-}
-
-.meta-tag.topic {
-    background-color: #fef8f5;
-    color: #EF9160;
-}
-
-.meta-tag.sub-topic {
-    background-color: #f1f7f1;
-    color: #80B27F;
-}
-
-/* 4. 퀴즈 본문 영역 (연회색 배경) */
-.quiz-body-area {
-    background-color: #f8fafc;
-    padding: 60px 20px;
-    flex-grow: 1;
-    border-top: 1px solid #e2e8f0;
-}
-
-.quiz-inner-wrapper {
-    max-width: 720px;
-    margin: 0 auto;
-}
-
-/* 5. 퀴즈 카드 디자인 */
-.quiz-card {
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 40px;
-    margin-bottom: 30px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
-}
-
-.question-index {
-    color: #80B27F; /* 질문 번호 연두색 */
-    font-weight: 800;
-    display: block;
-    margin-bottom: 15px;
-}
-
 .question-text {
-    font-size: 1.35rem;
-    font-weight: 700;
-    line-height: 1.5;
-    margin-bottom: 30px;
-    color: #1e293b;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 45px;
+    line-height: 1.6;
 }
 
-/* 6. 선택지 디자인 */
-.options-container {
+/* =========================
+   선택지 (★이 부분만 정교하게 수정)
+========================= */
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;                     /* 너무 벙벙하지 않게 간격 소폭 조정 */
+}
+
+.option-item {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+}
+
+.option-content {
+    border: 1.5px solid var(--border-soft);
+    padding: 22px 28px;            /* 패딩 최적화: 박스가 너무 뚱뚱해지지 않게 함 */
+    border-radius: 20px;
+    cursor: pointer;
+    display: flex;
+    gap: 18px;
+    transition: all 0.2s ease;
+    background: #fff;
+    width: 100%;
+    min-height: 85px;              /* 120px -> 85px로 조정하여 글자 작을 때도 예쁘게 */
+    align-items: center;           /* 상단 정렬(flex-start)에서 중앙 정렬로 변경 */
+}
+
+.option-number {
+    min-width: 34px;               /* 크기 미세 조정 */
+    height: 34px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;                /* 숫자 찌그러짐 방지 */
+}
+
+.option-text {
+    flex: 1;
+    font-size: 1.05rem;            /* 글자 크기 살짝 키움 */
+    line-height: 1.5;
+    word-break: keep-all;
+    color: #334155;                /* 가독성 좋은 진한 회색 */
+}
+
+.option-content:hover {
+    border-color: var(--primary-orange);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+
+.option-item.is-selected .option-content {
+    border-color: var(--primary-orange);
+    background: #fff5ef;
 }
 
 .hidden-radio {
     display: none;
 }
 
-.option-content {
-    background: #ffffff;
-    border: 1.5px solid #e2e8f0;
-    padding: 18px 24px;
-    border-radius: 16px;
+/* =========================
+   버튼 영역 (유지)
+========================= */
+.card-footer {
+    margin-top: 60px;
     display: flex;
+    justify-content: space-between;
     align-items: center;
+}
+
+.prev-btn {
+    background: transparent;
+    border: 2px solid var(--border-soft);
+    padding: 16px 34px;
+    border-radius: 50px;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: 0.2s ease;
 }
 
-.option-number {
-    width: 28px;
-    height: 28px;
-    background: #f1f5f9;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 16px;
-    font-weight: 800;
-    color: #64748b;
-    font-size: 0.85rem;
+.prev-btn:hover {
+    border-color: var(--primary-orange);
+    color: var(--primary-orange);
 }
 
-/* 선택 시 스타일: 주황색 포인트 사용 */
-.option-item.is-selected .option-content {
-    border-color: #EF9160;
-    background-color: #fef8f5;
-}
-
-.option-item.is-selected .option-number {
-    background: #EF9160;
-    color: white;
-}
-
-.option-item.is-selected .option-text {
-    color: #EF9160;
-    font-weight: 700;
-}
-
-/* 7. 하단 버튼 */
-.quiz-footer {
-    text-align: center;
-    margin-top: 40px;
-}
-
+.next-btn,
 .finish-button {
-    background: #EF9160; /* 제출 버튼 주황색 */
-    color: white;
+    background: var(--primary-orange);
+    color: #fff;
     border: none;
-    padding: 22px;
-    width: 100%;
-    border-radius: 16px;
-    font-size: 1.1rem;
-    font-weight: 800;
+    padding: 18px 50px;
+    border-radius: 50px;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
+    font-size: 1.05rem;
+    transition: 0.2s ease;
 }
 
+.next-btn:hover,
 .finish-button:hover {
-    background: #d97d4d;
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(239,145,96,0.3);
 }
 
-.finish-button:active {
-    transform: translateY(0);
+/* =========================
+   사이드바 (유지)
+========================= */
+.quiz-sidebar {
+    background: #fff;
+    padding: 32px;
+    border-radius: 28px;
+    height: fit-content;
+    position: sticky;
+    top: 120px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.03);
 }
 
-.back-link {
-    display: block;
-    margin-top: 25px;
-    color: #94a3b8;
-    text-decoration: none;
-    font-size: 0.95rem;
+.sidebar-item {
+    display: flex;
+    gap: 15px;
+    padding: 18px;
+    background: #f8fafc;
+    border-radius: 14px;
+    margin-bottom: 12px;
+    transition: 0.2s ease;
 }
 
-/* 8. 컨셉/용어 정보 박스: 연두색 포인트 */
-.concept-info-box {
-    background: #f1f7f1;
-    border-left: 4px solid #80B27F;
-    padding: 15px 20px;
-    margin-bottom: 25px;
-    border-radius: 0 12px 12px 0;
+.sidebar-item:hover {
+    background: #eef2f7;
+    transform: translateY(-2px);
 }
 
-.concept-info-box p {
-    margin: 0;
-    color: #475569;
-    font-size: 0.95rem;
-    line-height: 1.6;
+/* =========================
+   반응형 (유지)
+========================= */
+@media (max-width: 1200px) {
+    .quiz-container {
+        grid-template-columns: 1fr;
+        max-width: 1000px;
+    }
+    .quiz-sidebar {
+        position: static;
+    }
+}
+
+@media (max-width: 640px) {
+    .quiz-header, .question-card {
+        padding: 35px;
+    }
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+    .card-footer {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .prev-btn, .next-btn, .finish-button {
+        width: 100%;
+    }
 }
