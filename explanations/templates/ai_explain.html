@@ -32,16 +32,32 @@
 
                 {% for i in "12345" %}
                     {% with current_level=i|add:"0" %}
-                        {% if current_level <= user_level %}
-                            <button class="tab-item {% if selected_level == current_level %}active{% endif %}" 
-                                    onclick="openTab(event, 'tab-lv{{ i }}', {{ i }})"
-                                    data-level="{{ i }}">
-                                Lv{{ i }}
-                            </button>
+                        {% if user.is_authenticated %}
+                            {# 로그인 사용자: 자신의 레벨까지 표시 #}
+                            {% if current_level <= user_level %}
+                                <button class="tab-item {% if selected_level == current_level %}active{% endif %}" 
+                                        onclick="openTab(event, 'tab-lv{{ i }}', {{ i }})"
+                                        data-level="{{ i }}">
+                                    Lv{{ i }}
+                                </button>
+                            {% else %}
+                                <button class="tab-item locked" disabled>
+                                    🔒 Lv{{ i }}
+                                </button>
+                            {% endif %}
                         {% else %}
-                            <button class="tab-item locked" disabled>
-                                🔒 Lv{{ i }}
-                            </button>
+                            {# 비로그인 사용자: 레벨 4만 표시 #}
+                            {% if current_level == 4 %}
+                                <button class="tab-item {% if selected_level == current_level %}active{% endif %}" 
+                                        onclick="openTab(event, 'tab-lv{{ i }}', {{ i }})"
+                                        data-level="{{ i }}">
+                                    Lv{{ i }}
+                                </button>
+                            {% else %}
+                                <button class="tab-item locked" disabled>
+                                    🔒 Lv{{ i }}
+                                </button>
+                            {% endif %}
                         {% endif %}
                     {% endwith %}
                 {% endfor %}
@@ -96,22 +112,44 @@
                 <!-- 레벨별 탭 (동적 로딩) -->
                 {% for i in "12345" %}
                     {% with current_level=i|add:"0" %}
-                        {% if current_level <= user_level %}
-                        <div id="tab-lv{{ i }}" class="tab-pane" 
-                             style="{% if selected_level == current_level %}display: block;{% else %}display: none;{% endif %}"
-                             data-level="{{ i }}"
-                             data-loaded="false">
-                            
-                            <!-- 로딩 플레이스홀더 -->
-                            <div class="loading-placeholder-content">
-                                <div class="ai-section loading-placeholder"></div>
-                                <div class="ai-section loading-placeholder"></div>
-                                <div class="ai-section loading-placeholder"></div>
+                        {% if user.is_authenticated %}
+                            {# 로그인 사용자: 자신의 레벨까지 탭 생성 #}
+                            {% if current_level <= user_level %}
+                            <div id="tab-lv{{ i }}" class="tab-pane" 
+                                 style="{% if selected_level == current_level %}display: block;{% else %}display: none;{% endif %}"
+                                 data-level="{{ i }}"
+                                 data-loaded="false">
+                                
+                                <!-- 로딩 플레이스홀더 -->
+                                <div class="loading-placeholder-content">
+                                    <div class="ai-section loading-placeholder"></div>
+                                    <div class="ai-section loading-placeholder"></div>
+                                    <div class="ai-section loading-placeholder"></div>
+                                </div>
+                                
+                                <!-- 실제 컨텐츠 (AJAX로 채워짐) -->
+                                <div class="ai-content-container" style="display: none;"></div>
                             </div>
-                            
-                            <!-- 실제 컨텐츠 (AJAX로 채워짐) -->
-                            <div class="ai-content-container" style="display: none;"></div>
-                        </div>
+                            {% endif %}
+                        {% else %}
+                            {# 비로그인 사용자: 레벨 4만 탭 생성 #}
+                            {% if current_level == 4 %}
+                            <div id="tab-lv{{ i }}" class="tab-pane" 
+                                 style="{% if selected_level == current_level %}display: block;{% else %}display: none;{% endif %}"
+                                 data-level="{{ i }}"
+                                 data-loaded="false">
+                                
+                                <!-- 로딩 플레이스홀더 -->
+                                <div class="loading-placeholder-content">
+                                    <div class="ai-section loading-placeholder"></div>
+                                    <div class="ai-section loading-placeholder"></div>
+                                    <div class="ai-section loading-placeholder"></div>
+                                </div>
+                                
+                                <!-- 실제 컨텐츠 (AJAX로 채워짐) -->
+                                <div class="ai-content-container" style="display: none;"></div>
+                            </div>
+                            {% endif %}
                         {% endif %}
                     {% endwith %}
                 {% endfor %}

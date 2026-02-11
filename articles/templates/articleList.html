@@ -45,7 +45,9 @@
                     <span class="date">{{ article.published_at|date:"Y.m.d" }}</span>
                 </div>
                 {% if article.image_url %}
-                <img class="thumb" src="{{ article.image_url }}" alt="">
+                <div class="thumb-wrap">
+                    <img class="thumb" src="{{ article.image_url }}" alt="">
+                </div>
                 {% endif %}
 
                 <div class="article-info">

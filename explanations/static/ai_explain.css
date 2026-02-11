@@ -2,7 +2,7 @@
     --c-orange: #EF9160;
     --c-navy: #1A2137;
     --c-green: #80B27F;
-    --c-bg-gray: #EEEFEE;
+    --c-bg-gray: #F1F7FF;
     --c-yellow: #F4B132;
     --c-white: #FFFFFF;
 }
@@ -299,7 +299,7 @@ body {
     background-color: var(--c-white);
     border-radius: 0 0 20 20px;
     padding: 50px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 10px rgba(0,0,0,0.1);
     position: relative;
     z-index: 5;
     min-height: 600px;

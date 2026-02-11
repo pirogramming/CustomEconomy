@@ -179,6 +179,7 @@ def logout_view(request):
     return redirect('login')
 
 # 4. 마이페이지
+@login_required
 def mypage_view(request):
     context = {}
     if request.user.is_authenticated:
@@ -216,6 +217,14 @@ def mypage_view(request):
             context['article_bookmarks_preview'] = preview_list
         except Exception:
             context['article_bookmarks_preview'] = []
+
+        wrong_results = (
+            QuizResult.objects
+            .filter(user=request.user, is_correct=False)
+            .select_related("quiz")
+            .order_by("-created_at")[:10]
+        )
+        context['wrong_results'] = wrong_results
 
     return render(request, 'mypage.html', context)
 

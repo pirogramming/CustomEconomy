@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.conf import settings
 import json
 from pathlib import Path
+import random
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -21,10 +22,14 @@ def terms_view(request):
 	except Exception:
 		items = []
 
-	# 검색어로 필터링 (단어 또는 뜻에 포함되는지)
+	# 검색어로 필터링 (단어 매칭 -> 뜻 매칭 순서)
+	word_matches = []
+	def_matches = []
 	if q:
 		q_lower = q.lower()
-		items = [ (w, d) for w, d in items if q_lower in w.lower() or q_lower in d.lower() ]
+		word_matches = [ (w, d) for w, d in items if q_lower in w.lower() ]
+		def_matches = [ (w, d) for w, d in items if q_lower in d.lower() and q_lower not in w.lower() ]
+		items = word_matches + def_matches
 
 	# 가나다(한글) 먼저, 그 다음 영어/기타 순으로 정렬
 	korean_items = []
@@ -45,10 +50,19 @@ def terms_view(request):
 	if request.user.is_authenticated:
 		bookmarked_words = set(TermBookmark.objects.filter(user=request.user).values_list('term__name', flat=True))
 
+	# 검색 중이면 그룹 유지, 아니면 랜덤 순서로 노출
+	count = len(dictionary_items)
+	if q:
+		count = len(word_matches) + len(def_matches)
+	else:
+		random.shuffle(dictionary_items)
+
 	return render(request, 'terms.html', {
 		'dictionary_items': dictionary_items,
+		'word_matches': word_matches,
+		'def_matches': def_matches,
 		'q': q,
-		'count': len(dictionary_items),
+		'count': count,
 		'bookmarked_words': bookmarked_words,
 	})
 

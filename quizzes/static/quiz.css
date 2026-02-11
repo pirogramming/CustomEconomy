@@ -1,336 +1,227 @@
-/* 기본 초기화 */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    background-color: #eeefee;
-    font-family: "Roboto-Regular", Helvetica, sans-serif;
-}
-
-/* --- 메인 콘텐츠 스타일 --- */
-.main-content {
-    background-color: var(--c-bg-gray);
-    font-family: 'Noto Sans KR', sans-serif;
-    width: 100%;             /* 부모(main) 영역을 가득 채움 */
-    max-width: 1200px;       /* 하지만 1200px 이상은 커지지 않게 제한 */
-    margin: 0 auto;          /* 남은 공간에서 자동으로 중앙 정렬 */
-    min-height: 100vh;       /* 높이 유지 */
-    padding: 40px 50px;      /* 내부 여백 */
-    box-sizing: border-box;  /* padding이 너비에 포함되도록 설정 (중요) */
+/* 1. 레이아웃: 사이드바 오른쪽 영역 꽉 채우기 */
+.quiz-main-content {
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-.main-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 30px;
-    position: relative;
-}
-
-.page-title {
-    font-family: 'Merriweather', serif;
-    color: #1A2137;
-    font-size: 3rem;
-    font-weight: 900;
-    margin-bottom: 40px;
-    text-align: center;
-    letter-spacing: -0.5px;
-    text-decoration: none;
-}
-
-
-/* 퀴즈 컨테이너 */
-.quiz-container {
-    max-width: 935px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    background-color: #192237;
-    opacity: 90%;
-    border-radius: 20px;
-    overflow: hidden;
-    padding: 40px 48px;
-    position: relative;
-}
-
-/* Quiz 배지 */
-.quiz-badge {
-    position: absolute;
-    top: 20px;
-    left: 30px;
     background-color: #ffffff;
-    color: #192237;
-    padding: 8px 20px;
-    border-radius: 20px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    font-size: 16px;
 }
 
-/* 기사 제목 */
-.quiz-article-title {
-    width: 100%;
-    max-width: 857px;
-    margin: 50px auto 0;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    color: #ffffff;
-    font-size: 28px;
-    letter-spacing: 0;
-    line-height: 1.4;
+/* 2. 브랜드 헤더 스타일 */
+.brand-header {
+    padding: 40px 20px 20px;
+    text-align: center;
+    position: relative;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.brand-logo {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: #1e293b;
+    text-decoration: none;
+    letter-spacing: -1.5px;
+}
+
+.exit-link {
+    position: absolute;
+    right: 40px;
+    top: 50px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* 3. 히어로 섹션 (제목 영역) */
+.quiz-hero-section {
+    padding: 60px 20px;
+    background-color: #ffffff;
     text-align: center;
 }
 
-/* 태그 섹션 */
-.tags-wrapper {
-    display: flex;
-    gap: 15px;
-    margin-top: 20px;
+.hero-inner {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.quiz-label-badge {
+    background: #f1f7f1; /* 연한 연두색 배경 */
+    color: #80B27F;      /* 포인트 연두색 */
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+.quiz-main-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    line-height: 1.4;
+    color: #0f172a;
+    word-break: keep-all;
+    margin: 0 0 20px 0;
+}
+
+.meta-tag {
+    font-weight: 600;
+    margin: 0 8px;
+    padding: 6px 16px;
+    border-radius: 4px;
+    display: inline-block;
+    font-size: 0.9rem;
+}
+
+.meta-tag.topic {
+    background-color: #fef8f5;
+    color: #EF9160;
+}
+
+.meta-tag.sub-topic {
+    background-color: #f1f7f1;
+    color: #80B27F;
+}
+
+/* 4. 퀴즈 본문 영역 (연회색 배경) */
+.quiz-body-area {
+    background-color: #f8fafc;
+    padding: 60px 20px;
+    flex-grow: 1;
+    border-top: 1px solid #e2e8f0;
+}
+
+.quiz-inner-wrapper {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+/* 5. 퀴즈 카드 디자인 */
+.quiz-card {
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
     margin-bottom: 30px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04);
 }
 
-.tag {
-    padding: 5px 20px;
-    background-color: #f4f4f4;
-    border-radius: 40px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-.tag-text {
-    color: #ef9160;
-    font-size: 16px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-}
-
-.tag.tag-green .tag-text {
-    color: #80b27f;
-}
-
-/* 문제 카드 */
-.question-card {
-    width: 100%;
-    background-color: #FDF6EB;
-    border-radius: 20px;
-    padding: 25px 10px;
-    margin-bottom: 20px;
-    position: relative;
-    padding: 30px;
-}
-
-.question-card.with-explanation {
-    padding-bottom: 30px;
-}
-
-/* 질문 헤더 */
-.question-header {
-    margin-bottom: 20px;
-}
-
-.question-number {
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    color: #000000;
-    font-size: 20px;
-    margin: 0;
-}
-
-/* 답안 그리드 */
-.answers-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.question-index {
+    color: #80B27F; /* 질문 번호 연두색 */
+    font-weight: 800;
+    display: block;
     margin-bottom: 15px;
 }
 
-.answer-option {
-    background-color: #ffffff;
-    border-radius: 20px;
-    padding: 15px 20px;
+.question-text {
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 30px;
+    color: #1e293b;
+}
+
+/* 6. 선택지 디자인 */
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.hidden-radio {
+    display: none;
+}
+
+.option-content {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    padding: 18px 24px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option-number {
+    width: 28px;
+    height: 28px;
+    background: #f1f5f9;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
+    margin-right: 16px;
+    font-weight: 800;
+    color: #64748b;
+    font-size: 0.85rem;
 }
 
-.answer-text {
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
+/* 선택 시 스타일: 주황색 포인트 사용 */
+.option-item.is-selected .option-content {
+    border-color: #EF9160;
+    background-color: #fef8f5;
+}
+
+.option-item.is-selected .option-number {
+    background: #EF9160;
+    color: white;
+}
+
+.option-item.is-selected .option-text {
+    color: #EF9160;
     font-weight: 700;
-    color: #000000;
-    font-size: 18px;
+}
+
+/* 7. 하단 버튼 */
+.quiz-footer {
     text-align: center;
+    margin-top: 40px;
 }
 
-/* 정답 스타일 */
-.answer-option.correct {
-    background-color: #d2edd1;
-    border-color: #80b27f;
-}
-
-/* 오답 스타일 */
-.answer-option.wrong {
-    background-color: #fbbeb0;
-    border-color: #ff0303;
-}
-
-/* 해설 박스 */
-.explanation-box {
-    background-color: #ffffff;
-    border-radius: 15px;
-    padding: 20px;
-    margin-top: 15px;
-}
-
-.explanation-text {
-    color: #000000;
-    font-size: 16px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* 결과 요약 */
-.result-summary {
+.finish-button {
+    background: #EF9160; /* 제출 버튼 주황색 */
+    color: white;
+    border: none;
+    padding: 22px;
     width: 100%;
-    max-width: 450px;
-    margin: 30px auto;
-    padding: 30px;
-    background-color: rgba(255, 255, 255, 0.55);
-    border-radius: 20px;
-    text-align: center;
-}
-
-.result-text {
-    color: #ffffff;
-    font-size: 20px;
-    font-family: "Roboto-Bold", Helvetica, sans-serif;
-    font-weight: 700;
-    line-height: 1.6;
-    margin: 0;
-}
-
-.question-card .answers-grid .answer-option:hover{
-    background-color: #fcbe9c;
-}
-/* 선택한 답(클릭된 보기) 강조 */
-.answer-option.selected {
-  border: 3px solid #14213E;   /* 짙은 남색 띠 */
-  border-radius: 12px;         /* 카드 느낌 유지 */
-  box-sizing: border-box;
-}
-
-/* 선택했을 때 살짝 떠 보이게(선택) */
-.answer-option.selected {
-  box-shadow: 0 0 0 2px rgba(20, 33, 62, 0.15);
-}
-
-.answer-option.correct {
-  border: 3px solid #2E7D32;
-  background: #e8f5e9;
-}
-
-.answer-option.wrong {
-  border: 3px solid #c62828;
-  background: #ffebee;
-}
-.button-container{
-    /* background-color: pink; */
-    display: flex; justify-content: center; align-items: center;
-    padding: 40px;
-}
-/* 버튼 컨테이너 내부 공통 스타일 (제출 & 목록 버튼) */
-.button-container .submit-btn,
-.button-container .back-to-list-area {
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    height: 50px;
-    background-color: #fff;
-    
-    /* 1. 색감 완화: 조금 더 부드러운 머스타드/망고 톤 */
-    border: 2px solid #FFD580; 
-    border-radius: 30px;
-    
-    color: #555; /* 글자색도 완전 검정보다 짙은 회색이 더 고급스러워요 */
-    font-family: NanumGothic, sans-serif;
-    font-weight: 700;
+    border-radius: 16px;
+    font-size: 1.1rem;
+    font-weight: 800;
     cursor: pointer;
-    
-    /* 2. 입체감을 위한 기본 그림자 (살짝) */
-    box-shadow: 0 4px 0px 0px #FFE5B4; 
-    
-    transition: all 0.1s ease-in-out;
-    position: relative;
-    top: 0;
+    transition: background 0.2s, transform 0.1s;
 }
 
-/* 각 버튼 개별 설정 */
-.button-container .submit-btn {
-    width: auto;
-    padding: 0 25px;
-    margin-right: 15px;
+.finish-button:hover {
+    background: #d97d4d;
+    transform: translateY(-1px);
 }
 
-.button-container .back-to-list-area {
-    width: 130px;
-    margin-right: 0;
+.finish-button:active {
+    transform: translateY(0);
 }
 
-/* 링크 텍스트 색상 고정 */
-.button-container .back-to-list-area a {
+.back-link {
+    display: block;
+    margin-top: 25px;
+    color: #94a3b8;
     text-decoration: none;
-    color: inherit; /* 부모인 .back-to-list-area의 색상을 따라감 */
+    font-size: 0.95rem;
 }
 
-/* 🚀 3. 입체감 있는 호버 & 클릭 효과 */
-.button-container .submit-btn:hover,
-.button-container .back-to-list-area:hover {
-    background-color: #FFF9EF; /* 살짝 노란빛 도는 흰색으로 변경 */
-    border-color: #F4B132;
-    color: #F4B132;
-    
-    /* 마우스를 올리면 살짝 위로 뜨는 느낌 */
-    top: -2px;
-    box-shadow: 0 6px 0px 0px #FFD580;
+/* 8. 컨셉/용어 정보 박스: 연두색 포인트 */
+.concept-info-box {
+    background: #f1f7f1;
+    border-left: 4px solid #80B27F;
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border-radius: 0 12px 12px 0;
 }
 
-.button-container .submit-btn:active,
-.button-container .back-to-list-area:active {
-    /* 클릭했을 때 실제로 버튼이 눌리는 효과 */
-    top: 2px;
-    box-shadow: 0 0px 0px 0px #FFD580;
-}
-
-
-.main-content > .back-to-list-area {
-    display: flex;
-    justify-content: flex-start; 
-    
-    padding-left: 30px; 
-    
-    width: 100%;
-    max-width: 1000px;
-    margin: 40px auto 25px auto;
-}
-
-.main-content > .back-to-list-area .back-btn {
-    display: inline-flex;
-    align-items: center;
-    background-color: #F3F4F6;
-    padding: 10px 20px;
-    border-radius: 50px;
-    border:1px solid #80b27f;
-    color: #4B5563;
-    font-size: 0.9rem;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.2s ease;
+.concept-info-box p {
+    margin: 0;
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.6;
 }
