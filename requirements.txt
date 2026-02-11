@@ -20,4 +20,4 @@ pytz
 PyJWT
 yfinance
 gunicorn
-mysqlclient
+PyMySQL
