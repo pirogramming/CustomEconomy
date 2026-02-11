@@ -99,9 +99,7 @@ def create_ai_quiz_from_article(article_obj):
         return 0
 
 def create_type_b_quiz(article_obj):
-    if Quiz.objects.filter(article=article_obj, type='B').exists():
-        return 0
-
+    # B유형 퀴즈 중복 생성 수정중
     # 1. 기사 본문에 포함된 용어(Term)들 가져오기
     terms_qs = article_obj.terms.all()
     is_from_article = True # 기사 용어인지 판단하는 플래그
