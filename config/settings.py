@@ -232,7 +232,7 @@ LOGIN_REDIRECT_URL = 'articleList'
 LOGOUT_REDIRECT_URL = 'login'
 
 
-ALLOWED_HOSTS = [
-    "customeconomytest1.ap-northeast-2.elasticbeanstalk.com",
-    ".elasticbeanstalk.com",
-]
+print("[ENV] DB_HOST =", os.getenv("DB_HOST"))
+print("[ENV] DB_PORT =", os.getenv("DB_PORT"))
+print("[ENV] DB_NAME =", os.getenv("DB_NAME"))
+print("[ENV] DB_USER =", os.getenv("DB_USER"))
