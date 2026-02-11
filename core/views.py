@@ -7,6 +7,7 @@ from articles.models import Article
 from accounts.models import UserInterest
 import os
 import requests
+import yfinance as yf
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 한국은행 API 연동 함수들
@@ -80,28 +81,50 @@ def get_kospi_index():
 
 
 def get_exchange_rate():
-    """원/달러 환율 조회"""
-    cache_key = 'bok_exchange'
+    """
+    원/달러 환율 조회 (yfinance 사용 - 실시간)
+    KRW=X: 원/달러 환율 ticker
+    """
+    cache_key = 'yf_exchange'
     cached = cache.get(cache_key)
     if cached:
+        print(f"✅ 환율 캐시 사용: {cached}")
         return cached
     
-    api_key = os.getenv('BOK_API_KEY')
-    if not api_key:
-        return {'value': 1320.5, 'label': '환율', 'unit': '원/USD'}
+    try:
+        # 🆕 yfinance로 원/달러 환율 조회
+        print("🔍 yfinance로 환율 조회 중... (Ticker: KRW=X)")
+        
+        krw_usd = yf.Ticker("KRW=X")
+        
+        # 최신 데이터 가져오기 (1분 단위)
+        hist = krw_usd.history(period="1d", interval="1m")
+        
+        if not hist.empty:
+            # 가장 최근 종가 사용
+            latest_rate = hist['Close'].iloc[-1]
+            
+            result = {
+                'value': round(float(latest_rate), 2),
+                'label': '환율',
+                'unit': '원/USD'
+            }
+            
+            print(f"✅ yfinance 환율 조회 성공: {result}")
+            
+            # 1분 캐싱 (실시간성 유지)
+            cache.set(cache_key, result, 60)
+            return result
+        else:
+            print("⚠️ yfinance에서 데이터를 가져오지 못함")
+            
+    except Exception as e:
+        print(f"❌ yfinance 환율 조회 실패: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
     
-    data = fetch_bok_data(api_key, '731Y001', '0000001')  # 원/달러 환율
-    if data:
-        result = {
-            'value': float(data.get('DATA_VALUE', 0)),
-            'label': '환율',
-            'unit': '원/USD'
-        }
-        cache.set(cache_key, result, 3600)
-        return result
-    
+    # 실패 시 기본값 반환
     return {'value': 1320.5, 'label': '환율', 'unit': '원/USD'}
-
 
 def get_base_rate():
     """기준금리 조회 (월별 데이터)"""

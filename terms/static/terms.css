@@ -2,7 +2,7 @@
     /* 색상 변수 */
     --c-orange: #EF9160;
     --c-navy: #1A2137;
-    --c-bg-gray: #E8E9E8;
+    --c-bg-gray: #F1F7FF;
     --c-white: #FFFFFF;
     --c-text-dark: #333333;
     --c-text-light: #666666;
@@ -153,6 +153,49 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+}
+
+.term-card.is-hidden {
+    display: none;
+}
+
+.terms-load-more {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+}
+
+.load-more-btn {
+    padding: 10px 22px;
+    border-radius: 24px;
+    border: 1px solid var(--c-border-light);
+    background-color: var(--c-white);
+    color: var(--c-text-dark);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+}
+
+.load-more-btn:hover {
+    border-color: var(--c-orange);
+    color: var(--c-orange);
+}
+
+/* 검색 결과 섹션 제목/구분선 */
+.terms-section-title {
+    margin: 6px 0 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--c-text-light);
+    letter-spacing: 0.2px;
+}
+
+.terms-divider {
+    height: 1px;
+    background-color: var(--c-border-light);
+    margin: 10px 0 6px;
 }
 
 /* ==================== */

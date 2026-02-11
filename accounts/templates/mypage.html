@@ -19,7 +19,7 @@
             <a href="{% url 'edit' %}" class="icon-btn dot-btn">•••</a>
         </div>
         
-        <section class="card-section my-info-card">
+        <section class="card-section my-info-card" onclick="window.location.href='{% url 'edit' %}'" style="cursor: pointer;">
             <div class="user-profile">
                 <div class="profile-image">
                     <img src="{% if user_image_url %}{{ user_image_url }}{% else %}{% static 'img/profile-default.png' %}{% endif %}" alt="프로필">
@@ -94,39 +94,26 @@
             </div>
         </section>
 
-        <!-- 틀린 문제 다시 풀어보기 섹션 -->
+        <!-- 오답 노트 섹션 -->
         <div class="section-header-outside">
-            <h2>틀린 문제 다시 풀어보기</h2>
+            <h2>오답 노트</h2>
             <a href="{% url 'wrongquiz' %}" class="icon-btn dot-btn">•••</a>
         </div>
         
         <section class="wrong-answer-section">
             <div class="wrong-list">
-                <div class="wrong-item">
-                    <span class="q-mark">Q.</span>
-                    <span class="q-text">질문이 한 줄일 수도 있음</span>
-                </div>
-                <div class="wrong-item">
-                    <span class="q-mark">Q.</span>
-                    <span class="q-text">질문이 한 줄일 수도 있음</span>
-                </div>
-                <div class="wrong-item">
-                    <span class="q-mark">Q.</span>
-                    <span class="q-text">질문이 두 줄일 수도 있음질문이 두 줄일 수도 있음질문이 두 줄일 수도 있음있음질문이 두 줄일 수도 있음</span>
-                </div>
-                <div class="wrong-item">
-                    <span class="q-mark">Q.</span>
-                    <span class="q-text">질문이 세 줄일 수도 있음질문이 세 줄일 수도질문이 세 줄일 수도 있음질문이 세 줄일 질문이 세 줄일 수도 있음질문이 세 줄일 수도 질문이 세 줄일 수도 있음질문이 세 줄일</span>
-                </div>
-                <div class="wrong-item">
-                    <span class="q-mark">Q.</span>
-                    <span class="q-text">
-                        질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?
-                        질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?
-                        질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?질문이 네 줄까지될까?
-                        질문이 네 줄까지될까?질문이 네 줄까지될까?
-                    </span>
-                </div>
+                {% if wrong_results %}
+                    {% for result in wrong_results %}
+                    <a class="wrong-item" href="{% url 'wrongquiz' %}">
+                        <span class="q-mark">Q.</span>
+                        <span class="q-text">{{ result.quiz.question }}</span>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="wrong-item">
+                        <span class="q-text">틀린 문제가 없습니다.</span>
+                    </div>
+                {% endif %}
             </div>
         </section>
     </div>

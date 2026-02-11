@@ -77,6 +77,7 @@
   padding: 5px; margin: 0px 5px; 
   border-style: none;
   outline: none;
+  width:99%;
 }
 .auth-container .login_float .auth-form .signup_submit_btn{
   display: flex;
@@ -138,4 +139,5 @@
   margin: 0;
   display: block;
   border-radius: 50%;
+  border: 1px solid #DDDADA;
 }

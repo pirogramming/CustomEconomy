@@ -24,29 +24,93 @@
         </form>
         {% if q %}
         <div class="search-info">검색어 "{{ q }}" — 결과 {{ count }}개</div>
+        {% else %}
+        <div class="search-info">총 단어 {{ count }}개</div>
         {% endif %}
     </div>
 
     <div class="terms-list">
-        {% for word, definition in dictionary_items %}
-        <article class="term-card">
-            <button class="bookmark-btn {% if word in bookmarked_words %}active{% endif %}" aria-label="북마크" data-word="{{ word|escapejs }}" data-definition="{{ definition|escapejs }}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
+        {% if q %}
+            {% if word_matches %}
+            <div class="terms-section-title">단어에서 찾은 결과</div>
+            {% for word, definition in word_matches %}
+            <article class="term-card{% if forloop.counter > 10 %} is-hidden{% endif %}" data-group="word">
+                <button class="bookmark-btn {% if word in bookmarked_words %}active{% endif %}" aria-label="북마크" data-word="{{ word|escapejs }}" data-definition="{{ definition|escapejs }}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
 
-            <div class="term-header">
-                <h2 class="term-title">{{ word }}</h2>
+                <div class="term-header">
+                    <h2 class="term-title">{{ word }}</h2>
+                </div>
+                <div class="term-content">
+                    <p class="term-description">{{ definition }}</p>
+                </div>
+            </article>
+            {% endfor %}
+            {% if word_matches|length > 10 %}
+            <div class="terms-load-more">
+                <button class="load-more-btn" type="button" data-group="word">더보기</button>
             </div>
-            <div class="term-content">
-                <p class="term-description">{{ definition }}</p>
+            {% endif %}
+            {% endif %}
+
+            {% if def_matches %}
+            <div class="terms-divider"></div>
+            <div class="terms-section-title">뜻에서 찾은 결과</div>
+            {% for word, definition in def_matches %}
+            <article class="term-card{% if forloop.counter > 10 %} is-hidden{% endif %}" data-group="def">
+                <button class="bookmark-btn {% if word in bookmarked_words %}active{% endif %}" aria-label="북마크" data-word="{{ word|escapejs }}" data-definition="{{ definition|escapejs }}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+                <div class="term-header">
+                    <h2 class="term-title">{{ word }}</h2>
+                </div>
+                <div class="term-content">
+                    <p class="term-description">{{ definition }}</p>
+                </div>
+            </article>
+            {% endfor %}
+            {% if def_matches|length > 10 %}
+            <div class="terms-load-more">
+                <button class="load-more-btn" type="button" data-group="def">더보기</button>
             </div>
-        </article>
-        {% empty %}
-        <p>사전 데이터가 없습니다.</p>
-        {% endfor %}
+            {% endif %}
+            {% endif %}
+
+            {% if not word_matches and not def_matches %}
+            <p>사전 데이터가 없습니다.</p>
+            {% endif %}
+        {% else %}
+            {% for word, definition in dictionary_items %}
+            <article class="term-card{% if forloop.counter > 20 %} is-hidden{% endif %}">
+                <button class="bookmark-btn {% if word in bookmarked_words %}active{% endif %}" aria-label="북마크" data-word="{{ word|escapejs }}" data-definition="{{ definition|escapejs }}">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 21L12 16L5 21V5C5 4.46957 5.21071 3.96086 5.58579 3.58579C5.96086 3.21071 6.46957 3 7 3H17C17.5304 3 18.0391 3.21071 18.4142 3.58579C18.7893 3.96086 19 4.46957 19 5V21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+                <div class="term-header">
+                    <h2 class="term-title">{{ word }}</h2>
+                </div>
+                <div class="term-content">
+                    <p class="term-description">{{ definition }}</p>
+                </div>
+            </article>
+            {% empty %}
+            <p>사전 데이터가 없습니다.</p>
+            {% endfor %}
+        {% endif %}
     </div>
+    {% if not q and dictionary_items|length > 20 %}
+    <div class="terms-load-more">
+        <button id="loadMoreTerms" class="load-more-btn" type="button">더보기</button>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 
@@ -98,6 +162,38 @@ document.querySelectorAll('.bookmark-btn').forEach(btn => {
             alert('로그인이 필요한 서비스입니다');
         });
     });
+});
+
+const loadMoreBtn = document.getElementById('loadMoreTerms');
+if (loadMoreBtn) {
+    const batchSize = 20;
+    const hiddenCards = Array.from(document.querySelectorAll('.term-card.is-hidden'));
+
+    function revealNextBatch() {
+        const nextBatch = hiddenCards.splice(0, batchSize);
+        nextBatch.forEach(card => card.classList.remove('is-hidden'));
+        if (hiddenCards.length === 0) {
+            loadMoreBtn.style.display = 'none';
+        }
+    }
+
+    loadMoreBtn.addEventListener('click', revealNextBatch);
+}
+
+document.querySelectorAll('.load-more-btn[data-group]').forEach(btn => {
+    const group = btn.getAttribute('data-group');
+    const batchSize = 10;
+
+    function revealNextBatch() {
+        const hiddenCards = Array.from(document.querySelectorAll(`.term-card.is-hidden[data-group="${group}"]`));
+        const nextBatch = hiddenCards.slice(0, batchSize);
+        nextBatch.forEach(card => card.classList.remove('is-hidden'));
+        if (hiddenCards.length <= batchSize) {
+            btn.style.display = 'none';
+        }
+    }
+
+    btn.addEventListener('click', revealNextBatch);
 });
 </script>
 {% endblock %}

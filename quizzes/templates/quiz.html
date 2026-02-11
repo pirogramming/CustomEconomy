@@ -1,109 +1,85 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}퀴즈 | Custom Economy{% endblock %}
+{% block title %}Quiz | Custom Economy{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'quiz.css' %}">
 {% endblock %}
 
 {% block content %}
-<main class="main-content">
-  <header class="main-header">
-    <a class="page-title" href="{% url 'main' %}">Custom Economy</a>
+<div class="quiz-main-content">
+    
+  <header class="brand-header">
+    <a class="brand-logo" href="{% url 'main' %}">CUSTOM ECONOMY</a>
+    <a href="{% url 'detail' article.id %}" class="exit-link">✕ 퀴즈 종료</a>
   </header>
 
-  <div class="back-to-list-area">
-    <a href="{% url 'detail' article.id %}" class="back-btn">기사로 돌아가기</a>
-  </div>
-  <div class="quiz-container">
-    <div class="quiz-badge">Quiz</div>
-
-    <h2 class="quiz-article-title">{{ article.title }}</h2>
-
-    <div class="tags-wrapper">
-      <div class="tag">
-        <span class="tag-text">#{{ article.category.name }}</span>
+  <section class="quiz-hero-section">
+    <div class="hero-inner">
+      <span class="quiz-label-badge">DAILY QUIZ</span>
+      <h2 class="quiz-main-title">{{ article.title }}</h2>
+      <div class="quiz-meta-tags">
+        <span class="meta-tag topic">#{{ article.category.name }}</span>
+        {% if category_display %}
+          <span class="meta-tag sub-topic">#{{ category_display }}</span>
+        {% endif %}
       </div>
-
-      {# 소분류가 있으면 category_display로 보여주기 #}
-      {% if category_display %}
-        <div class="tag tag-green">
-          <span class="tag-text">#{{ category_display }}</span>
-        </div>
-      {% endif %}
     </div>
+  </section>
 
-    <form action="{% url 'submit_quiz_session' article.id %}" method="post">
-      {% csrf_token %}
+  <section class="quiz-body-area">
+    <div class="quiz-inner-wrapper">
+      <form action="{% url 'submit_quiz_session' article.id %}" method="post" id="quizForm">
+        {% csrf_token %}
 
-      {% for quiz in quiz_set %}
-        {# quiz type 대응: quiz.quiz_type or quiz.type #}
-        {% with qtype=quiz.quiz_type|default:quiz.type %}
-        <div class="question-card {% if qtype == 'C' %}with-info{% endif %}">
-          <div class="question-header">
-            <h3 class="question-number">Q{{ forloop.counter }}. {{ quiz.question }}</h3>
-          </div>
+        <div class="questions-list">
+          {% for quiz in quiz_set %}
+            <div class="quiz-card">
+              <span class="question-index">Question {{ forloop.counter }}</span>
+              <h3 class="question-text">{{ quiz.question }}</h3>
+              
+              {% if quiz.quiz_type == 'C' or quiz.type == 'C' %}
+                <div class="concept-info-box">
+                  <p class="info-msg">🎯 <strong>분야 집중:</strong> 핵심 경제 개념을 확인하는 문제입니다.</p>
+                </div>
+              {% endif %}
 
-          {# C유형 안내 박스(원하면 B도 표시 가능) #}
-          {% if qtype == 'C' %}
-            <div class="concept-hint">
-              <span class="concept-badge">🎯 분야 집중 문제</span>
-              <span class="concept-text">
-                이 문제는 <strong>[{{ category_display|default:article.category.name }}]</strong> 관련 기초 개념을 확인합니다.
-              </span>
+              <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
+
+              <div class="options-container">
+                {% for choice in quiz.choices.all %}
+                  <label class="option-item">
+                    <input type="radio" name="quiz_{{ quiz.id }}" value="{{ choice.id }}" required class="hidden-radio">
+                    <div class="option-content">
+                      <span class="option-number">{{ forloop.counter }}</span>
+                      <span class="option-text">{{ choice.choice_text }}</span>
+                    </div>
+                  </label>
+                {% endfor %}
+              </div>
             </div>
-          {% endif %}
-
-          {# ✅ 백엔드가 quiz_ids를 getlist로 받기 때문에 문제마다 hidden 유지 #}
-          <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
-
-          <div class="answers-grid">
-            {% for choice in quiz.choices.all %}
-              <label class="answer-option" style="cursor:pointer;">
-                <input
-                  type="radio"
-                  name="quiz_{{ quiz.id }}"
-                  value="{{ choice.id }}"
-                  required
-                  style="display:none;"
-                >
-                <span class="answer-text">{{ forloop.counter }}. {{ choice.choice_text }}</span>
-              </label>
-            {% endfor %}
-          </div>
+          {% endfor %}
         </div>
-        {% endwith %}
-      {% endfor %}
-        
-      <div class="button-container">
-        <button type="submit" class="submit-btn">제출하고 결과 확인하기</button>
-
-        <div class="back-to-list-area">
-          <a href="{% url 'detail' article.id %}" class="back-btn">기사로 돌아가기</a>
+          
+        <div class="quiz-footer">
+          <button type="submit" class="finish-button">제출하고 결과 확인하기</button>
+          <a href="{% url 'detail' article.id %}" class="back-link">기사 읽기로 돌아가기</a>
         </div>
-
-      </div>
-      
-    </form>
-  </div>
-</main>
+      </form>
+    </div>
+  </section>
+</div>
 
 <script>
-  // answer-option 클릭 시 선택 표시 + 라디오 체크
   document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".answer-option").forEach((opt) => {
-      opt.addEventListener("click", () => {
-        const grid = opt.closest(".answers-grid");
-        if (!grid) return;
-
-        grid.querySelectorAll(".answer-option").forEach(o => o.classList.remove("selected"));
-        opt.classList.add("selected");
-
-        const radio = opt.querySelector('input[type="radio"]');
-        if (radio) radio.checked = true;
+    const options = document.querySelectorAll(".option-item");
+    options.forEach((opt) => {
+      opt.addEventListener("click", function() {
+        const container = this.closest(".options-container");
+        container.querySelectorAll(".option-item").forEach(item => item.classList.remove("is-selected"));
+        this.classList.add("is-selected");
       });
     });
   });
 </script>
-
 {% endblock %}

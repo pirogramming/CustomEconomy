@@ -8,7 +8,7 @@
 
 /* 기본 리셋 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Noto Sans KR', sans-serif; background-color: #eeefee; min-height: 100vh; }
+body { font-family: 'Noto Sans KR', sans-serif; background-color: #F1F7FF; min-height: 100vh; }
 
 /* --- 레이아웃 (Main) --- */
 main {
@@ -44,7 +44,8 @@ body.collapsed main {
     padding: 30px 20px;
     z-index: 1000;
     transition: width var(--transition-speed) ease;
-    overflow-x: hidden; /* 내용이 넘치면 잘라냄 */
+    overflow-x: hidden; /* 가로 스크롤 방지 */
+    overflow-y: auto; /* 🆕 세로 스크롤 활성화 */
 }
 
 /* 토글 버튼 스타일 */
@@ -63,7 +64,7 @@ body.collapsed main {
 .toggle-btn:hover { color: #fff; transform: scale(1.1); }
 
 /* --- 프로필 섹션 --- */
-.sidebar-profile { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 30px; transition: 0.3s; }
+.sidebar-profile { width: 100%; display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; transition: 0.3s; } /* 30px → 20px */
 .profile-level { background-color: rgba(255, 255, 255, 0.15); color: #ffffff; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 700; margin-bottom: 15px; white-space: nowrap; }
 .profile-avatar { width: 80px; height: 80px; border-radius: 50%; background-color: #ffffff; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; overflow: hidden; transition: all 0.3s; }
 .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -73,7 +74,7 @@ body.collapsed main {
 .profile-name .highlight { color: #ffd700; }
 
 /* --- 메뉴 --- */
-.sidebar-menu { width: 100%; margin-bottom: 30px; }
+.sidebar-menu { width: 100%; margin-bottom: 20px; } /* 30px → 20px */
 .menu-item { display: flex; align-items: center; padding: 14px 20px; color: #b8c1d9; text-decoration: none; border-radius: 10px; margin-bottom: 8px; transition: all 0.3s ease; font-size: 15px; font-weight: 500; white-space: nowrap; overflow: hidden; }
 .menu-item:hover { background-color: rgba(255, 255, 255, 0.08); color: #ffffff; }
 .menu-item.active { background-color: rgba(239, 145, 96, 0.15); color: #ef9160; font-weight: 700; }
@@ -81,13 +82,13 @@ body.collapsed main {
 .menu-text { opacity: 1; transition: opacity 0.2s; }
 
 /* --- 진행도 & 하단 (기존 유지) --- */
-.sidebar-progress { position: relative; width: 120px; height: 120px; margin: 20px 0; transition: 0.2s; }
+.sidebar-progress { position: relative; width: 120px; height: 120px; margin: 15px 0; transition: 0.2s; } /* 20px → 15px */
 .progress-ring { transform: rotate(-90deg); }
 .progress-ring-circle-bg { stroke: #3a4458; }
 .progress-ring-circle { stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
 .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: 800; color: #ffffff; }
 
-.sidebar-footer { width: 100%; margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); white-space: nowrap; }
+.sidebar-footer { width: 100%; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); white-space: nowrap; }
 .footer-item { display: flex; justify-content: space-between; align-items: center; color: #ffffff; font-size: 14px; }
 .footer-label { font-weight: 500; color: #b8c1d9; }
 .footer-value { font-weight: 700; font-size: 16px; }
@@ -100,6 +101,7 @@ body.collapsed main {
     padding-top: 15px;
     border-top: 1px solid rgba(255, 255, 255, 0.1); /* 위쪽 구분선 (선택사항) */
     text-align: center;
+    flex-shrink: 0; /* 🆕 축소되지 않도록 고정 */
 }
 
 .auth-text-group {
@@ -204,6 +206,9 @@ body.collapsed .toggle-btn {
     border-top: 1px solid rgba(77, 208, 225, 0.2);
     display: flex; /* flexbox로 변경 */
     align-items: center; /* 수직 중앙 정렬 */
+    margin-top: auto; /* 🆕 하단으로 밀어내기 */
+    margin-bottom: 10px; /* 🆕 auth 섹션과의 간격 (15px → 10px) */
+    flex-shrink: 0; /* 🆕 축소되지 않도록 고정 */
 }
 
 .ticker-wrapper {
