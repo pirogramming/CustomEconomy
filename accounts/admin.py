@@ -4,7 +4,7 @@ from .models import User, Interest, UserInterest
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
     # 1. 목록 화면에서 보여줄 필드 (username 제외)
-    list_display = ('email', 'username', 'is_staff')
+    list_display = ('email', 'username','level', 'total_score', 'is_staff')
     
     # 2. 정렬 기준을 email로 변경 (에러 admin.E033 해결)
     ordering = ('email',)
@@ -37,7 +37,7 @@ class InterestAdmin(admin.ModelAdmin):
 
 @admin.register(UserInterest)
 class UserInterestAdmin(admin.ModelAdmin):
-    # "점수판"
+    # [기사 추천 로직] 관심점수, 약점점수
     list_display = ('user', 'interest', 'interest_score', 'weakness_score', 'last_viewed_at', 'last_wrong_at')
     # 유저별, 혹은 소분류별로 필터링해서 보기 편하게 설정
     list_filter = ('user', 'interest__category_type')
