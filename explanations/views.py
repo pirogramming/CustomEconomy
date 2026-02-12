@@ -14,6 +14,7 @@ from django.conf import settings
 from quizzes.services import create_ai_quiz_from_article
 import threading
 from django.db.models import Q, F, Case, When, Value, IntegerField
+from quizzes.models import Quiz
 
 # ⭐ 전체 관심사 목록 (수정됨)
 ALL_INTERESTS = ['투자', '부동산', '대출/금융', '소비', '환율/해외', '세금/정책', '자영업/사업자', '취업/고용']
@@ -252,10 +253,11 @@ def generate_level_explanation(request, article_id, level):
             interest=user_interest_names[0]
         ).first()
         selected_interest = user_interest_names[0]
-    
-    # 퀴즈 생성 (백그라운드)
-    if explanation_created:
+
+    # 퀴즈 생성 (백그라운드에서)
+    if not Quiz.objects.filter(article=article, type='A').exists():
         thread = threading.Thread(target=create_ai_quiz_from_article, args=(article,))
+        thread.daemon = True  # 서버 종료 시 함께 종료되도록 설정
         thread.start()
     
     # 응답 반환
