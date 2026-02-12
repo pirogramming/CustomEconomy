@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block title %}Quiz | Custom Economy{% endblock %}
 
 {% block extra_css %}
@@ -7,79 +8,171 @@
 {% endblock %}
 
 {% block content %}
-<div class="quiz-main-content">
-    
-  <header class="brand-header">
-    <a class="brand-logo" href="{% url 'main' %}">CUSTOM ECONOMY</a>
-    <a href="{% url 'detail' article.id %}" class="exit-link">✕ 퀴즈 종료</a>
-  </header>
+<a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
 
-  <section class="quiz-hero-section">
-    <div class="hero-inner">
-      <span class="quiz-label-badge">DAILY QUIZ</span>
-      <h2 class="quiz-main-title">{{ article.title }}</h2>
-      <div class="quiz-meta-tags">
-        <span class="meta-tag topic">#{{ article.category.name }}</span>
-        {% if category_display %}
-          <span class="meta-tag sub-topic">#{{ category_display }}</span>
-        {% endif %}
-      </div>
-    </div>
-  </section>
-
-  <section class="quiz-body-area">
-    <div class="quiz-inner-wrapper">
-      <form action="{% url 'submit_quiz_session' article.id %}" method="post" id="quizForm">
-        {% csrf_token %}
-
-        <div class="questions-list">
-          {% for quiz in quiz_set %}
-            <div class="quiz-card">
-              <span class="question-index">Question {{ forloop.counter }}</span>
-              <h3 class="question-text">{{ quiz.question }}</h3>
-              
-              {% if quiz.quiz_type == 'C' or quiz.type == 'C' %}
-                <div class="concept-info-box">
-                  <p class="info-msg">🎯 <strong>분야 집중:</strong> 핵심 경제 개념을 확인하는 문제입니다.</p>
-                </div>
-              {% endif %}
-
-              <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
-
-              <div class="options-container">
-                {% for choice in quiz.choices.all %}
-                  <label class="option-item">
-                    <input type="radio" name="quiz_{{ quiz.id }}" value="{{ choice.id }}" required class="hidden-radio">
-                    <div class="option-content">
-                      <span class="option-number">{{ forloop.counter }}</span>
-                      <span class="option-text">{{ choice.choice_text }}</span>
-                    </div>
-                  </label>
-                {% endfor %}
-              </div>
+<div class="quiz-container">
+    <main class="quiz-main">
+        <header class="quiz-header">
+            <span class="badge">QUIZ</span>
+            <h1 class="article-title">{{ article.title }}</h1>
+            
+            <div class="tags">
+                <span class="tag">#{{ article.category.name }}</span>
+                {% if category_display %}<span class="tag">#{{ category_display }}</span>{% endif %}
             </div>
-          {% endfor %}
+            
+            <div class="steps-container">
+                <div class="steps">
+                    {% for quiz in quiz_set %}
+                        <div class="step {% if forloop.first %}active{% endif %}" data-step="{{ forloop.counter }}">
+                            {{ forloop.counter }}
+                        </div>
+                        {% if not forloop.last %}
+                            <div class="step-line"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <p class="question-count">QUESTION <span id="current-num">1</span> OF {{ quiz_set|length }}</p>
+            </div>
+        </header>
+
+        <form action="{% url 'submit_quiz_session' article.id %}" method="post" id="quizForm">
+            {% csrf_token %}
+            <div class="questions-list">
+                {% for quiz in quiz_set %}
+                <section class="question-card {% if forloop.first %}is-visible{% endif %}" data-quiz-index="{{ forloop.counter }}">
+                    
+                    <div class="question-type">
+                        {% if quiz.quiz_type == 'A' %}
+                            <span class="type-icon">📰</span> 기사 내용 분석
+                        {% elif quiz.quiz_type == 'B' %}
+                            <span class="type-icon">📌</span> 기사 속 용어 학습
+                        {% elif quiz.quiz_type == 'C' %}
+                            <span class="type-icon">💡</span> 경제 상식 퀴즈
+                        {% else %}
+                            <span class="type-icon">❓</span> 일반 퀴즈
+                        {% endif %}
+                    </div>
+                    
+                    <h2 class="question-text">Q{{ forloop.counter }}. {{ quiz.question }}</h2>
+
+                    <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
+
+                    <div class="options-grid">
+                        {% for choice in quiz.choices.all %}
+                        <label class="option-item">
+                            <input type="radio" name="quiz_{{ quiz.id }}" value="{{ choice.id }}" required class="hidden-radio">
+                            <div class="option-content">
+                                <span class="option-number">{{ forloop.counter }}</span>
+                                <span class="option-text">{{ choice.choice_text }}</span>
+                            </div>
+                        </label>
+                        {% endfor %}
+                    </div>
+
+                    <div class="card-footer">
+                        <div class="footer-left">
+                            {% if not forloop.first %}
+                                <button type="button" class="prev-btn" onclick="goToPrev({{ forloop.counter }})">← 이전 문제</button>
+                            {% endif %}
+                        </div>
+
+                        <div class="footer-right">
+                            {% if forloop.last %}
+                                <button type="submit" class="finish-button">제출하고 결과 확인하기 ✈️</button>
+                            {% else %}
+                                <button type="button" class="next-btn" onclick="goToNext({{ forloop.counter }})">다음 문제 →</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </section>
+                {% endfor %}
+            </div>
+        </form>
+    </main>
+
+    <aside class="quiz-sidebar">
+        <h3>다른 퀴즈 도전하기</h3>
+        <div class="sidebar-list">
+            <div class="sidebar-item">
+                <div class="item-icon">🏛️</div>
+                <div class="item-info">
+                    <p>미국 연준, 금리 동결 결정...</p>
+                    <span>#통화정책 3문항</span>
+                </div>
+            </div>
         </div>
-          
-        <div class="quiz-footer">
-          <button type="submit" class="finish-button">제출하고 결과 확인하기</button>
-          <a href="{% url 'detail' article.id %}" class="back-link">기사 읽기로 돌아가기</a>
-        </div>
-      </form>
-    </div>
-  </section>
+        <a href="{% url 'articleList' %}" class="view-all-btn" style="display: block; text-align: center; margin-top: 20px; color: var(--primary-orange); text-decoration: none; font-weight: 700;">전체 퀴즈 보기 →</a>
+    </aside>
 </div>
 
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const options = document.querySelectorAll(".option-item");
-    options.forEach((opt) => {
-      opt.addEventListener("click", function() {
-        const container = this.closest(".options-container");
-        container.querySelectorAll(".option-item").forEach(item => item.classList.remove("is-selected"));
-        this.classList.add("is-selected");
-      });
+    // 다음 문제로 이동
+    function goToNext(currentIndex) {
+        // 현재 카드 유효성 검사 (선택 여부 확인)
+        const currentCard = document.querySelector(`[data-quiz-index="${currentIndex}"]`);
+        const selectedOption = currentCard.querySelector('input[type="radio"]:checked');
+        
+        if (!selectedOption) {
+            alert("정답을 선택해주세요!");
+            return;
+        }
+
+        currentCard.classList.remove('is-visible');
+
+        const nextIndex = currentIndex + 1;
+        const nextCard = document.querySelector(`[data-quiz-index="${nextIndex}"]`);
+        if (nextCard) {
+            nextCard.classList.add('is-visible');
+            
+            // UI 업데이트
+            updateUI(nextIndex);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    // 이전 문제로 이동
+    function goToPrev(currentIndex) {
+        const currentCard = document.querySelector(`[data-quiz-index="${currentIndex}"]`);
+        currentCard.classList.remove('is-visible');
+
+        const prevIndex = currentIndex - 1;
+        const prevCard = document.querySelector(`[data-quiz-index="${prevIndex}"]`);
+
+        if (prevCard) {
+            prevCard.classList.add('is-visible');
+            
+            // UI 업데이트
+            updateUI(prevIndex);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    // 공통 UI 업데이트 함수 (번호 및 스텝)
+    function updateUI(index) {
+        document.getElementById('current-num').innerText = index;
+        
+        const steps = document.querySelectorAll(".step");
+        steps.forEach(step => step.classList.remove("active"));
+        
+        const activeStep = document.querySelector(`.step[data-step="${index}"]`);
+        if (activeStep) activeStep.classList.add("active");
+    }
+
+    // 선택지 클릭 시 시각적 효과 부여
+    document.addEventListener("DOMContentLoaded", () => {
+        const optionItems = document.querySelectorAll(".option-item");
+        
+        optionItems.forEach((item) => {
+            // 라디오 버튼 선택 시 'is-selected' 클래스 토글
+            const radio = item.querySelector('input[type="radio"]');
+            
+            item.addEventListener("click", function() {
+                const grid = this.closest(".options-grid");
+                grid.querySelectorAll(".option-item").forEach(opt => opt.classList.remove("is-selected"));
+                this.classList.add("is-selected");
+            });
+        });
     });
-  });
 </script>
 {% endblock %}
