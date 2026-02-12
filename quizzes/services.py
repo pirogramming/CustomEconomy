@@ -69,7 +69,7 @@ def create_ai_quiz_from_article(article_obj):
 
     try:
         response = model.generate_content(prompt)
-        # JSON 부분만 추출 (AI가 앞뒤에 설명을 붙일 경우 대비)
+        # JSON 부분만 추출
         json_match = re.search(r'\[.*\]', response.text, re.DOTALL)
         if not json_match: return 0
         
@@ -99,47 +99,39 @@ def create_ai_quiz_from_article(article_obj):
         return 0
 
 def create_type_b_quiz(article_obj):
-    if Quiz.objects.filter(article=article_obj, type='B').exists():
-        return 0
-
-    # 1. 기사 본문에 포함된 용어(Term)들 가져오기
+    # 1. 기사 본문에 연결된 용어들 가져오기
     terms_qs = article_obj.terms.all()
-    is_from_article = True # 기사 용어인지 판단하는 플래그
-
-    # 2. 본문에 용어가 없다면 전체 DB에서 가져오기
-    if not terms_qs.exists():
-        terms_qs = Term.objects.all()
-        is_from_article = False # 기사 외 일반 용어
     
-    if not terms_qs.exists():
+    if terms_qs.exists():
+        # [기사 속 단어가 있는 경우] 기사에 포함된 모든 단어
+        selected_terms = terms_qs.order_by('?')
+        is_from_article = True
+    else:
+        # [기사 속 단어가 없는 경우] 전체 DB에서 랜덤하게 3개를 뽑기
+        selected_terms = Term.objects.all().order_by('?')[:3]
+        is_from_article = False
+    
+    if not selected_terms:
         return 0
 
     created_count = 0
-    selected_terms = terms_qs.order_by('?')[:2]
-
     for term_obj in selected_terms:
-        # 질문 멘트를 조건에 따라 다르게 설정!
-        if is_from_article:
-            prefix = "📌 [기사 속 용어]"
-        else:
-            prefix = "💡 [경제 기초 단어]"
-        
+        prefix = "📌 [기사 속 용어]" if is_from_article else "💡 [경제 기초 단어]"
         question_text = f"{prefix} 다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
         
-        # 중복 생성 방지
+        # 중복 체크: 이 기사에 대해 동일한 용어 퀴즈가 이미 있는지 확인
         if not Quiz.objects.filter(article=article_obj, type='B', question=question_text).exists():
-            # B유형은 분류와 상관없으므로 interest는 None!
             quiz = Quiz.objects.create(
                 article=article_obj,
                 type='B',
                 category=article_obj.category, 
-                interest=None, # 분류 연결 안 함
+                interest=None,
                 question=question_text,
                 explanation=f"정답은 '{term_obj.name}'입니다.",
                 level=1
             )
             
-            # 오답 선택지 (나머지 용어 중 랜덤 3개)
+            # 오답 선택지 생성 (나머지 용어 중 랜덤 3개)
             other_names = list(Term.objects.exclude(id=term_obj.id).order_by('?')[:3].values_list('name', flat=True))
             choices = [term_obj.name] + other_names
             random.shuffle(choices)
@@ -154,9 +146,9 @@ def create_type_b_quiz(article_obj):
             
     return created_count
 
-def get_quiz_session_set(article_obj):
+def get_quiz_session_set(article_obj, target_level=1):
     """
-    최종적으로 3문제를 반환 (A:기사분석, B:용어, C:상식)
+    최종적으로 3문제를 반환 (A: 기사 분석, B: 용어 학습, C: 경제 상식)
     """
     # 1. 퀴즈 생성 시도 (A유형 AI 생성 및 B유형 용어 연결)
     link_terms_to_article(article_obj)
@@ -166,7 +158,6 @@ def get_quiz_session_set(article_obj):
     final_quiz_set = []
 
     # [A] 현재 기사 전용 (AI 생성)
-    # 현재 기사와 연결된 A유형 중 하나를 가져옵니다.
     quiz_a = Quiz.objects.filter(article=article_obj, type='A').order_by('?').first()
     if quiz_a:
         final_quiz_set.append(quiz_a)
@@ -182,8 +173,6 @@ def get_quiz_session_set(article_obj):
     
     # [C] 카테고리 맞춤 상식
     quiz_c = None
-    explanation = ArticleExplanation.objects.filter(article=article_obj).first()
-    target_level = explanation.level
     
     # 1순위: 기사에 연결된 소분류(Interest) 중 하나를 랜덤하게 골라 C유형 퀴즈 찾기
     sub_interest = article_obj.sub_interests.all().order_by('?').first()
@@ -205,7 +194,7 @@ def get_quiz_session_set(article_obj):
     if quiz_c:
         final_quiz_set.append(quiz_c)
     
-    # 2. [최종 보충] 만약 어떤 이유로든 3개가 안 된다면?
+    # 2. 만약 어떤 이유로든 3개가 안 된다면
     if len(final_quiz_set) < 3:
         already_ids = [q.id for q in final_quiz_set]
         

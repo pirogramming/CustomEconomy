@@ -13,7 +13,8 @@ def quiz_view(request, article_id):
     퀴즈 화면: 기사와 관련된 3문제를 생성하거나 가져와서 보여줌
     """
     article = get_object_or_404(Article, id=article_id)
-    quiz_set = get_quiz_session_set(article)
+    target_level = request.GET.get('level', 1) # url에서 레벨 가져옴
+    quiz_set = get_quiz_session_set(article, target_level=target_level)
     
     # --- 분야 명칭 추출 로직 추가 ---
     # 1. 소분류(sub_interests)가 있는지 확인
@@ -53,18 +54,10 @@ def submit_quiz_session(request, article_id):
         for q_id in quiz_ids:
             quiz = Quiz.objects.get(id=q_id)
             selected_choice_id = request.POST.get(f'quiz_{q_id}')
-            
-            if selected_choice_id:
-                choice = QuizChoice.objects.get(id=selected_choice_id)
-                is_correct = choice.is_correct
-                selected_text = choice.choice_text
-                selected_choice_id_int = int(selected_choice_id)
-            else:
-                is_correct = False
-                selected_text = "(미선택)"
-                selected_choice_id_int = None
+            choice = QuizChoice.objects.get(id=selected_choice_id)
+            is_correct = choice.is_correct
 
-            # [XP 계산 로직] 모델의 quiz.type 필드 사용 (A, B, C)
+            # [퀴즈 점수] XP 계산
             earned_xp = 0
             if is_correct:
                 correct_count += 1
@@ -81,7 +74,7 @@ def submit_quiz_session(request, article_id):
             QuizResult.objects.create(
                 user=user,
                 quiz=quiz,
-                selected_answer=selected_text,
+                selected_answer=choice.choice_text,
                 is_correct=is_correct,
                 earned_score=earned_xp
             )
@@ -90,37 +83,35 @@ def submit_quiz_session(request, article_id):
             correct_choice = quiz.choices.filter(is_correct=True).first()
             results_detail.append({
                 "quiz_id": quiz.id,
-                "quiz_type": quiz.type, # 템플릿용
+                "quiz_type": quiz.type,
                 "question": quiz.question,
-                "selected": selected_text,
-                "selected_choice_id": selected_choice_id_int,
+                "selected": choice.choice_text,
                 "is_correct": is_correct,
                 "explanation": quiz.explanation,
                 "correct_answer": correct_choice.choice_text if correct_choice else "(정답 없음)",
-                "correct_choice_id": correct_choice.id if correct_choice else None,
                 "choices": list(quiz.choices.all().values("id", "choice_text")),
                 "earned_xp": earned_xp,
             })
 
-            # [약점 업데이트] Article에 연결된 sub_interests 기준
+            # [약점 점수] Article에 연결된 sub_interests 기준
             article_interests = article.sub_interests.all() 
             for interest_obj in article_interests:
                 ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
                 if is_correct:
-                    ui.weakness_score -= 2 # UserInterest.save()에서 하한 0점 처리됨
+                    ui.weakness_score -= 2
                 else:
                     ui.weakness_score += 2
                     ui.last_wrong_at = timezone.now()
                 ui.save()
 
-        # 세트 보너스
+        # [퀴즈 점수] 세트 보너스
         bonus_xp = 5 if correct_count == 2 else (15 if correct_count == 3 else 0)
         total_final_xp = session_earned_xp + bonus_xp
 
-        # 유저 총점 반영 및 레벨업
+        # [퀴즈 점수] 유저 총점 반영 및 레벨업
         user.total_score += total_final_xp
         
-        # 레벨업 기준 (누적 XP)
+        # [퀴즈 점수] 레벨업 기준 (누적 XP)
         level_thresholds = [(5, 25725), (4, 12985), (3, 5635), (2, 1715)]
         
         old_level = user.level
@@ -142,17 +133,17 @@ def submit_quiz_session(request, article_id):
         
         return render(request, 'quiz_result.html', {
             'results_detail': results_detail,
-            'correct_count': correct_count, # 문제 정답 개수
+            'correct_count': correct_count,
             'is_levelup': is_levelup,
-            'base_xp': session_earned_xp, # 순수 문제 정답 점수 합
-            'xp_breakdown': { # 각 유형 별 정답 점수
+            'base_xp': session_earned_xp,
+            'xp_breakdown': {
                 'type_a': sum(r['earned_xp'] for r in results_detail if r['quiz_type'] == 'A'),
                 'type_b': sum(r['earned_xp'] for r in results_detail if r['quiz_type'] == 'B'),
                 'type_c': sum(r['earned_xp'] for r in results_detail if r['quiz_type'] == 'C'),
             },
-            'bonus_xp': bonus_xp, # 2개 or 3개 맞췄을 때 보너스
-            'total_final_xp': total_final_xp, # 이번에 얻은 총 점수
-            'current_total_xp': user.total_score, # 현재 총 점수
-            'remaining_xp': remaining_xp, # 레벨 업까지 남은 점수
+            'bonus_xp': bonus_xp,
+            'total_final_xp': total_final_xp,
+            'current_total_xp': user.total_score,
+            'remaining_xp': remaining_xp,
             'article': article,         
         })

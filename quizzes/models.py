@@ -34,7 +34,7 @@ class QuizChoice(models.Model):
 class QuizResult(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    selected_answer = models.CharField(max_length=50, help_text="객관식 선택값")
+    selected_answer = models.TextField()
     is_correct = models.BooleanField()
     earned_score = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
