@@ -4,11 +4,11 @@ import os
 import random
 import re
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from articles.models import Article
 from accounts.models import Interest, UserInterest
-from .models import Quiz, QuizChoice
 from terms.models import Term 
+from .models import Quiz, QuizChoice
 from dotenv import load_dotenv
 from explanations.models import ArticleExplanation
 
@@ -74,32 +74,40 @@ def create_ai_quiz_from_article(article_obj):
         if not json_match: return 0
         
         quiz_data = json.loads(json_match.group(0))
+        created_count = 0
+        
+        # DB 트랜잭션 시작 (데이터 저장 안정성 보장)
+        with transaction.atomic():
+            # 동시성 방어
+            if Quiz.objects.filter(article=article_obj, type='A').exists():
+                return 0
 
-        for item in quiz_data:
-            quiz, created = Quiz.objects.get_or_create(
-                article=article_obj,
-                question=item['question'],
-                defaults={
-                    'category': article_obj.category,
-                    'explanation': item['explanation'],
-                    'type': 'A',
-                    'level': 1
-                }
-            )
-            if created:
-                for option in item['options']:
-                    QuizChoice.objects.create(
-                        quiz=quiz,
-                        choice_text=option,
-                        is_correct=(option == item['answer'])
-                    )
-        return len(quiz_data)
+            for item in quiz_data:
+                quiz, created = Quiz.objects.get_or_create(
+                    article=article_obj,
+                    question=item['question'],
+                    defaults={
+                        'category': article_obj.category,
+                        'explanation': item['explanation'],
+                        'type': 'A',
+                        'level': 1
+                    }
+                )
+                if created:
+                    created_count += 1
+                    for option in item['options']:
+                        QuizChoice.objects.create(
+                            quiz=quiz,
+                            choice_text=option,
+                            is_correct=(option == item['answer'])
+                        )
+        return created_count
     except Exception as e:
         print(f"❌ AI 생성 실패: {e}")
         return 0
 
 def create_type_b_quiz(article_obj):
-    # 1. 기사 본문에 연결된 용어들 가져오기
+    # 기사 본문에 연결된 용어들 가져오기
     terms_qs = article_obj.terms.all()
     
     if terms_qs.exists():
