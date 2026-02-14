@@ -47,6 +47,7 @@
         {% endfor %}
     </div>
 
+    {% if rest_users %}
     <div class="rank-list-container">
         {% for user in rest_users %}
         <div class="rank-row">
@@ -63,6 +64,7 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 
 </div>
 

@@ -7,7 +7,7 @@
     --c-orange: #EF9160;
     --c-navy: #1A2137;
     --c-green: #80B27F;
-    --c-bg-gray: #F1F7FF;
+    --c-bg-gray: #F4F7FB;
     --c-yellow: #F4B132;
     --c-white: #FFFFFF;
     --c-text-dark: #333333;
@@ -49,9 +49,11 @@ body {
 .page-main-title {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
-    font-size: 56px;
+    font-size: 32px;
     font-weight: 700;
+    margin: 0 0 24px;
     letter-spacing: -0.5px;
+    padding: 0;
 }
 
 /* ==================== */
@@ -206,11 +208,142 @@ section {
 /* 반응형 디자인 */
 /* ==================== */
 
+@media (max-width: 480px) {
+    .main-wrapper {
+        padding: 16px 12px 32px;
+    }
+    
+    .page-main-title {
+        font-size: 26px;
+    }
+    
+    .news-grid {
+        gap: 10px;
+    }
+    
+    .featured-title {
+        font-size: 13px;
+    }
+    
+    .featured-excerpt {
+        font-size: 10px;
+    }
+    
+    .card-title {
+        font-size: 11px;
+    }
+    
+    .card-excerpt {
+        font-size: 9px;
+    }
+}
 
+@media (min-width: 768px) {
+    .main-wrapper {
+        padding: 40px 60px 60px;
+    }
+    
+    .main-header {
+        margin-bottom: 50px;
+    }
+    
+    .page-main-title {
+        font-size: 48px;
+    }
+    
+    .logout-btn {
+        font-size: 15px;
+        padding: 8px 16px;
+    }
+    
+    .section-title {
+        font-size: 22px;
+        margin-bottom: 24px;
+    }
+    
+    .featured-card {
+        padding: 24px;
+    }
+    
+    .featured-title {
+        font-size: 20px;
+        margin-bottom: 12px;
+    }
+    
+    .featured-excerpt {
+        font-size: 15px;
+    }
+    
+    .featured-image {
+        width: 200px;
+        height: 130px;
+    }
+    
+    .news-grid {
+        gap: 20px;
+    }
+    
+    .news-card {
+        padding: 20px;
+        min-height: 200px;
+    }
+    
+    .card-title {
+        font-size: 16px;
+    }
+    
+    .card-excerpt {
+        font-size: 13px;
+    }
+}
 
-
-
-
+@media (min-width: 1024px) {
+    .main-wrapper {
+        padding: 50px 80px 80px;
+    }
+    
+    .page-main-title {
+        font-size: 56px;
+    }
+    
+    .section-title {
+        font-size: 26px;
+    }
+    
+    .featured-card {
+        padding: 32px;
+    }
+    
+    .featured-title {
+        font-size: 24px;
+    }
+    
+    .featured-excerpt {
+        font-size: 16px;
+    }
+    
+    .featured-image {
+        width: 280px;
+        height: 180px;
+    }
+    
+    .news-grid {
+        gap: 24px;
+    }
+    
+    .news-card {
+        padding: 24px;
+        min-height: 240px;
+    }
+    
+    .card-title {
+        font-size: 18px;
+    }
+    
+    .card-excerpt {
+        font-size: 14px;
+    }
+}
 
 
 .main-wrapper .modal{
