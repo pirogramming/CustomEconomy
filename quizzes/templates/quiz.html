@@ -43,11 +43,11 @@
                 <section class="question-card {% if forloop.first %}is-visible{% endif %}" data-quiz-index="{{ forloop.counter }}">
                     
                     <div class="question-type">
-                        {% if quiz.quiz_type == 'A' %}
+                        {% if quiz.type == 'A' %}
                             <span class="type-icon">📰</span> 기사 내용 분석
-                        {% elif quiz.quiz_type == 'B' %}
+                        {% elif quiz.type == 'B' %}
                             <span class="type-icon">📌</span> 기사 속 용어 학습
-                        {% elif quiz.quiz_type == 'C' %}
+                        {% elif quiz.type == 'C' %}
                             <span class="type-icon">💡</span> 경제 상식 퀴즈
                         {% else %}
                             <span class="type-icon">❓</span> 일반 퀴즈
