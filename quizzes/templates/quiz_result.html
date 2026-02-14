@@ -81,10 +81,7 @@
             <div class="answers-grid">
               {% for c in res.choices %}
                 <div class="answer-option-result
-                  {% if c.id == res.correct_choice_id %}correct
-                  {% elif c.id == res.selected_choice_id and not res.is_correct %}wrong
-                  {% endif %}
-                ">
+                  {% if c.id|stringformat:'s' == res.correct_choice_id|stringformat:'s' %}correct{% elif c.id|stringformat:'s' == res.selected_choice_id|stringformat:'s' and not res.is_correct %}wrong{% endif %}">
                   <span class="answer-text">{{ forloop.counter }}. {{ c.choice_text }}</span>
                 </div>
               {% endfor %}

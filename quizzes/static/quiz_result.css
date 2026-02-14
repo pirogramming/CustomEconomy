@@ -28,7 +28,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     gap: 40px;
-    padding: 0 20px;
+    padding: 0 20px 100px;
     align-items: flex-start;
 }
 .quiz-body-area {
@@ -428,3 +428,19 @@ body {
     .footer-buttons { flex-direction: column; }
     .quiz-card { padding: 30px 20px; }
 }
+
+/* 정답인 항목 강조 */
+.answer-option-result.correct {
+    background: #f0fdf4 !important; /* 연한 초록 */
+    border-color: var(--primary-green) !important;
+    color: var(--primary-green) !important;
+    font-weight: 600;
+}
+
+/* 내가 틀린 항목 강조 */
+.answer-option-result.wrong {
+    background: #fff1f2 !important; /* 연한 빨강 */
+    border-color: var(--wrong-red) !important;
+    color: var(--wrong-red) !important;
+    font-weight: 600;
+}}

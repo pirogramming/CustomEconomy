@@ -89,6 +89,8 @@ def submit_quiz_session(request, article_id):
                 "correct_answer": correct_choice.choice_text if correct_choice else "(정답 없음)",
                 "choices": list(quiz.choices.all().values("id", "choice_text")),
                 "earned_xp": earned_xp,
+                "correct_choice_id": quiz.choices.filter(is_correct=True).first().id if correct_choice else None,
+                "selected_choice_id": int(selected_choice_id) if selected_choice_id else None,
             })
 
             # [약점 점수] Article에 연결된 sub_interests 기준
@@ -157,5 +159,5 @@ def submit_quiz_session(request, article_id):
             'current_total_xp': user.total_score,
             'remaining_xp': remaining_xp,
             'article': article,
-            'related_articles': related_articles,         
+            'related_articles': related_articles,
         })
