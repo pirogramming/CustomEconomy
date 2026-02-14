@@ -52,9 +52,10 @@
                 <input type="password" id="password" placeholder="비밀번호" name="password" required minlength="8" />
                 <button type="button"
                         class="pw_show_btn"
+                        data-target="password"
                         data-eye-on="{% static 'icon/eye.svg' %}"
                         data-eye-off="{% static 'icon/eye_off.svg' %}">
-                    <img id="pw-eye-icon" src="{% static 'icon/eye_off.svg' %}">
+                <img class="pw-eye-icon" src="{% static 'icon/eye_off.svg' %}">
                 </button>
             </div>
 
@@ -68,9 +69,10 @@
                 <input type="password" id="password_confirm" placeholder="비밀번호 확인" name="password_confirm" required minlength="8" />
                 <button type="button"
                         class="pw_show_btn"
+                        data-target="password_confirm"
                         data-eye-on="{% static 'icon/eye.svg' %}"
                         data-eye-off="{% static 'icon/eye_off.svg' %}">
-                    <img id="pw-eye-icon" src="{% static 'icon/eye_off.svg' %}">
+                <img class="pw-eye-icon" src="{% static 'icon/eye_off.svg' %}">
                 </button>
             </div>
             {% if password_confirm_error %}
@@ -183,23 +185,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    const pwField = document.getElementById("password");
-    const toggleBtn = document.querySelector(".pw_show_btn");
-    const eyeIcon = document.getElementById("pw-eye-icon");
+  document.querySelectorAll(".pw_show_btn").forEach((btn) => {
+    const targetId = btn.dataset.target;
+    const field = document.getElementById(targetId);
+    const icon = btn.querySelector(".pw-eye-icon");
 
-    const eyeOn = toggleBtn.dataset.eyeOn;
-    const eyeOff = toggleBtn.dataset.eyeOff;
+    const eyeOn = btn.dataset.eyeOn;
+    const eyeOff = btn.dataset.eyeOff;
 
-    toggleBtn.addEventListener("click", () => {
-        if (pwField.type === "password") {
-            pwField.type = "text";
-            eyeIcon.src = eyeOn;
-        } else {
-            pwField.type = "password";
-            eyeIcon.src = eyeOff;
-        }
+    btn.addEventListener("click", () => {
+      const isPw = field.type === "password";
+      field.type = isPw ? "text" : "password";
+      icon.src = isPw ? eyeOn : eyeOff;
     });
+  });
 });
+
 
 </script>
 
