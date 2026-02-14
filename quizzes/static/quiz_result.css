@@ -43,13 +43,32 @@ body {
 .brand-header .page-main-title {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
-    font-size: 3rem; /* 헤더 안에서는 3rem보다 살짝 작은게 예뻐요 */
+    font-size: 32px;
     font-weight: 700;
-    margin-top: 40px;
+    margin: 0 0 24px;
     text-align: center;
     letter-spacing: -0.5px;
     text-decoration: none;
     flex-grow: 1; /* 남은 공간을 차지해서 중앙 유지 */
+}
+
+@media (max-width: 480px) {
+    .brand-header .page-main-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .brand-header .page-main-title {
+        font-size: 48px;
+        margin: 0 0 36px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .brand-header .page-main-title {
+        font-size: 56px;
+    }
 }
 
 .exit-link {

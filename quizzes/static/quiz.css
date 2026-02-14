@@ -21,14 +21,32 @@ body {
 .page-main-title {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
-    font-size: 3rem;
+    font-size: 32px;
     font-weight: 700;
-    margin-top:40px;
-    margin-bottom: 40px;
+    margin: 0 0 24px;
     text-align: center;
     letter-spacing: -0.5px;
     text-decoration: none;
     display: block; /* 링크일 경우 대비 */
+}
+
+@media (max-width: 480px) {
+    .page-main-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .page-main-title {
+        font-size: 48px;
+        margin: 0 0 36px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .page-main-title {
+        font-size: 56px;
+    }
 }
 
 /* =========================

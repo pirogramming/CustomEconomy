@@ -49,9 +49,11 @@ body {
 .page-main-title {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
-    font-size: 56px;
+    font-size: 32px;
     font-weight: 700;
+    margin: 0 0 24px;
     letter-spacing: -0.5px;
+    padding: 0;
 }
 
 /* ==================== */
@@ -206,13 +208,13 @@ section {
 /* 반응형 디자인 */
 /* ==================== */
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
     .main-wrapper {
         padding: 16px 12px 32px;
     }
     
     .page-main-title {
-        font-size: 24px;
+        font-size: 26px;
     }
     
     .news-grid {
