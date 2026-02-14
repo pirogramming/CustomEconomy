@@ -16,24 +16,21 @@ def quiz_view(request, article_id):
     target_level = request.GET.get('level', 1) # url에서 레벨 가져옴
     quiz_set = get_quiz_session_set(article, target_level=target_level)
     
-    # --- 분야 명칭 추출 로직 추가 ---
-    # 1. 소분류(sub_interests)가 있는지 확인
+    # --- 분야 명칭 추출 로직 수정 ---
     sub_categories = article.sub_interests.all()
-    
-    if sub_categories.exists():
-        # 소분류가 있으면 소분류 이름들을 쉼표로 연결
-        category_display = ", ".join([sc.name for sc in sub_categories])
-    elif article.category:
-        # 소분류가 없고 대분류(category)만 있으면 대분류 이름 사용
-        category_display = article.category.name
-    else:
-        # 소분류, 대분류 모두 없을 경우를 대비한 기본값
-        category_display = "경제 일반"
 
+    if sub_categories.exists():
+        # 문자열로 합치지 않고 리스트(객체 묶음) 그대로 전달
+        category_display_list = sub_categories 
+    elif article.category:
+        # 대분류만 있을 경우 리스트 형태로 감싸서 전달 (HTML 반복문을 위해)
+        category_display_list = [article.category]
+    else:
+        category_display_list = []
     return render(request, 'quiz.html', {
         'article': article,
         'quiz_set': quiz_set,
-        'category_display': category_display,
+        'category_display_list': category_display_list,
     })
 
 @login_required

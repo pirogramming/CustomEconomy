@@ -88,10 +88,11 @@ body {
 }
 
 /* 두 번째 태그: 초록색 포인트 */
-.tags .tag:nth-child(2) {
+.tags .tag:nth-child(n+2) {
     background: #f0fdf4;        /* 연한 초록 배경 */
     color: var(--primary-green);  /* 기존 초록색 변수 활용 */
     border: 1px solid #dcfce7;
+    margin-left: 4px;
 }
 
 .tags{

@@ -18,7 +18,12 @@
             
             <div class="tags">
                 <span class="tag">#{{ article.category.name }}</span>
-                {% if category_display %}<span class="tag">#{{ category_display }}</span>{% endif %}
+
+                {% if category_display_list %}
+                    {% for cat in category_display_list %}
+                        <span class="tag">#{{ cat.name }}</span>
+                    {% endfor %}
+                {% endif %}
             </div>
             
             <div class="steps-container">
