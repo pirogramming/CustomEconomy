@@ -13,6 +13,8 @@ from .models import Interest, UserInterest
 from django.db import transaction
 from django.contrib import messages
 from pathlib import Path
+import logging
+logger = logging.getLogger(__name__)
 
 
 User = get_user_model()
@@ -110,9 +112,13 @@ def signup_view(request):
         })
         
     except Exception as e:
-        # 혹시 모를 DB 에러 등을 대비
-        ctx['email_error'] = "회원가입 중 오류가 발생했습니다. 다시 시도해 주세요."
-        return render(request, 'signup.html', ctx)
+        logger.exception("Signup failed")  # ✅ EB 로그에 스택트레이스 남김
+
+        # 화면에 원인까지 노출(디버깅용)
+        ctx["form_error"] = f"{type(e).__name__}: {e}"
+
+        return render(request, "signup.html", ctx)
+
     
 
 
@@ -426,9 +432,21 @@ def result_page(request):
 
     # (선택) 로그인 유저면 레벨 저장하고 싶을 때:
     if request.user.is_authenticated:
-        # 너희 User 모델에 level 필드 있으니 필요하면 활성화
+        # 1. 각 레벨별 시작점 매핑
+        level_start_points = {
+            1: 0,
+            2: 1715,
+            3: 5635,
+            4: 12985,
+            5: 25725
+        }
+        
+        # 2. 유저의 total_score를 해당 레벨의 최소 점수로 설정
+        request.user.total_score = level_start_points.get(level, 0)
+        
+        # 3. 레벨 설정 및 저장
         request.user.level = level
-        request.user.save(update_fields=["level"])
+        request.user.save(update_fields=["level", "total_score"]) # total_score 추가 필수!
 
     return render(request, "level_test_result.html", {
         "total_self": state["total_self"],
