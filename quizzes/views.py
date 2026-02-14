@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.utils import timezone
@@ -118,7 +118,7 @@ def submit_quiz_session(request, article_id):
         next_xp = next_level_map.get(user.level, 25725)
         remaining_xp = max(0, next_xp - user.total_score)
         
-        return render(request, 'quiz_result.html', {
+        request.session['quiz_result_data'] = {
             'results_detail': results_detail,
             'correct_count': correct_count,
             'is_levelup': is_levelup,
@@ -131,6 +131,23 @@ def submit_quiz_session(request, article_id):
             'bonus_xp': bonus_xp,
             'total_final_xp': total_final_xp,
             'current_total_xp': user.total_score,
-            'remaining_xp': remaining_xp,
-            'article': article,         
-        })
+            'remaining_xp': remaining_xp,        
+        }
+        return redirect('quiz_result', article_id=article.id)
+
+@login_required
+def quiz_result_view(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    
+    # 세션에서 결과 데이터를 꺼내오기
+    result_data = request.session.get('quiz_result_data')
+
+    # 만약 세션에 데이터가 없는데(url로 접속) 접근했다면 기사 상세로 돌려보냄
+    if not result_data:
+        return redirect('detail', article_id=article_id)
+
+    # 템플릿 렌더링에 필요한 article 추가
+    context = result_data.copy()
+    context['article'] = article
+    
+    return render(request, 'quiz_result.html', result_data)
