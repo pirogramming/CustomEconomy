@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.utils import timezone
@@ -48,6 +48,7 @@ def submit_quiz_session(request, article_id):
         results_detail = []
         correct_count = 0
         session_earned_xp = 0 
+        old_level = user.level
 
         for q_id in quiz_ids:
             quiz = Quiz.objects.get(id=q_id)
@@ -108,30 +109,18 @@ def submit_quiz_session(request, article_id):
         bonus_xp = 5 if correct_count == 2 else (15 if correct_count == 3 else 0)
         total_final_xp = session_earned_xp + bonus_xp
 
-        # [퀴즈 점수] 유저 총점 반영 및 레벨업
+        # [퀴즈/리그] 유저 총점 반영 및 레벨업
         user.total_score += total_final_xp
-        
-        # [퀴즈 점수] 레벨업 기준 (누적 XP)
-        level_thresholds = [(5, 25725), (4, 12985), (3, 5635), (2, 1715)]
-        
-        old_level = user.level
-        new_level = 1
-        for lv, xp_needed in level_thresholds:
-            if user.total_score >= xp_needed:
-                new_level = lv
-                break
+        user.save()
 
-        is_levelup = new_level > old_level
-        if is_levelup:
-            user.level = new_level
-
+        is_levelup = user.level > old_level
         next_level_map = {1: 1715, 2: 5635, 3: 12985, 4: 25725, 5: 999999}
         next_xp = next_level_map.get(user.level, 25725)
         remaining_xp = max(0, next_xp - user.total_score)
         
         user.save()
 
-        # 3. 사이드바 연관 기사 추출 (소분류 일치도 기준 정렬)
+        # 사이드바 연관 기사 추출 (소분류 일치도 기준 정렬)
         sub_categories = article.sub_interests.all()
         related_articles = []
         if sub_categories.exists():
@@ -141,10 +130,10 @@ def submit_quiz_session(request, article_id):
                 # 현재 기사의 소분류와 몇 개나 겹치는지 카운트
                 match_count=Count('sub_interests', filter=Q(sub_interests__in=sub_categories))
             ).order_by('-match_count', '-created_at')[:5]
+        # related_articles(객체)를 ID 리스트로 변환
+        related_article_ids = list(related_articles.values_list('id', flat=True))
 
-
-        
-        return render(request, 'quiz_result.html', {
+        request.session['quiz_result_data'] = {
             'results_detail': results_detail,
             'correct_count': correct_count,
             'is_levelup': is_levelup,
@@ -158,6 +147,28 @@ def submit_quiz_session(request, article_id):
             'total_final_xp': total_final_xp,
             'current_total_xp': user.total_score,
             'remaining_xp': remaining_xp,
-            'article': article,
-            'related_articles': related_articles,
-        })
+            'related_article_ids': related_article_ids,        
+        }
+        return redirect('quiz_result', article_id=article.id)
+
+@login_required
+def quiz_result_view(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    
+    # 세션에서 결과 데이터를 꺼내오기
+    result_data = request.session.get('quiz_result_data')
+
+    # 세션의 ID들로 다시 Article 객체들을 가져오고 변수명 다시 맞추기
+    related_ids = result_data.get('related_article_ids', [])
+    actual_related_articles = Article.objects.filter(id__in=related_ids)
+
+    # 만약 세션에 데이터가 없는데(url로 접속) 접근했다면 기사 상세로 돌려보냄
+    if not result_data:
+        return redirect('detail', article_id=article_id)
+
+    # 템플릿 렌더링에 필요한 변수들 추가
+    context = result_data.copy()
+    context['article'] = article
+    context['related_articles'] = actual_related_articles
+    
+    return render(request, 'quiz_result.html', result_data)

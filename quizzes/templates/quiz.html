@@ -51,7 +51,11 @@
                         {% if quiz.type == 'A' %}
                             <span class="type-icon">📰</span> 기사 내용 분석
                         {% elif quiz.type == 'B' %}
-                            <span class="type-icon">📌</span> 기사 속 용어 학습
+                            {% if quiz.is_matched_with_article %}
+                                <span class="type-icon">📌</span> 기사 속 용어 학습
+                            {% else %}
+                                <span class="type-icon">🔍</span> 추천 용어 학습
+                            {% endif %}
                         {% elif quiz.type == 'C' %}
                             <span class="type-icon">💡</span> 경제 상식 퀴즈
                         {% else %}

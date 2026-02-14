@@ -265,20 +265,3 @@ body.collapsed .toggle-btn {
 }
 
 /* 반응형 디자인 */
-@media (max-width: 768px) {
-    .economic-ticker {
-        height: 50px; /* 모바일에서는 약간 줄임 */
-    }
-    
-    .ticker-item {
-        margin: 0 20px;
-    }
-    
-    .ticker-label {
-        font-size: 11px;
-    }
-    
-    .ticker-value {
-        font-size: 13px;
-    }
-}

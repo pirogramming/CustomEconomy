@@ -472,30 +472,3 @@
 
 
 /* --- 반응형 스타일 (모바일/태블릿) --- */
-@media (max-width: 768px) {
-    .mypage-edit-wrapper {
-        padding: 30px 20px;
-    }
-
-    .mypage-edit-wrapper .profile-card {
-        /* 모바일에서는 세로로 쌓이게 변경 */
-        display: block; 
-        text-align: center;
-        padding: 30px;
-    }
-
-    .mypage-edit-wrapper .profile-left {
-        /* 이미지 가운데 정렬 */
-        margin: 0 auto 30px auto; 
-    }
-
-    .mypage-edit-wrapper .profile-right {
-        /* 중앙 정렬 유지 */
-        text-align: center;
-    }
-
-    .mypage-edit-wrapper .modal-box {
-        width: 90%;
-        padding: 20px;
-    }
-}

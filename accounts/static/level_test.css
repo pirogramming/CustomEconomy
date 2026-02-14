@@ -28,6 +28,8 @@
 }
 
 .leveltest_body .leveltest_main .leveltest_title {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
   margin: 0 0 16px 0;
 }
 

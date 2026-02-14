@@ -49,6 +49,24 @@ class User(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.email
     
+    def save(self, *args, **kwargs):
+        level_thresholds = [
+            (5, 25725),
+            (4, 12985),
+            (3, 5635),
+            (2, 1715)
+        ]
+        
+        new_level = 1
+        for lv, xp_needed in level_thresholds:
+            if self.total_score >= xp_needed:
+                new_level = lv
+                break
+        
+        self.level = new_level
+
+        super().save(*args, **kwargs)
+    
 class Interest(models.Model):
     # '관심분야(MAIN)' 또는 '소분류(SUB)'
     TYPE_CHOICES = [

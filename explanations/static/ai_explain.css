@@ -122,7 +122,7 @@ body {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
     font-size: 3rem;
-    font-weight: 900;
+    font-weight: 700;
     margin-bottom: 40px;
     text-align: center;
     letter-spacing: -0.5px;
@@ -464,50 +464,9 @@ body {
 }
 
 /* 7. 반응형 (태블릿/모바일) */
-@media (max-width: 1100px) {
-    .layout-container {
-        flex-direction: column;
-        align-items: center;
-    }
-    
-    .word-sidebar {
-        flex: none;
-        width: 100%;
-        max-width: 850px;
-        position: static;
-        margin-bottom: 30px;
-    }
-    
-    .white-card-body {
-        padding: 30px 20px;
-    }
-    
-    .page-main-title {
-        font-size: 2rem;
-    }
-}
 
-@media (max-width: 768px) {
-    .tabs-header {
-        overflow-x: auto;
-        padding-left: 10px;
-    }
-    
-    .tab-item {
-        padding: 10px 18px;
-        font-size: 0.9rem;
-        white-space: nowrap;
-    }
-    
-    .content-title {
-        font-size: 1.3rem;
-    }
-    
-    .quiz-floating-btn {
-        font-size: 1rem;
-        padding: 15px 40px;
-    }
-}
+
+
 
 /* 스크롤바 디자인 커스텀 */
 .word-sidebar-scroll-area::-webkit-scrollbar {
@@ -537,4 +496,12 @@ body {
 .bookmark-btn:hover svg {
     transform: scale(1.1);
     color: #f39c12;
+}
+
+.smallTag .tag{
+    background-color: rgb(222, 222, 222);
+    width: auto; height: auto; padding: 9px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 5px;
 }

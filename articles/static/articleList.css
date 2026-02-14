@@ -2,7 +2,7 @@
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
     font-size: 3rem;
-    font-weight: 900;
+  font-weight: 700;
     margin-top:40px;
     margin-bottom: 40px;
     text-align: center;
@@ -36,7 +36,7 @@
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
     font-size: 3rem;
-    font-weight: 900;
+  font-weight: 700;
     margin-bottom: 40px;
     text-align: center;
     letter-spacing: -0.5px;
@@ -212,6 +212,8 @@
       font-size: 13px;
     }
 }
+
+
 
 .articleListBody .middleFloat .articleCards .article-card{
   width: 280px;
