@@ -2,7 +2,7 @@
     --c-orange: #EF9160;
     --c-navy: #1A2137;
     --c-green: #80B27F;
-    --c-bg-gray: #F1F7FF;
+    --c-bg-gray: #F4F7FB;
     --c-yellow: #F4B132;
     --c-white: #FFFFFF;
 }
@@ -78,7 +78,7 @@ body {
 }
 
 /* 플레이스홀더 스켈레톤 효과 */
-.ai-section.loading-placeholder {
+.explanation-wrapper .ai-section.loading-placeholder {
     background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
@@ -93,12 +93,12 @@ body {
 }
 
 /* 로딩 플레이스홀더 컨테이너 */
-.loading-placeholder-content {
+.explanation-wrapper .loading-placeholder-content {
     display: block;
 }
 
 /* AI 컨텐츠 컨테이너 (처음엔 숨김) */
-.ai-content-container {
+.explanation-wrapper .ai-content-container {
     display: none;
 }
 
@@ -118,19 +118,21 @@ body {
 }
 
 /* 2. 메인 타이틀 */
-.page-main-title {
+.explanation-wrapper .page-main-title {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
-    font-size: 3rem;
+    font-size: 32px;
     font-weight: 700;
-    margin-bottom: 40px;
+    margin: 0 0 24px;
     text-align: center;
     letter-spacing: -0.5px;
     text-decoration: none;
+    padding: 0;
+    display: block;
 }
 
 /* 3. 가로 배치를 위한 핵심 컨테이너 */
-.layout-container {
+.explanation-wrapper .layout-container {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
@@ -140,7 +142,7 @@ body {
 }
 
 /* 4. 왼쪽 사이드바 (용어 사전) */
-.word-sidebar {
+.explanation-wrapper .word-sidebar {
     flex: 0 0 280px;
     position: sticky;
     top: 30px;
@@ -151,7 +153,7 @@ body {
     border: 1px solid rgba(0,0,0,0.03);
 }
 
-.word-sidebar-title {
+.explanation-wrapper .word-sidebar-title {
     font-size: 1.1rem;
     font-weight: 800;
     color: var(--c-navy);
@@ -161,33 +163,33 @@ body {
 }
 
 /* 제목을 클릭하면 terms 페이지로 이동: 링크 기본 스타일 제거 */
-.word-sidebar-title-link {
+.explanation-wrapper .word-sidebar-title-link {
     text-decoration: none;
     color: inherit;
     display: inline-block;
     cursor: pointer;
 }
-.word-sidebar-title-link:hover {
+.explanation-wrapper .word-sidebar-title-link:hover {
     color: var(--c-orange);
     text-decoration: none;
 }
-.word-sidebar-title-link:focus {
+.explanation-wrapper .word-sidebar-title-link:focus {
     outline: none;
     text-decoration: none;
 }
 
-.word-sidebar-scroll-area {
+.explanation-wrapper .word-sidebar-scroll-area {
     max-height: 75vh;
     overflow-y: auto;
     padding-right: 8px;
 }
 
-.word-card {
+.explanation-wrapper .word-card {
     margin-bottom: 20px;
 }
 
 /* 단어 카드 헤더: 이름과 북마크 버튼을 같은 줄에 배치 */
-.word-card-header {
+.explanation-wrapper .word-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -195,7 +197,7 @@ body {
     margin-bottom: 8px;
 }
 
-.term-bookmark-btn {
+.explanation-wrapper .term-bookmark-btn {
     background: none;
     border: none;
     padding: 4px;
@@ -207,23 +209,23 @@ body {
     transition: all 0.15s ease;
     border-radius: 6px;
 }
-.term-bookmark-btn svg { display: block; }
-.term-bookmark-btn:hover { color: var(--c-orange); transform: scale(1.05); }
-.term-bookmark-btn.active { color: #f39c12; }
+.explanation-wrapper .term-bookmark-btn svg { display: block; }
+.explanation-wrapper .term-bookmark-btn:hover { color: var(--c-orange); transform: scale(1.05); }
+.explanation-wrapper .term-bookmark-btn.active { color: #f39c12; }
 
 /* SVG 내부 경로 초기 상태 및 활성화 시 채우기 애니메이션 */
-.term-bookmark-btn svg path {
+.explanation-wrapper .term-bookmark-btn svg path {
     fill: transparent;
     stroke: currentColor;
     transition: fill 180ms ease, stroke 180ms ease, transform 120ms ease;
 }
-.term-bookmark-btn.active svg path {
+.explanation-wrapper .term-bookmark-btn.active svg path {
     fill: currentColor;
     stroke: currentColor;
 }
 
 
-.word-name {
+.explanation-wrapper .word-name {
     display: block;
     color: var(--c-orange);
     font-size: 1rem;
@@ -231,14 +233,14 @@ body {
     margin-bottom: 6px;
 }
 
-.word-desc {
+.explanation-wrapper .word-desc {
     font-size: 0.85rem;
     line-height: 1.6;
     color: #666;
     word-break: keep-all;
 }
 
-.no-word {
+.explanation-wrapper .no-word {
     text-align: center;
     color: #999;
     font-size: 0.9rem;
@@ -246,14 +248,14 @@ body {
 }
 
 /* 5. 오른쪽 메인 카드 영역 */
-.card-ui-container {
+.explanation-wrapper .card-ui-container {
     flex: 1;
     max-width: 850px;
     min-width: 0;
 }
 
 /* 탭 헤더 */
-.tabs-header {
+.explanation-wrapper .tabs-header {
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
@@ -262,7 +264,7 @@ body {
   width: 100%; height: 40px;
 }
 
-.tab-item {
+.explanation-wrapper .tab-item {
     background-color: rgba(255, 255, 255, 0.5);
     border: none;
     padding: 12px 0px;
@@ -276,26 +278,26 @@ body {
     border-right: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.tab-item:hover:not(.locked) {
+.explanation-wrapper .tab-item:hover:not(.locked) {
     background-color: rgba(255, 255, 255, 0.8);
     color: var(--c-orange);
 }
 
-.tab-item.active {
+.explanation-wrapper .tab-item.active {
     background-color: var(--c-white);
     color: var(--c-orange);
     box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
     padding-bottom: 15px;
 }
 
-.tab-item.locked {
+.explanation-wrapper .tab-item.locked {
     background-color: #D6D6D6;
     color: #888;
     cursor: not-allowed;
 }
 
 /* 화이트 카드 바디 */
-.white-card-body {
+.explanation-wrapper .white-card-body {
     background-color: var(--c-white);
     border-radius: 0 0 20 20px;
     padding: 50px;
@@ -306,7 +308,7 @@ body {
 }
 
 /* 6. 기사 이미지 스타일 */
-.article-hero-image {
+.explanation-wrapper .article-hero-image {
     width: 100%;
     border-radius: 12px;
     overflow: hidden;
@@ -314,7 +316,7 @@ body {
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
-.article-hero-image img {
+.explanation-wrapper .article-hero-image img {
     width: 100%;
     height: auto;
     display: block;
@@ -322,7 +324,7 @@ body {
 }
 
 /* 기사 제목 & 날짜 */
-.article-date-badge {
+.explanation-wrapper .article-date-badge {
     text-align: right;
     font-size: 0.9rem;
     color: #666;
@@ -330,7 +332,7 @@ body {
     font-weight: 500;
 }
 
-.content-title {
+.explanation-wrapper .content-title {
     font-size: 1.6rem;
     font-weight: 800;
     color: #111;
@@ -340,11 +342,11 @@ body {
 }
 
 /* 탭 내용 */
-.tab-pane {
+.explanation-wrapper .tab-pane {
     display: none;
 }
 
-.text-content.origin {
+.explanation-wrapper .text-content.origin {
     font-size: 1rem;
     line-height: 1.8;
     color: #333;
@@ -352,11 +354,11 @@ body {
 }
 
 /* AI 섹션 스타일 */
-.ai-section {
+.explanation-wrapper .ai-section {
     margin-bottom: 35px;
 }
 
-.ai-header {
+.explanation-wrapper .ai-header {
     font-size: 1.3rem;
     font-weight: 800;
     margin-bottom: 15px;
@@ -364,7 +366,7 @@ body {
     font-weight: bold;
 }
 
-.ai-box {
+.explanation-wrapper .ai-box {
     background-color: #F9F9F9;
     border-radius: 15px;
     padding: 25px;
@@ -374,32 +376,32 @@ body {
     word-break: keep-all;
 }
 
-.text-orange { color: var(--c-orange); }
-.text-green { color: var(--c-green); }
-.text-yellow { color: var(--c-yellow); }
+.explanation-wrapper .text-orange { color: var(--c-orange); }
+.explanation-wrapper .text-green { color: var(--c-green); }
+.explanation-wrapper .text-yellow { color: var(--c-yellow); }
 
 /* 하단 버튼 & 기타 */
-.external-link-area {
+.explanation-wrapper .external-link-area {
     text-align: center;
     margin-bottom: 25px;
 }
 
 /* article header row: date on left, bookmark on right */
-.article-header-row {
+.explanation-wrapper .article-header-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
 }
 
-.article-header-row .article-date-badge {
+.explanation-wrapper .article-header-row .article-date-badge {
     text-align: left;
     font-size: 0.95rem;
     color: #666;
     font-weight: 600;
 }
 
-.original-link {
+.explanation-wrapper .original-link {
     color: #6c757d;
     text-decoration: none;
     font-size: 0.95rem;
@@ -410,22 +412,22 @@ body {
     transition: all 0.2s ease;
 }
 
-.original-link:hover {
+.explanation-wrapper .original-link:hover {
     background-color: #e9ecef;
     color: #495057;
 }
 
-.section-divider {
+.explanation-wrapper .section-divider {
     border: none;
     border-top: 2px solid var(--c-bg-gray);
     margin: 50px 0 30px;
 }
 
-.back-to-list-area {
+.explanation-wrapper .back-to-list-area {
     text-align: center;
 }
 
-.back-btn {
+.explanation-wrapper .back-btn {
     display: inline-block;
     color: #666;
     text-decoration: none;
@@ -436,17 +438,17 @@ body {
     transition: all 0.2s ease;
 }
 
-.back-btn:hover {
+.explanation-wrapper .back-btn:hover {
     background-color: #ddd;
     color: #333;
 }
 
-.quiz-btn-area {
+.explanation-wrapper .quiz-btn-area {
     margin-top: 60px;
     text-align: center;
 }
 
-.quiz-floating-btn {
+.explanation-wrapper .quiz-floating-btn {
     display: inline-block;
     background: linear-gradient(135deg, #ffd89b 0%, #ffb84d 100%);
     color: var(--c-white);
@@ -459,50 +461,100 @@ body {
     transition: all 0.3s ease;
 }
 
-.quiz-floating-btn:hover {
+.explanation-wrapper .quiz-floating-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(239, 145, 96, 0.5);
 }
 
 /* 7. 반응형 (태블릿/모바일) */
+@media (max-width: 1100px) {
+    .explanation-wrapper .layout-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .explanation-wrapper .word-sidebar {
+        flex: none;
+        width: 100%;
+        max-width: 850px;
+        position: static;
+        margin-bottom: 30px;
+    }
+    
+    .explanation-wrapper .white-card-body {
+        padding: 30px 20px;
+    }
+    
+    /* page-main-title handled by global breakpoints below */
+}
 
-
-
+@media (max-width: 768px) {
+    .explanation-wrapper .tabs-header {
+        overflow-x: auto;
+        padding-left: 10px;
+    }
+    
+    .explanation-wrapper .tab-item {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .explanation-wrapper .content-title {
+        font-size: 1.3rem;
+    }
+    
+    .explanation-wrapper .quiz-floating-btn {
+        font-size: 1rem;
+        padding: 15px 40px;
+    }
+}
 
 /* 스크롤바 디자인 커스텀 */
-.word-sidebar-scroll-area::-webkit-scrollbar {
+.explanation-wrapper .word-sidebar-scroll-area::-webkit-scrollbar {
     width: 4px;
 }
 
-.word-sidebar-scroll-area::-webkit-scrollbar-thumb {
+.explanation-wrapper .word-sidebar-scroll-area::-webkit-scrollbar-thumb {
     background: #ddd;
     border-radius: 10px;
 }
 
-.word-sidebar-scroll-area::-webkit-scrollbar-thumb:hover {
+.explanation-wrapper .word-sidebar-scroll-area::-webkit-scrollbar-thumb:hover {
     background: #ccc;
 }
 
 /* 북마크 버튼 스타일 (활성화 시 색 변경) */
-.bookmark-btn { background: none; border: none; padding: 5px; cursor: pointer; }
-.bookmark-btn svg {
+.explanation-wrapper .bookmark-btn { background: none; border: none; padding: 5px; cursor: pointer; }
+.explanation-wrapper .bookmark-btn svg {
     color: #ccc;
     fill: transparent;
     transition: all 0.2s ease;
 }
-.bookmark-btn.active svg {
+.explanation-wrapper .bookmark-btn.active svg {
     color: #f39c12; /* 활성화 시 테두리 색상 (노란색 계열) */
     fill: #f39c12; /* 활성화 시 내부 채우기 */
 }
-.bookmark-btn:hover svg {
+.explanation-wrapper .bookmark-btn:hover svg {
     transform: scale(1.1);
     color: #f39c12;
 }
 
-.smallTag .tag{
-    background-color: rgb(222, 222, 222);
-    width: auto; height: auto; padding: 9px;
-    border-radius: 20px;
-    font-size: 12px;
-    margin: 5px;
+@media (max-width: 480px) {
+    .explanation-wrapper .page-main-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .explanation-wrapper .page-main-title {
+        font-size: 48px;
+        margin: 0 0 36px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .explanation-wrapper .page-main-title {
+        font-size: 56px;
+    }
 }
