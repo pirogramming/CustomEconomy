@@ -14,6 +14,7 @@
     color: #1A2137;
     margin: 0;
     padding: 20px 0;
+    display: inline-block;
 }
 .wrong-body-area{
     /* background-color: lightseagreen; */

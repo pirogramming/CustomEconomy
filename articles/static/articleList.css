@@ -42,16 +42,7 @@
   letter-spacing: -0.5px;
   text-decoration: none;
   padding: 20px 0;
-}
-
-@media (max-width: 480px) {
-  .articleListBody .page-main-title {
-    font-size: 26px;
-  }
-}
-
-@media (min-width: 768px) {
-  .articleListBody .page-main-title {
+    display: block;
     font-size: 48px;
     padding: 24px 0;
   }

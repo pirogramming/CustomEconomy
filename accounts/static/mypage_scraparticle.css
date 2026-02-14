@@ -16,6 +16,18 @@
     margin-bottom: 24px;
 }
 
+.scraparticle-header .page-main-title {
+    font-family: 'Merriweather', serif;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin: 0;
+    padding: 20px 0;
+    color: #1A2137;
+    text-decoration: none;
+    display: inline-block;
+}
+
 .page-main-title {
     font-family: 'Merriweather', serif;
     font-size: 32px;

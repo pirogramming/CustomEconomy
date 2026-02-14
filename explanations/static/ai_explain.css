@@ -123,11 +123,11 @@ body {
     color: var(--c-navy);
     font-size: 32px;
     font-weight: 700;
-    margin: 0 0 24px;
+    margin: 0;
+    padding: 20px 0;
     text-align: center;
     letter-spacing: -0.5px;
     text-decoration: none;
-    padding: 0;
     display: block;
 }
 
@@ -360,10 +360,8 @@ body {
 
 .explanation-wrapper .ai-header {
     font-size: 1.3rem;
-    font-weight: 800;
+    font-weight: 700;
     margin-bottom: 15px;
-    font-family: Verdana, "돋움", dotum, sans-serif;
-    font-weight: bold;
 }
 
 .explanation-wrapper .ai-box {

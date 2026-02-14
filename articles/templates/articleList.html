@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="articleListBody">
-    <a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
+    <a class="page-main-title" href="{% url 'articleList' %}">Custom Economy</a>
     <div class="articleMenuBar">
         <a class="ecoBtn {% if current_category == '경제' %}active{% endif %}"
             href="?category=경제&sort={{ current_sort }}&page=1">경제</a>
