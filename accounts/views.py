@@ -465,14 +465,10 @@ def result_page(request):
     # 2. 레벨 판정 (예: 80점 -> 레벨 4)
     level = score_to_level(total)
 
+    # 로그인 유저: 배정 레벨만 저장. 레벨테스트 점수는 경험치(total_score)에 반영하지 않음.
     if request.user.is_authenticated:
-        base_xp_map = {1: 0, 2: 1715, 3: 5635, 4: 12985, 5: 25725}
-        base_score = base_xp_map.get(level, 0)
-
         request.user.level = level
-        request.user.total_score = base_score + total 
-        
-        request.user.save(update_fields=["level", "total_score"])
+        request.user.save(update_fields=["level"])
 
     return render(request, "level_test_result.html", {
         "total_self": state["total_self"],
