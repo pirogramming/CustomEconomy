@@ -580,5 +580,9 @@ def scrap_term_view(request):
     bookmarks = []
     if request.user.is_authenticated:
         qs = TermBookmark.objects.filter(user=request.user).select_related('term').order_by('-created_at')
-        bookmarks = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at} for b in qs]
+        from terms.views import _decode_unicode_escapes
+        for b in qs:
+            word = _decode_unicode_escapes(b.term.name)
+            definition = _decode_unicode_escapes(b.term.explanation)
+            bookmarks.append({'word': word, 'definition': definition, 'created_at': b.created_at})
     return render(request, 'mypage_scrapterm.html', {'bookmarks': bookmarks})
