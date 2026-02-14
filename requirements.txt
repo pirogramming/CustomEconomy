@@ -22,5 +22,5 @@ yfinance
 gunicorn
 PyMySQL
 whitenoise
-mysqlclient
+# mysqlclient
 
