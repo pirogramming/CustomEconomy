@@ -6,6 +6,7 @@ from articles.models import Article
 from accounts.models import Interest, UserInterest
 from .models import Quiz, QuizResult, QuizChoice
 from .services import get_quiz_session_set
+from django.db.models import Count, Q
 
 @login_required
 def quiz_view(request, article_id):
@@ -127,6 +128,19 @@ def submit_quiz_session(request, article_id):
         remaining_xp = max(0, next_xp - user.total_score)
         
         user.save()
+
+        # 3. 사이드바 연관 기사 추출 (소분류 일치도 기준 정렬)
+        sub_categories = article.sub_interests.all()
+        related_articles = []
+        if sub_categories.exists():
+            related_articles = Article.objects.filter(
+                sub_interests__in=sub_categories
+            ).exclude(id=article.id).distinct().annotate(
+                # 현재 기사의 소분류와 몇 개나 겹치는지 카운트
+                match_count=Count('sub_interests', filter=Q(sub_interests__in=sub_categories))
+            ).order_by('-match_count', '-created_at')[:5]
+
+
         
         return render(request, 'quiz_result.html', {
             'results_detail': results_detail,
@@ -142,5 +156,6 @@ def submit_quiz_session(request, article_id):
             'total_final_xp': total_final_xp,
             'current_total_xp': user.total_score,
             'remaining_xp': remaining_xp,
-            'article': article,         
+            'article': article,
+            'related_articles': related_articles,         
         })
