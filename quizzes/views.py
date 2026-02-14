@@ -50,6 +50,7 @@ def submit_quiz_session(request, article_id):
         results_detail = []
         correct_count = 0
         session_earned_xp = 0 
+        old_level = user.level
 
         for q_id in quiz_ids:
             quiz = Quiz.objects.get(id=q_id)
@@ -108,28 +109,14 @@ def submit_quiz_session(request, article_id):
         bonus_xp = 5 if correct_count == 2 else (15 if correct_count == 3 else 0)
         total_final_xp = session_earned_xp + bonus_xp
 
-        # [퀴즈 점수] 유저 총점 반영 및 레벨업
+        # [퀴즈/리그] 유저 총점 반영 및 레벨업
         user.total_score += total_final_xp
-        
-        # [리그] 레벨업 기준 (누적 XP)
-        level_thresholds = [(5, 25725), (4, 12985), (3, 5635), (2, 1715)]
-        
-        old_level = user.level
-        new_level = 1
-        for lv, xp_needed in level_thresholds:
-            if user.total_score >= xp_needed:
-                new_level = lv
-                break
+        user.save()
 
-        is_levelup = new_level > old_level
-        if is_levelup:
-            user.level = new_level
-
+        is_levelup = user.level > old_level
         next_level_map = {1: 1715, 2: 5635, 3: 12985, 4: 25725, 5: 999999}
         next_xp = next_level_map.get(user.level, 25725)
         remaining_xp = max(0, next_xp - user.total_score)
-        
-        user.save()
         
         return render(request, 'quiz_result.html', {
             'results_detail': results_detail,
