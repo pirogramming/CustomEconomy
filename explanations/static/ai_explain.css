@@ -123,11 +123,11 @@ body {
     color: var(--c-navy);
     font-size: 32px;
     font-weight: 700;
-    margin: 0 0 24px;
+    margin: 0;
+    padding: 20px 0;
     text-align: center;
     letter-spacing: -0.5px;
     text-decoration: none;
-    padding: 0;
     display: block;
 }
 
@@ -360,10 +360,8 @@ body {
 
 .explanation-wrapper .ai-header {
     font-size: 1.3rem;
-    font-weight: 800;
+    font-weight: 700;
     margin-bottom: 15px;
-    font-family: Verdana, "돋움", dotum, sans-serif;
-    font-weight: bold;
 }
 
 .explanation-wrapper .ai-box {
@@ -450,7 +448,7 @@ body {
 
 .explanation-wrapper .quiz-floating-btn {
     display: inline-block;
-    background: linear-gradient(135deg, #ffd89b 0%, #ffb84d 100%);
+    background: #ffb84d;
     color: var(--c-white);
     font-size: 1.2rem;
     font-weight: 800;
@@ -557,4 +555,25 @@ body {
     .explanation-wrapper .page-main-title {
         font-size: 56px;
     }
+}
+
+.explanation-wrapper .smallTag .tag{
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: inline-block;
+}
+
+.explanation-wrapper .smallTag .tag:nth-child(1) {
+    background: #fff5ef;
+    color: var(--c-orange);
+    border: 1px solid #ffdecb;
+}
+
+.explanation-wrapper .smallTag .tag:nth-child(n+2) {
+    background: #f0fdf4;
+    color: var(--c-green);
+    border: 1px solid #dcfce7;
+    margin-left: 4px;
 }

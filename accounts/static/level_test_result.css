@@ -12,12 +12,35 @@
 }
 .leveltest_result_body .logo{
     /* background-color: pink;  */
-    margin-top: 10px;
+    margin-top: 0;
 }
 .leveltest_result_body .logo > p{
-    font-family: Kadwa;
-    font-size: 60px;
+    font-family: 'Merriweather', serif;
+    font-size: 32px;
+    font-weight: 700;
     color: #192237;
+    margin: 0;
+    padding: 20px 0;
+}
+
+@media (max-width: 480px) {
+    .leveltest_result_body .logo > p{
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .leveltest_result_body .logo > p{
+        font-size: 48px;
+        padding: 24px 0;
+    }
+}
+
+@media (min-width: 1024px) {
+    .leveltest_result_body .logo > p{
+        font-size: 56px;
+        padding: 28px 0;
+    }
 }
 .leveltest_result_body .float{
     background-color: white;

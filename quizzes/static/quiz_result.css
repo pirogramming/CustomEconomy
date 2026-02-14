@@ -55,7 +55,8 @@ body {
     color: var(--c-navy);
     font-size: 32px;
     font-weight: 700;
-    margin: 0 0 24px;
+    margin: 0;
+    padding: 20px 0;
     text-align: center;
     letter-spacing: -0.5px;
     text-decoration: none;
@@ -251,7 +252,7 @@ body {
     flex: 1;
     text-align: center;
     padding: 22px 0;
-    border-radius: 20px;
+    border-radius: 50px;
     text-decoration: none;
     font-weight: 800;
     font-size: 1.1rem;
@@ -268,7 +269,7 @@ body {
     background: var(--primary-orange);
     color: white;
     box-shadow: 0 10px 20px rgba(239, 145, 96, 0.2);
-}
+} 
 
 .footer-buttons a:hover {
     transform: translateY(-3px);
@@ -422,6 +423,26 @@ body {
     border-radius: 20px;
 }
 
+@media (max-width: 480px) {
+    .brand-header .page-main-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .brand-header .page-main-title {
+        font-size: 48px;
+        padding: 24px 0;
+    }
+}
+
+@media (min-width: 1024px) {
+    .brand-header .page-main-title {
+        font-size: 56px;
+        padding: 28px 0;
+    }
+}
+
 /* 모바일 대응 */
 @media (max-width: 768px) {
     .answers-grid { grid-template-columns: 1fr; }
@@ -443,4 +464,4 @@ body {
     border-color: var(--wrong-red) !important;
     color: var(--wrong-red) !important;
     font-weight: 600;
-}}
+}
