@@ -35,13 +35,17 @@ body {
    레이아웃 (시현님의 넓은 설정 유지)
 ========================= */
 .quiz-container {
-    max-width: 900px; 
-    margin: 40px auto; 
-    padding: 0 20px;
+    margin:40px auto !important;
+    max-width: 1000px;
     display: block;
+    width:100%;
+    padding: 0 20px;
 }
 .quiz-main {
-    width: 100%;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 
 /* =========================
