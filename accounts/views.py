@@ -426,9 +426,21 @@ def result_page(request):
 
     # (선택) 로그인 유저면 레벨 저장하고 싶을 때:
     if request.user.is_authenticated:
-        # 너희 User 모델에 level 필드 있으니 필요하면 활성화
+        # 1. 각 레벨별 시작점 매핑
+        level_start_points = {
+            1: 0,
+            2: 1715,
+            3: 5635,
+            4: 12985,
+            5: 25725
+        }
+        
+        # 2. 유저의 total_score를 해당 레벨의 최소 점수로 설정
+        request.user.total_score = level_start_points.get(level, 0)
+        
+        # 3. 레벨 설정 및 저장
         request.user.level = level
-        request.user.save(update_fields=["level"])
+        request.user.save(update_fields=["level", "total_score"]) # total_score 추가 필수!
 
     return render(request, "level_test_result.html", {
         "total_self": state["total_self"],
