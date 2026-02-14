@@ -51,25 +51,23 @@ def submit_quiz_session(request, article_id):
         old_level = user.level
 
         for q_id in quiz_ids:
+            # ... (이 부분은 기존과 동일하므로 생략, 그대로 두세요) ...
             quiz = Quiz.objects.get(id=q_id)
             selected_choice_id = request.POST.get(f'quiz_{q_id}')
             choice = QuizChoice.objects.get(id=selected_choice_id)
             is_correct = choice.is_correct
 
-            # [퀴즈 점수] XP 계산
             earned_xp = 0
             if is_correct:
                 correct_count += 1
                 if quiz.type in ['A', 'B']:
                     earned_xp = 5
                 elif quiz.type == 'C':
-                    # 레벨별 XP 매핑
                     level_xp_map = {1: 10, 2: 15, 3: 25, 4: 40, 5: 70}
                     earned_xp = level_xp_map.get(quiz.level, 10)
             
             session_earned_xp += earned_xp
 
-            # QuizResult 저장
             QuizResult.objects.create(
                 user=user,
                 quiz=quiz,
@@ -78,7 +76,6 @@ def submit_quiz_session(request, article_id):
                 earned_score=earned_xp
             )
 
-            # 결과 데이터 정리
             correct_choice = quiz.choices.filter(is_correct=True).first()
             results_detail.append({
                 "quiz_id": quiz.id,
@@ -94,7 +91,7 @@ def submit_quiz_session(request, article_id):
                 "selected_choice_id": int(selected_choice_id) if selected_choice_id else None,
             })
 
-            # [약점 점수] Article에 연결된 sub_interests 기준
+            # 약점 점수 로직 (기존 유지)
             article_interests = article.sub_interests.all() 
             for interest_obj in article_interests:
                 ui, _ = UserInterest.objects.get_or_create(user=user, interest=interest_obj)
@@ -109,13 +106,42 @@ def submit_quiz_session(request, article_id):
         bonus_xp = 5 if correct_count == 2 else (15 if correct_count == 3 else 0)
         total_final_xp = session_earned_xp + bonus_xp
 
-        # [퀴즈/리그] 유저 총점 반영 및 레벨업
+        # 🔥🔥🔥 [핵심 수정] 점수 보정 로직 시작 🔥🔥🔥
+        # 형님의 현재 레벨에 맞는 최소 점수를 확인합니다.
+        min_xp_map = {1: 0, 2: 1715, 3: 5635, 4: 12985, 5: 25725}
+        current_min_xp = min_xp_map.get(user.level, 0)
+        
+        # 만약 현재 점수가 레벨 시작점보다 낮다면(좀비 데이터), 강제로 시작점으로 맞춥니다.
+        if user.total_score < current_min_xp:
+            user.total_score = current_min_xp
+
+        # 그 다음 획득한 경험치를 더합니다.
         user.total_score += total_final_xp
-        user.save()
+        # 🔥🔥🔥 [핵심 수정] 끝 🔥🔥🔥
+        
+        # [퀴즈 점수] 레벨업 기준 (누적 XP)
+        level_thresholds = [(5, 25725), (4, 12985), (3, 5635), (2, 1715)]
+        
+        old_level = user.level
+        new_level = 1 # 기본값
+        
+        # 현재 점수에 맞춰 레벨 재계산 (레벨 다운 방지 로직 필요시 old_level과 비교)
+        for lv, xp_needed in level_thresholds:
+            if user.total_score >= xp_needed:
+                new_level = lv
+                break
+        
+        # 레벨은 오르기만 하고 떨어지진 않게 하려면 max 사용
+        new_level = max(new_level, old_level)
+
+        is_levelup = new_level > old_level
+        if is_levelup:
+            user.level = new_level
 
         is_levelup = user.level > old_level
         next_level_map = {1: 1715, 2: 5635, 3: 12985, 4: 25725, 5: 999999}
         next_xp = next_level_map.get(user.level, 25725)
+        # 음수 방지
         remaining_xp = max(0, next_xp - user.total_score)
         
         user.save()

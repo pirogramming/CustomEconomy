@@ -5,7 +5,7 @@
 :root {
     --primary-orange: #EF9160;
     --primary-green: #80B27F;
-    --bg-light: #f8fafc;
+    --bg-light: #F4F7FB;
     --card-white: #ffffff;
     --text-dark: #2d3748;
     --text-muted: #718096;
@@ -53,9 +53,9 @@ body {
 .brand-header .page-main-title {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
-    font-size: 3rem; /* 헤더 안에서는 3rem보다 살짝 작은게 예뻐요 */
+    font-size: 32px;
     font-weight: 700;
-    margin-top: 40px;
+    margin: 0 0 24px;
     text-align: center;
     letter-spacing: -0.5px;
     text-decoration: none;

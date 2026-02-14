@@ -8,7 +8,7 @@
 
 /* 기본 리셋 */
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Noto Sans KR', sans-serif; background-color: #F1F7FF; min-height: 100vh; }
+body { font-family: 'Noto Sans KR', sans-serif; background-color: #F4F7FB; min-height: 100vh; }
 
 /* --- 레이아웃 (Main) --- */
 main {
@@ -82,11 +82,13 @@ body.collapsed main {
 .menu-text { opacity: 1; transition: opacity 0.2s; }
 
 /* --- 진행도 & 하단 (기존 유지) --- */
-.sidebar-progress { position: relative; width: 120px; height: 120px; margin: 15px 0; transition: 0.2s; } /* 20px → 15px */
+.sidebar-progress { display: flex; flex-direction: column; align-items: center; margin: 15px 0; transition: 0.2s; }
+.sidebar-progress-ring-wrap { position: relative; width: 120px; height: 120px; }
 .progress-ring { transform: rotate(-90deg); }
 .progress-ring-circle-bg { stroke: #3a4458; }
 .progress-ring-circle { stroke-linecap: round; transition: stroke-dashoffset 0.5s ease; }
 .progress-text { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 28px; font-weight: 800; color: #ffffff; }
+.sidebar-progress-xp { margin-top: 8px; font-size: 12px; color: #b8c1d9; text-align: center; line-height: 1.3; max-width: 120px; }
 
 .sidebar-footer { width: 100%; padding-top: 20px; border-top: 1px solid rgba(255, 255, 255, 0.1); white-space: nowrap; }
 .footer-item { display: flex; justify-content: space-between; align-items: center; color: #ffffff; font-size: 14px; }
@@ -265,3 +267,20 @@ body.collapsed .toggle-btn {
 }
 
 /* 반응형 디자인 */
+@media (max-width: 768px) {
+    .economic-ticker {
+        height: 50px; /* 모바일에서는 약간 줄임 */
+    }
+    
+    .ticker-item {
+        margin: 0 20px;
+    }
+    
+    .ticker-label {
+        font-size: 11px;
+    }
+    
+    .ticker-value {
+        font-size: 13px;
+    }
+}
