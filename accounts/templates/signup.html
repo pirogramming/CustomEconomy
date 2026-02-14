@@ -50,7 +50,14 @@
                 <img src="{% static 'icon/Lock.svg' %}" alt="lock icon" width="24">
                 </div>
                 <input type="password" id="password" placeholder="비밀번호" name="password" required minlength="8" />
+                <button type="button"
+                        class="pw_show_btn"
+                        data-eye-on="{% static 'icon/eye.svg' %}"
+                        data-eye-off="{% static 'icon/eye_off.svg' %}">
+                    <img id="pw-eye-icon" src="{% static 'icon/eye_off.svg' %}">
+                </button>
             </div>
+
             {% if password_error %}
                 <div class="field-error" style="color:#ef9160;margin-top:6px; margin-left:7px;">{{ password_error }}</div>
             {% endif %}
@@ -59,6 +66,12 @@
                 <img src="{% static 'icon/Lock.svg' %}" alt="lock icon" width="24">
                 </div>
                 <input type="password" id="password_confirm" placeholder="비밀번호 확인" name="password_confirm" required minlength="8" />
+                <button type="button"
+                        class="pw_show_btn"
+                        data-eye-on="{% static 'icon/eye.svg' %}"
+                        data-eye-off="{% static 'icon/eye_off.svg' %}">
+                    <img id="pw-eye-icon" src="{% static 'icon/eye_off.svg' %}">
+                </button>
             </div>
             {% if password_confirm_error %}
                 <div class="field-error" style="color:#ef9160;margin-top:6px; margin-left:7px;font-size:12px;">{{ password_confirm_error }}</div>
@@ -167,6 +180,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const pw2 = document.getElementById("password_confirm").value;
   });
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    const pwField = document.getElementById("password");
+    const toggleBtn = document.querySelector(".pw_show_btn");
+    const eyeIcon = document.getElementById("pw-eye-icon");
+
+    const eyeOn = toggleBtn.dataset.eyeOn;
+    const eyeOff = toggleBtn.dataset.eyeOff;
+
+    toggleBtn.addEventListener("click", () => {
+        if (pwField.type === "password") {
+            pwField.type = "text";
+            eyeIcon.src = eyeOn;
+        } else {
+            pwField.type = "password";
+            eyeIcon.src = eyeOff;
+        }
+    });
+});
+
 </script>
 
 
