@@ -79,6 +79,23 @@
   outline: none;
   width:99%;
 }
+.auth-container .login_float .auth-form .login_input_area .field .pw_show_btn{
+  /* background-color: pink; */
+  background-color: #DDDADA;
+  width: 20px; height: 20px;
+  padding: 3px;
+  border: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  justify-self: center;
+  align-self: center;
+}
+.auth-container .login_float .auth-form .login_input_area .field .pw_show_btn:hover{
+  cursor: pointer;
+}
 .auth-container .login_float .auth-form .signup_submit_btn{
   display: flex;
   justify-content: center;

@@ -66,6 +66,12 @@
             <div class="white-card-body">
                 
                 <div class="article-header-row">
+                    <div class="smallTag">
+                        {% for tag in article.sub_category_names %}
+                            <span class="tag">#{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+
                     <div class="article-date-badge">
                         {{ article.published_at|date:"Y.m.d" }}
                     </div>

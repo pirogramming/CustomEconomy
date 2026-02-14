@@ -11,8 +11,10 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_protect
 from .models import Interest, UserInterest
 from django.db import transaction
-from django.contrib import messages
+from django.contrib import messagesgit
 from pathlib import Path
+import logging
+logger = logging.getLogger(__name__)
 
 
 User = get_user_model()
@@ -110,9 +112,13 @@ def signup_view(request):
         })
         
     except Exception as e:
-        # 혹시 모를 DB 에러 등을 대비
-        ctx['email_error'] = "회원가입 중 오류가 발생했습니다. 다시 시도해 주세요."
-        return render(request, 'signup.html', ctx)
+        logger.exception("Signup failed")  # ✅ EB 로그에 스택트레이스 남김
+
+        # 화면에 원인까지 노출(디버깅용)
+        ctx["form_error"] = f"{type(e).__name__}: {e}"
+
+        return render(request, "signup.html", ctx)
+
     
 
 

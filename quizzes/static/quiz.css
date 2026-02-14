@@ -22,7 +22,7 @@ body {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
     font-size: 3rem;
-    font-weight: 900;
+    font-weight: 700;
     margin-top:40px;
     margin-bottom: 40px;
     text-align: center;
@@ -35,12 +35,17 @@ body {
    레이아웃 (시현님의 넓은 설정 유지)
 ========================= */
 .quiz-container {
-    display: grid;
-    grid-template-columns: 1fr 300px;   /* 메인 사이드바 비율 유지 */
-    gap: 60px;
-    max-width: 1500px;                  /* 요청하신 1500px 유지 */
-    margin: 70px auto;
-    padding: 0 40px;
+    margin:40px auto !important;
+    max-width: 1000px;
+    display: block;
+    width:100%;
+    padding: 0 20px;
+}
+.quiz-main {
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
 }
 
 /* =========================
@@ -88,10 +93,11 @@ body {
 }
 
 /* 두 번째 태그: 초록색 포인트 */
-.tags .tag:nth-child(2) {
+.tags .tag:nth-child(n+2) {
     background: #f0fdf4;        /* 연한 초록 배경 */
     color: var(--primary-green);  /* 기존 초록색 변수 활용 */
     border: 1px solid #dcfce7;
+    margin-left: 4px;
 }
 
 .tags{
@@ -107,6 +113,12 @@ body {
     align-items: center;
     gap: 14px;
     margin-bottom: 12px;
+}
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .step {
@@ -165,7 +177,7 @@ body {
 }
 
 .question-type {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: var(--primary-green);
     font-weight: 600;
     margin-bottom: 20px;
@@ -286,58 +298,8 @@ body {
 }
 
 /* =========================
-   사이드바 (유지)
-========================= */
-.quiz-sidebar {
-    background: #fff;
-    padding: 32px;
-    border-radius: 28px;
-    height: fit-content;
-    position: sticky;
-    top: 120px;
-    box-shadow: 0 6px 25px rgba(0,0,0,0.03);
-}
-
-.sidebar-item {
-    display: flex;
-    gap: 15px;
-    padding: 18px;
-    background: #f8fafc;
-    border-radius: 14px;
-    margin-bottom: 12px;
-    transition: 0.2s ease;
-}
-
-.sidebar-item:hover {
-    background: #eef2f7;
-    transform: translateY(-2px);
-}
-
-/* =========================
    반응형 (유지)
 ========================= */
-@media (max-width: 1200px) {
-    .quiz-container {
-        grid-template-columns: 1fr;
-        max-width: 1000px;
-    }
-    .quiz-sidebar {
-        position: static;
-    }
-}
 
-@media (max-width: 640px) {
-    .quiz-header, .question-card {
-        padding: 35px;
-    }
-    .options-grid {
-        grid-template-columns: 1fr;
-    }
-    .card-footer {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .prev-btn, .next-btn, .finish-button {
-        width: 100%;
-    }
-}
+
+

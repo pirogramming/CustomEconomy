@@ -7,6 +7,10 @@
 <link rel="stylesheet" href="{% static 'login.css' %}">
 {% endblock %}
 
+{% block extra_js %}
+<script src="{% static 'login.js' %}"></script>
+{% endblock %}
+
 {% block content %}
 <div class="auth-container">
     <div class="login_float">
@@ -35,6 +39,13 @@
                     <img src="{% static 'icon/Lock.svg' %}" alt="email icon" width="24">
                     </div>
                     <input type="password" id="password" placeholder="비밀번호" name="password" required minlength="8" />
+                    <button type="button"
+                            class="pw_show_btn"
+                            data-eye-on="{% static 'icon/eye.svg' %}"
+                            data-eye-off="{% static 'icon/eye_off.svg' %}">
+                        <img id="pw-eye-icon" src="{% static 'icon/eye_off.svg' %}">
+                    </button>
+
                     <br>
                 </div>
 

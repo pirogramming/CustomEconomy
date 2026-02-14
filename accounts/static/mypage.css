@@ -10,7 +10,7 @@
     --mp-text-main: #333333;
     --mp-text-sub: #666666;
     --mp-accent-green: #8bc34a;   /* 초록색 포인트 */
-    --mp-accent-navy: #1a2b45;    /* 남색 포인트 */
+    --mp-accent-navy: #1A2137;    /* 남색 포인트 */
     --mp-tag-bg: #ffebee;         
     --mp-tag-text: #e57373;   
     --mp-orange: #EF9160;
@@ -40,7 +40,7 @@
 
 .main-wrapper .page-title {
     font-family: 'Merriweather', serif;
-    font-size: 36px;
+    font-size: 3rem;
     font-weight: 700;
     color: var(--mp-accent-navy);
     margin: 0;
