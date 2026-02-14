@@ -2,7 +2,7 @@
     --c-orange: #EF9160;
     --c-navy: #1A2137;
     --c-green: #80B27F;
-    --c-bg-gray: #F1F7FF;
+    --c-bg-gray: #F4F7FB;
     --c-yellow: #F4B132;
     --c-white: #FFFFFF;
 }
@@ -464,9 +464,50 @@ body {
 }
 
 /* 7. 반응형 (태블릿/모바일) */
+@media (max-width: 1100px) {
+    .layout-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .word-sidebar {
+        flex: none;
+        width: 100%;
+        max-width: 850px;
+        position: static;
+        margin-bottom: 30px;
+    }
+    
+    .white-card-body {
+        padding: 30px 20px;
+    }
+    
+    .page-main-title {
+        font-size: 2rem;
+    }
+}
 
-
-
+@media (max-width: 768px) {
+    .tabs-header {
+        overflow-x: auto;
+        padding-left: 10px;
+    }
+    
+    .tab-item {
+        padding: 10px 18px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    
+    .content-title {
+        font-size: 1.3rem;
+    }
+    
+    .quiz-floating-btn {
+        font-size: 1rem;
+        padding: 15px 40px;
+    }
+}
 
 /* 스크롤바 디자인 커스텀 */
 .word-sidebar-scroll-area::-webkit-scrollbar {

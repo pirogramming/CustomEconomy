@@ -5,7 +5,7 @@
 :root {
     --primary-orange: #EF9160;
     --primary-green: #80B27F;
-    --bg-light: #f8fafc;
+    --bg-light: #F4F7FB;
     --card-white: #ffffff;
     --text-dark: #2d3748;
     --text-muted: #718096;
@@ -258,3 +258,8 @@ body {
 }
 
 /* 모바일 대응 */
+@media (max-width: 768px) {
+    .answers-grid { grid-template-columns: 1fr; }
+    .footer-buttons { flex-direction: column; }
+    .quiz-card { padding: 30px 20px; }
+}
