@@ -83,6 +83,16 @@
             <div class="field-error" style="color:#ef9160;margin-top:6px; margin-left:7px;font-size:12px;">{{ selected_interests_error }}</div>
         {% endif %}
 
+
+        <div class="error_msg">
+            {% if form_error %}
+            <div class="field-error" style="color:#ef9160;margin-top:10px; margin-left:7px; font-size:12px;">
+                {{ form_error }}
+            </div>
+            {% endif %}
+        </div>
+
+
         <div class="signup_submit_btn">
             <button type="submit" class="submit-btn">Sign up</button>
         </div>
