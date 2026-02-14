@@ -66,6 +66,7 @@
                 
                 <div class="article-header-row">
                     <div class="smallTag">
+                        <span class="tag">#{{ article.category.name }}</span>
                         {% for tag in article.sub_category_names %}
                             <span class="tag">#{{ tag }}</span>
                         {% endfor %}
@@ -262,7 +263,7 @@ async function loadLevelData(level) {
 
                 <div class="quiz-btn-area">
                     <a href="/api/quizzes/${ARTICLE_ID}/?level=${level}" class="quiz-floating-btn">
-                        ✏️ 지금 바로 퀴즈 풀러가기 ✏️
+                        ⭕ 퀴즈 풀기 ❌
                     </a>
                 </div>
             `;

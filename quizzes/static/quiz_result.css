@@ -251,7 +251,7 @@ body {
     flex: 1;
     text-align: center;
     padding: 22px 0;
-    border-radius: 20px;
+    border-radius: 50px;
     text-decoration: none;
     font-weight: 800;
     font-size: 1.1rem;
@@ -268,7 +268,7 @@ body {
     background: var(--primary-orange);
     color: white;
     box-shadow: 0 10px 20px rgba(239, 145, 96, 0.2);
-}
+} 
 
 .footer-buttons a:hover {
     transform: translateY(-3px);
@@ -443,4 +443,4 @@ body {
     border-color: var(--wrong-red) !important;
     color: var(--wrong-red) !important;
     font-weight: 600;
-}}
+}
