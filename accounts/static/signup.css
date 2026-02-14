@@ -84,7 +84,19 @@
   outline: none;
   width:90%;
 }
+.signup_float .signup_input_area .field .pw_show_btn{
+  background-color: #FFE4D6;
+  width: 20px; height: 20px;
+  padding: 3px;
+  border: none;
 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  justify-self: center;
+  align-self: center;
+}
 .signup_float .signup_input_area .email{}
 .signup_float .signup_input_area .name{}
 .signup_float .signup_input_area .password{}
