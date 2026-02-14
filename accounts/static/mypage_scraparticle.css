@@ -28,31 +28,21 @@
     display: inline-block;
 }
 
-.page-main-title {
-    font-family: 'Merriweather', serif;
-    font-size: 32px;
-    font-weight: 700;
-    text-align: center;
-    margin: 0;
-    padding: 20px 0;
-    color: #1A2137;
-}
-
 @media (max-width: 480px) {
-    .page-main-title {
+    .scraparticle-header .page-main-title {
         font-size: 26px;
     }
 }
 
 @media (min-width: 768px) {
-    .page-main-title {
+    .scraparticle-header .page-main-title {
         font-size: 48px;
         padding: 24px 0;
     }
 }
 
 @media (min-width: 1024px) {
-    .page-main-title {
+    .scraparticle-header .page-main-title {
         font-size: 56px;
         padding: 28px 0;
     }
