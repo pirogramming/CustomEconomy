@@ -111,7 +111,7 @@ def submit_quiz_session(request, article_id):
         # [퀴즈 점수] 유저 총점 반영 및 레벨업
         user.total_score += total_final_xp
         
-        # [퀴즈 점수] 레벨업 기준 (누적 XP)
+        # [리그] 레벨업 기준 (누적 XP)
         level_thresholds = [(5, 25725), (4, 12985), (3, 5635), (2, 1715)]
         
         old_level = user.level
