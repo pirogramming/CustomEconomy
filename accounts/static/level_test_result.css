@@ -4,15 +4,19 @@
     min-height: 100vh;
 
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: flex-start;
+    align-items: center;
     
 
     flex-wrap: wrap;
+    flex-direction: column;
 }
 .leveltest_result_body .logo{
     /* background-color: pink;  */
-    margin-top: 10px;
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .leveltest_result_body .logo > p{
     font-family: Kadwa;
