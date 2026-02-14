@@ -35,12 +35,13 @@ body {
    레이아웃 (시현님의 넓은 설정 유지)
 ========================= */
 .quiz-container {
-    display: grid;
-    grid-template-columns: 1fr 300px;   /* 메인 사이드바 비율 유지 */
-    gap: 60px;
-    max-width: 1500px;                  /* 요청하신 1500px 유지 */
-    margin: 70px auto;
-    padding: 0 40px;
+    max-width: 900px; 
+    margin: 40px auto; 
+    padding: 0 20px;
+    display: block;
+}
+.quiz-main {
+    width: 100%;
 }
 
 /* =========================
@@ -109,6 +110,12 @@ body {
     gap: 14px;
     margin-bottom: 12px;
 }
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 .step {
     width: 40px;
@@ -166,7 +173,7 @@ body {
 }
 
 .question-type {
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     color: var(--primary-green);
     font-weight: 600;
     margin-bottom: 20px;
@@ -284,34 +291,6 @@ body {
 .finish-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 30px rgba(239,145,96,0.3);
-}
-
-/* =========================
-   사이드바 (유지)
-========================= */
-.quiz-sidebar {
-    background: #fff;
-    padding: 32px;
-    border-radius: 28px;
-    height: fit-content;
-    position: sticky;
-    top: 120px;
-    box-shadow: 0 6px 25px rgba(0,0,0,0.03);
-}
-
-.sidebar-item {
-    display: flex;
-    gap: 15px;
-    padding: 18px;
-    background: #f8fafc;
-    border-radius: 14px;
-    margin-bottom: 12px;
-    transition: 0.2s ease;
-}
-
-.sidebar-item:hover {
-    background: #eef2f7;
-    transform: translateY(-2px);
 }
 
 /* =========================

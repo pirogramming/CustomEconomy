@@ -84,7 +84,7 @@
 
                         <div class="footer-right">
                             {% if forloop.last %}
-                                <button type="submit" class="finish-button">제출하고 결과 확인하기 ✈️</button>
+                                <button type="submit" class="finish-button">제출하고 결과 확인하기</button>
                             {% else %}
                                 <button type="button" class="next-btn" onclick="goToNext({{ forloop.counter }})">다음 문제 →</button>
                             {% endif %}
@@ -95,20 +95,6 @@
             </div>
         </form>
     </main>
-
-    <aside class="quiz-sidebar">
-        <h3>다른 퀴즈 도전하기</h3>
-        <div class="sidebar-list">
-            <div class="sidebar-item">
-                <div class="item-icon">🏛️</div>
-                <div class="item-info">
-                    <p>미국 연준, 금리 동결 결정...</p>
-                    <span>#통화정책 3문항</span>
-                </div>
-            </div>
-        </div>
-        <a href="{% url 'articleList' %}" class="view-all-btn" style="display: block; text-align: center; margin-top: 20px; color: var(--primary-orange); text-decoration: none; font-weight: 700;">전체 퀴즈 보기 →</a>
-    </aside>
 </div>
 
 <script>
