@@ -19,3 +19,4 @@ pdfplumber==0.11.4
 pytz
 PyJWT
 yfinance
+gunicorn==25.0.3
