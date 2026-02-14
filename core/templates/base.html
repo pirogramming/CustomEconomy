@@ -82,34 +82,28 @@
             </a>
         </div>
 
-        <!-- 레벨 진행도 표시 -->
+        <!-- 레벨 진행도 (total_score 기반 progress_percent · context_processor 제공) -->
         <div class="sidebar-progress hide-on-collapse">
-            {% if user.is_authenticated %}
-                {% widthratio user.level_score 100 100 as progress_percent %}
-                {% widthratio progress_percent 100 326.73 as dash_offset %}
-            {% else %}
-                {% widthratio 0 100 100 as progress_percent %}
-                {% widthratio 0 100 326.73 as dash_offset %}
-            {% endif %}
-            
-            <svg class="progress-ring" width="120" height="120">
-                <circle class="progress-ring-circle-bg" stroke="#3a4458" stroke-width="8" fill="transparent" r="52"
-                    cx="60" cy="60" />
-                <circle class="progress-ring-circle" stroke="url(#gradient)" stroke-width="8" fill="transparent" r="52"
-                    cx="60" cy="60" stroke-dasharray="326.73" 
-                    stroke-dashoffset="{% if user.is_authenticated %}{{ dash_offset|default:326.73 }}{% else %}326.73{% endif %}" />
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#4dd0e1;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#81c784;stop-opacity:1" />
-                    </linearGradient>
-                </defs>
-            </svg>
-            <div class="progress-text">
+            <div class="sidebar-progress-ring-wrap">
+                <svg class="progress-ring" width="120" height="120">
+                    <circle class="progress-ring-circle-bg" stroke="#3a4458" stroke-width="8" fill="transparent" r="52"
+                        cx="60" cy="60" />
+                    <circle class="progress-ring-circle" stroke="url(#gradient)" stroke-width="8" fill="transparent" r="52"
+                        cx="60" cy="60" stroke-dasharray="326.73"
+                        stroke-dashoffset="{% if user.is_authenticated %}{{ sidebar_dash_offset|default:326.73 }}{% else %}326.73{% endif %}" />
+                    <defs>
+                        <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#4dd0e1;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#81c784;stop-opacity:1" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="progress-text">{{ progress_percent|default:0 }}%</div>
+            </div>
+            <div class="sidebar-progress-xp">
                 {% if user.is_authenticated %}
-                    {{ progress_percent|default:0 }}%
                 {% else %}
-                    0%
+                    로그인 시 표시
                 {% endif %}
             </div>
         </div>

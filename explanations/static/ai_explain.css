@@ -362,7 +362,8 @@ body {
     font-size: 1.3rem;
     font-weight: 800;
     margin-bottom: 15px;
-    font-family: 'Merriweather', serif;
+    font-family: Verdana, "돋움", dotum, sans-serif;
+    font-weight: bold;
 }
 
 .explanation-wrapper .ai-box {

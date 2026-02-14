@@ -26,16 +26,35 @@
                 </div>
                 <div class="profile-info">
                     <div class="info-header">
-                        <p class="username"><span class="name">{% if user_nickname %}{{ user_nickname }}{% else %}{{ request.user.username }}{% endif %}</span> <span class="suffix">님</span></p>
-                        <span class="level-badge">Lv.4</span>
+                        <p class="username">
+                            <span class="name">
+                                {% if user_nickname %}
+                                    {{ user_nickname }}
+                                {% else %}
+                                    {{ request.user.username }}
+                                {% endif %}
+                            </span> 
+                            <span class="suffix">님</span>
+                        </p>
+                        <span class="level-badge">Lv.{{ request.user.level }}</span>
                     </div>
                     <p class="interest">관심분야 : {% if user_selected_interests %}{{ user_selected_interests|join:", " }}{% else %}선택된 관심분야가 없습니다{% endif %}</p>
                     
                     <div class="progress-area">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 60%;"></div>
+                            <div class="progress-fill" style="width: {{ progress_percent}}%;"></div>
                         </div>
-                        <p class="mypage-progress-text">주식으로 인생역전님, 다음 레벨까지 몇 점 남았습니다</p>
+                        <p class="mypage-progress-text">
+                            {% if request.user.level >= 5 %}
+                                {{ request.user.username }}님, 최고 레벨에 도달하셨습니다! 🎉
+                            {% else %}
+                                {% if user_nickname %}
+                                    {{ user_nickname }}님, 다음 레벨까지 {{ points_to_next_level }}XP 남았습니다
+                                {% else %}
+                                    {{ request.user.username }}님, 다음 레벨까지 {{ points_to_next_level }}XP 남았습니다
+                                {% endif %}
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
