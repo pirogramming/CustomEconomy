@@ -22,7 +22,7 @@ body {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
     font-size: 3rem;
-    font-weight: 900;
+    font-weight: 700;
     margin-top:40px;
     margin-bottom: 40px;
     text-align: center;
@@ -316,28 +316,6 @@ body {
 /* =========================
    반응형 (유지)
 ========================= */
-@media (max-width: 1200px) {
-    .quiz-container {
-        grid-template-columns: 1fr;
-        max-width: 1000px;
-    }
-    .quiz-sidebar {
-        position: static;
-    }
-}
 
-@media (max-width: 640px) {
-    .quiz-header, .question-card {
-        padding: 35px;
-    }
-    .options-grid {
-        grid-template-columns: 1fr;
-    }
-    .card-footer {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .prev-btn, .next-btn, .finish-button {
-        width: 100%;
-    }
-}
+
+
