@@ -8,9 +8,10 @@
 }
 
 .page-title {
-    font-family: 'Kadwa', serif;
+    font-family: 'Merriweather', serif;
     font-size: 2.5rem;
-    color: #2c3e50;
+    color: #1A2137;
+    font-weight: 700;
     margin-bottom: 40px;
 }
 

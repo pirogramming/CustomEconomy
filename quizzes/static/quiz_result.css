@@ -43,8 +43,8 @@ body {
 .brand-header .page-main-title {
     font-family: 'Merriweather', serif;
     color: var(--c-navy);
-    font-size: 2.5rem; /* 헤더 안에서는 3rem보다 살짝 작은게 예뻐요 */
-    font-weight: 900;
+    font-size: 3rem; /* 헤더 안에서는 3rem보다 살짝 작은게 예뻐요 */
+    font-weight: 700;
     margin-top: 40px;
     text-align: center;
     letter-spacing: -0.5px;
@@ -258,8 +258,3 @@ body {
 }
 
 /* 모바일 대응 */
-@media (max-width: 768px) {
-    .answers-grid { grid-template-columns: 1fr; }
-    .footer-buttons { flex-direction: column; }
-    .quiz-card { padding: 30px 20px; }
-}
