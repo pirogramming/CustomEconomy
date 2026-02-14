@@ -15,8 +15,9 @@
     margin-top: 10px;
 }
 .leveltest_result_body .logo > p{
-    font-family: Kadwa;
-    font-size: 60px;
+    font-family: 'Merriweather', serif;
+    font-size: 36px;
+    font-weight: 700;
     color: #192237;
 }
 .leveltest_result_body .float{
