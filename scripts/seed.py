@@ -19,7 +19,7 @@ if __name__ == "__main__":
         "scripts/b_build_quiz.py"
     ]
 
-    print("🚀 경제 퀴즈 서비스 초기 데이터 로드를 시작합니다.")
+    print("🚀 서비스 초기 데이터 로드를 시작합니다.")
     
     for s in scripts:
         run_script(s)
