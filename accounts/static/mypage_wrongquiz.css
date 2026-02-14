@@ -12,8 +12,8 @@
     text-decoration: none;
     font-size: 32px;
     color: #1A2137;
-    margin: 0 0 24px;
-    padding: 0;
+    margin: 0;
+    padding: 20px 0;
 }
 .wrong-body-area{
     /* background-color: lightseagreen; */
@@ -98,11 +98,13 @@
 @media (min-width: 768px) {
     .wrong-top-area .page-main-title{
         font-size: 48px;
+        padding: 24px 0;
     }
 }
 
 @media (min-width: 1024px) {
     .wrong-top-area .page-main-title{
         font-size: 56px;
+        padding: 28px 0;
     }
 }

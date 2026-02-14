@@ -12,7 +12,6 @@ const $qtype = document.getElementById("qtype");
 const $question = document.getElementById("question");
 const $options = document.getElementById("options");
 const $nextBtn = document.getElementById("nextBtn");
-const $prevBtn = document.getElementById("prevBtn"); // 지금은 비활성만
 const $feedback = document.getElementById("feedback");
 let currentStep = 1;
 
