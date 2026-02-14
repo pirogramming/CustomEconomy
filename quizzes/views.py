@@ -130,6 +130,8 @@ def submit_quiz_session(request, article_id):
                 # 현재 기사의 소분류와 몇 개나 겹치는지 카운트
                 match_count=Count('sub_interests', filter=Q(sub_interests__in=sub_categories))
             ).order_by('-match_count', '-created_at')[:5]
+        # related_articles(객체)를 ID 리스트로 변환
+        related_article_ids = list(related_articles.values_list('id', flat=True))
 
         request.session['quiz_result_data'] = {
             'results_detail': results_detail,
@@ -145,7 +147,7 @@ def submit_quiz_session(request, article_id):
             'total_final_xp': total_final_xp,
             'current_total_xp': user.total_score,
             'remaining_xp': remaining_xp,
-            'related_articles': related_articles,        
+            'related_article_ids': related_article_ids,        
         }
         return redirect('quiz_result', article_id=article.id)
 
@@ -156,12 +158,17 @@ def quiz_result_view(request, article_id):
     # 세션에서 결과 데이터를 꺼내오기
     result_data = request.session.get('quiz_result_data')
 
+    # 세션의 ID들로 다시 Article 객체들을 가져오고 변수명 다시 맞추기
+    related_ids = result_data.get('related_article_ids', [])
+    actual_related_articles = Article.objects.filter(id__in=related_ids)
+
     # 만약 세션에 데이터가 없는데(url로 접속) 접근했다면 기사 상세로 돌려보냄
     if not result_data:
         return redirect('detail', article_id=article_id)
 
-    # 템플릿 렌더링에 필요한 article 추가
+    # 템플릿 렌더링에 필요한 변수들 추가
     context = result_data.copy()
     context['article'] = article
+    context['related_articles'] = actual_related_articles
     
     return render(request, 'quiz_result.html', result_data)
