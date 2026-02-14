@@ -11,7 +11,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.csrf import csrf_protect
 from .models import Interest, UserInterest
 from django.db import transaction
-from django.contrib import messagesgit
+from django.contrib import messages
 from pathlib import Path
 import logging
 logger = logging.getLogger(__name__)
