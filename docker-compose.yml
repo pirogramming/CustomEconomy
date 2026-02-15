@@ -11,11 +11,9 @@ services:
     ports:
       - "5432:5432"
 
-  # ⬅️ 스케줄러 추가 (실제 수집 담당)
   airflow-webserver:
     build: .
     container_name: airflow_webserver
-    # 다시 가장 안전한 명령어로 복구합니다.
     command: airflow standalone
     depends_on:
       - postgres
@@ -25,13 +23,15 @@ services:
       - .:/app
     environment:
       - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      # 내부 통신이므로 postgres(컨테이너 이름) 사용
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sihyun:password123@postgres:5432/myproject_db
       - DJANGO_SETTINGS_MODULE=config.settings
       - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
       - AIRFLOW__CORE__LOAD_EXAMPLES=False
       - PYTHONPATH=/app
+      - DB_HOST=postgres
+      - DB_PORT=5432
 
-  # ⬅️ 스케줄러 서비스가 없다면 꼭 추가해줘야 합니다! (수집의 핵심)
   airflow-scheduler:
     build: .
     container_name: airflow_scheduler
@@ -45,8 +45,9 @@ services:
       - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sihyun:password123@postgres:5432/myproject_db
       - DJANGO_SETTINGS_MODULE=config.settings
       - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
-      # ⬇️ 여기에도 추가합니다!
       - PYTHONPATH=/app
+      - DB_HOST=postgres
+      - DB_PORT=5432
 
   django-app:
     build: .
@@ -60,8 +61,10 @@ services:
       - .:/app
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings
+      # .env의 127.0.0.1을 무시하고 컨테이너 이름으로 접속하도록 설정
       - DB_HOST=postgres
       - DB_NAME=myproject_db
       - DB_USER=sihyun
       - DB_PASSWORD=password123
+      - DB_PORT=5432
       - PYTHONPATH=/app

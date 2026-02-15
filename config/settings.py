@@ -107,7 +107,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', 'myproject_db'),
         'USER': os.getenv('DB_USER', 'sihyun'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'password123'),
-        'HOST': 'postgres',  # Docker Compose에서 서비스 이름을 호스트로 사용
+        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
         'PORT': '5432',
     }
 }
