@@ -122,7 +122,7 @@
             
             // UI 업데이트
             updateUI(nextIndex);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // 스크롤 위치 유지: 기본 동작으로 이동하면서 스크롤을 조정하지 않습니다.
         }
     }
 
@@ -139,7 +139,7 @@
             
             // UI 업데이트
             updateUI(prevIndex);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            // 스크롤 위치 유지: 이동 후에도 페이지가 움직이지 않습니다.
         }
     }
 
