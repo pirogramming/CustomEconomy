@@ -40,7 +40,7 @@
                 <div class="icon" id="email-icon">
                    <img src="{% static 'icon/mark_email_unread.svg' %}" alt="email icon" width="24">
                 </div>
-                <input type="email" id="email" placeholder="E-mail" name="email" required maxlength="40" value="{{ email|default_if_none:'' }}" />
+                <input type="email" id="email" placeholder="이메일" name="email" required maxlength="40" value="{{ email|default_if_none:'' }}" />
             </div>
             {% if email_error %}
                 <div class="field-error" style="color:#ef9160;margin-top:6px; margin-left:7px;font-size:12px;">{{ email_error }}</div>
