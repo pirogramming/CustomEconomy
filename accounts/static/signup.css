@@ -84,6 +84,20 @@
   outline: none;
   width:90%;
 }
+.signup_float .signup_input_area .field>input:-webkit-autofill,
+.signup_float .signup_input_area .field>input:-webkit-autofill:hover,
+.signup_float .signup_input_area .field>input:-webkit-autofill:focus,
+.signup_float .signup_input_area .field>input:-webkit-autofill:active{
+  -webkit-text-fill-color: #000000;
+  -webkit-box-shadow: 0 0 0 1000px #FFE4D6 inset;
+  box-shadow: 0 0 0 1000px #FFE4D6 inset;
+  caret-color: #000000;
+}
+.signup_float .signup_input_area .field>input:autofill{
+  background-color: #FFE4D6;
+  color: #000000;
+  caret-color: #000000;
+}
 .signup_float .signup_input_area .field .pw_show_btn{
   background-color: #FFE4D6;
   width: 20px; height: 20px;
