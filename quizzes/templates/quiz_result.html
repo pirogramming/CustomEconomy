@@ -7,105 +7,145 @@
 {% endblock %}
 
 {% block content %}
+<header class="brand-header">
+  <a class="page-main-title" href="{% url 'articleList' %}">Custom Economy</a>
+</header>
+<!-- <div class="x"><a href="{% url 'articleList' %}" class="exit-link">✕ 종료</a></div> -->
 <div class="quiz-main-content">
-    
-  <header class="brand-header">
-    <a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
-    <a href="{% url 'articleList' %}" class="exit-link">✕ 종료</a>
-  </header>
+  <div class="main-left-wrapper">
+    <section class="quiz-hero-section">
+      <div class="hero-inner">
+        <!-- <span class="quiz-label-badge">RESULT REPORT</span> -->
+        <h2 class="quiz-main-title">
+          {% if article %}{{ article.title }}{% else %}퀴즈 결과{% endif %}
+        </h2>
+      </div>
+    </section>
 
-  <section class="quiz-hero-section">
-    <div class="hero-inner">
-      <span class="quiz-label-badge">RESULT REPORT</span>
-      <h2 class="quiz-main-title">
-        {% if article %}{{ article.title }}{% else %}퀴즈 결과{% endif %}
-      </h2>
-    </div>
-  </section>
+    <section class="quiz-body-area">
+      <div class="quiz-inner-wrapper">
+        
+        <div class="result-summary-card">
+          <div class="summary-header">
+            <p class="result-text">
+              총 3문제 중 <span class="highlight">{{ correct_count }}문제</span>를 맞혔습니다!
+            </p>
+          </div>
+        
+          <div class="score-detail-list">
+            <div class="score-row">
+              <span>기사 분석</span>
+              <span class="xp-val">+{{ xp_breakdown.type_a }} XP</span>
+            </div>
+            <div class="score-row">
+              <span>용어 학습</span>
+              <span class="xp-val">+{{ xp_breakdown.type_b }} XP</span>
+            </div>
+            <div class="score-row">
+              <span>경제 상식</span>
+              <span class="xp-val">+{{ xp_breakdown.type_c }} XP</span>
+            </div>
+            
+            {% if bonus_xp > 0 %}
+            <div class="score-row bonus-text">
+              <span>✨ 연속 정답 보너스</span>
+              <span class="xp-val">+{{ bonus_xp }} XP</span>
+            </div>
+            {% endif %}
 
-  <section class="quiz-body-area">
-    <div class="quiz-inner-wrapper">
-      
-      <div class="result-summary-card">
-        <div class="summary-header">
-          <p class="result-text">
-            총 3문제 중 <span class="highlight">{{ correct_count }}문제</span>를 맞혔습니다!
-          </p>
+            <div class="score-row total-highlight">
+              <span>총 획득 점수</span>
+              <span class="xp-val">+{{ total_final_xp }} XP</span>
+            </div>
+
+            <div class="level-progress-box">
+              <p class="xp-status">현재 총 점수: <strong>{{ current_total_xp }} XP</strong></p>
+              {% if is_levelup %}
+                <div class="levelup-badge">🎉 레벨업 달성! 축하합니다!</div>
+              {% else %}
+                <p class="next-level">다음 레벨까지 <strong>{{ remaining_xp }} XP</strong> 남았습니다.</p>
+              {% endif %}
+            </div>
+          </div>
         </div>
-       
-        <div class="score-detail-list">
-          <div class="score-row">
-            <span>기사 분석 (유형 A)</span>
-            <span class="xp-val">+{{ xp_breakdown.type_a }} XP</span>
-          </div>
-          <div class="score-row">
-            <span>용어 학습 (유형 B)</span>
-            <span class="xp-val">+{{ xp_breakdown.type_b }} XP</span>
-          </div>
-          <div class="score-row">
-            <span>경제 상식 (유형 C)</span>
-            <span class="xp-val">+{{ xp_breakdown.type_c }} XP</span>
-          </div>
-          
-          {% if bonus_xp > 0 %}
-          <div class="score-row bonus-text">
-            <span>✨ 연속 정답 보너스</span>
-            <span class="xp-val">+{{ bonus_xp }} XP</span>
-          </div>
-          {% endif %}
 
-          <div class="score-row total-highlight">
-            <span>총 획득 점수</span>
-            <span class="xp-val">+{{ total_final_xp }} XP</span>
-          </div>
+        {% for res in results_detail %}
+          <div class="quiz-card">
+            <div class="card-top">
+              <span class="question-index {% if res.is_correct %}correct-text{% else %}wrong-text{% endif %}">
+                  Question {{ forloop.counter }} · {% if res.is_correct %}정답입니다!{% else %}오답입니다{% endif %}
+              </span>
+            </div>
+            <h3 class="question-text">{{ res.question }}</h3>
 
-          <div class="level-progress-box">
-            <p class="xp-status">현재 총 점수: <strong>{{ current_total_xp }} XP</strong></p>
-            {% if is_levelup %}
-              <div class="levelup-badge">🎉 레벨업 달성! 축하합니다!</div>
-            {% else %}
-              <p class="next-level">다음 레벨까지 <strong>{{ remaining_xp }} XP</strong> 남았습니다.</p>
+            <div class="answers-grid">
+              {% for c in res.choices %}
+                <div class="answer-option-result
+                  {% if c.id|stringformat:'s' == res.correct_choice_id|stringformat:'s' %}correct{% elif c.id|stringformat:'s' == res.selected_choice_id|stringformat:'s' and not res.is_correct %}wrong{% endif %}">
+                  <span class="answer-text">{{ forloop.counter }}. {{ c.choice_text }}</span>
+                </div>
+              {% endfor %}
+            </div>
+
+            {% if not res.is_correct %}
+              <div class="explanation-box">
+                <p class="explanation-text">💡 <strong>해설:</strong> {{ res.explanation }}</p>
+              </div>
             {% endif %}
           </div>
+        {% endfor %}
+
+        <div class="quiz-footer">
+          <div class="footer-buttons">
+            <a class="wrongAnswer-btn" href="{% url 'wrongquiz' %}">오답노트 보기</a>
+            <a class="articleList-btn" href="{% url 'articleList' %}">기사 목록으로 돌아가기</a>
+          </div>
         </div>
       </div>
+    </section>
+  </div>
 
-      {% for res in results_detail %}
-        <div class="quiz-card">
-          <div class="card-top">
-            <span class="question-index {% if res.is_correct %}correct-text{% else %}wrong-text{% endif %}">
-                Question {{ forloop.counter }} · {% if res.is_correct %}정답입니다!{% else %}오답입니다{% endif %}
-            </span>
-          </div>
-          <h3 class="question-text">{{ res.question }}</h3>
-
-          <div class="answers-grid">
-            {% for c in res.choices %}
-              <div class="answer-option-result
-                {% if c.id == res.correct_choice_id %}correct
-                {% elif c.id == res.selected_choice_id and not res.is_correct %}wrong
-                {% endif %}
-              ">
-                <span class="answer-text">{{ forloop.counter }}. {{ c.choice_text }}</span>
+  <aside class="quiz-sidebar">
+      <h3>다른 퀴즈 도전하기</h3>
+      <div class="sidebar-list">
+          {% if related_articles %}
+              {% for r_article in related_articles %}
+              <a href="{% url 'detail' r_article.id %}" class="sidebar-item-link" style="text-decoration: none;">
+                  <div class="sidebar-item">
+                      <div class="item-icon">
+                          <div class="item-icon">
+                              {% if r_article.category.name == "금융" %}💰
+                              {% elif r_article.category.name == "경제" %}📈
+                              {% elif r_article.category.name == "기업" %}🏢
+                              {% elif r_article.category.name == "증권" %}📊
+                              {% elif r_article.category.name == "부동산" %}🏠
+                              {% else %}📄{% endif %}
+                          </div>
+                      </div>
+                      <div class="item-info">
+                          <p class="sidebar-article-title">{{ r_article.title|truncatechars:22 }}</p>
+                          <div class="sidebar-tags">
+                              <div class="matched-tags">
+                                  {% for r_sub in r_article.sub_interests.all %}
+                                      {% if r_sub in category_display_list %}
+                                          <span class="s-tag matched">#{{ r_sub.name }}</span>
+                                      {% endif %}
+                                  {% endfor %}
+                              </div>
+                              <span class="q-count">퀴즈 3문항</span>
+                          </div>
+                      </div>
+                  </div>
+              </a>
+              {% endfor %}
+          {% else %}
+              <div class="empty-sidebar">
+                  <p>아직 연관된 다른 퀴즈가 없어요.</p>
+                  <p>새로운 소식을 기다려주세요! 😊</p>
               </div>
-            {% endfor %}
-          </div>
-
-          {% if not res.is_correct %}
-            <div class="explanation-box">
-              <p class="explanation-text">💡 <strong>해설:</strong> {{ res.explanation }}</p>
-            </div>
           {% endif %}
-        </div>
-      {% endfor %}
-
-      <div class="quiz-footer">
-        <div class="footer-buttons">
-          <a class="wrongAnswer-btn" href="{% url 'wrongquiz' %}">오답노트 보기</a>
-          <a class="articleList-btn" href="{% url 'articleList' %}">기사 목록으로 돌아가기</a>
-        </div>
       </div>
-    </div>
-  </section>
+      <a href="{% url 'articleList' %}" class="view-all-btn" style="display: block; text-align: center; margin-top: 20px; color: var(--primary-orange); text-decoration: none; font-weight: 700;">전체 퀴즈 보기 →</a>
+  </aside>
 </div>
 {% endblock %}

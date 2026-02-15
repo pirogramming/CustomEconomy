@@ -2,32 +2,35 @@
 {% load static %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'articleList.css' %}">
 <link rel="stylesheet" href="{% static 'mypage_scraparticle.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="page-main-title">내가 스크랩한 기사</div>
+<div class="scraparticle-wrapper">
+	<header class="scraparticle-header">
+		<a href="{% url 'mypage' %}" class="page-main-title">Custom Economy</a>
+	</header>
 
-<div class="sort-container">
-    <label>정렬:</label>
-    <div class="sort-dropdown">
-        <button id="scrapSort" class="sort-btn">최신순 ▼</button>
-        <div id="sortMenu" class="sort-menu" style="display: none;">
-            <button class="sort-option" data-value="newest">최신순</button>
-            <button class="sort-option" data-value="oldest">오래된순</button>
-            <button class="sort-option" data-value="title">제목순</button>
+    <div class="sort-container">
+        <label>정렬:</label>
+        <div class="sort-dropdown">
+            <button id="scrapSort" class="sort-btn">최신순 ▼</button>
+            <div id="sortMenu" class="sort-menu" style="display: none;">
+                <button class="sort-option" data-value="newest">최신순</button>
+                <button class="sort-option" data-value="oldest">오래된순</button>
+                <button class="sort-option" data-value="title">제목순</button>
+            </div>
         </div>
     </div>
+
+    {% if article_bookmarks %}
+        {{ article_bookmarks|json_script:"initial-bookmarks" }}
+    {% else %}
+        <script id="initial-bookmarks" type="application/json">[]</script>
+    {% endif %}
+
+    <div class="scrap-list" id="article-bookmark-list"></div>
 </div>
-
-{% if article_bookmarks %}
-    {{ article_bookmarks|json_script:"initial-bookmarks" }}
-{% else %}
-    <script id="initial-bookmarks" type="application/json">[]</script>
-{% endif %}
-
-<div class="scrap-list" id="article-bookmark-list"></div>
 {% endblock %}
 
 {% block extra_js %}

@@ -28,6 +28,8 @@
 }
 
 .leveltest_body .leveltest_main .leveltest_title {
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
   margin: 0 0 16px 0;
 }
 
@@ -154,13 +156,10 @@
   /* background-color: blueviolet; */
   padding: 5px 70px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 50px;
 }
 
-.leveltest_actions #prevBtn{
-  background-color: #D0D4D8;
-}
 .leveltest_actions #nextBtn{
   background-color: #4993E8;
 }

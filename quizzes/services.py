@@ -4,11 +4,11 @@ import os
 import random
 import re
 from django.conf import settings
-from django.db import models
+from django.db import models, transaction
 from articles.models import Article
 from accounts.models import Interest, UserInterest
-from .models import Quiz, QuizChoice
 from terms.models import Term 
+from .models import Quiz, QuizChoice
 from dotenv import load_dotenv
 from explanations.models import ArticleExplanation
 
@@ -23,18 +23,24 @@ def link_terms_to_article(article_obj):
     """
     기사 본문에서 등록된 용어(Term)가 있는지 찾아 ManyToMany 관계로 연결
     """
-    # 모든 용어를 가져와서 본문에 포함되어 있는지 확인 (데이터가 많으면 최적화 필요)
+    # [최적화] 이미 이 기사에 연결된 Term이 하나라도 있다면 분석을 마친 것으로 간주
+    if article_obj.terms.exists():
+        return 0
+
     all_terms = Term.objects.all()
     content = article_obj.content
     
-    linked_count = 0
+    found_terms = [] # 찾은 단어들을 담을 리스트
     for term in all_terms:
         # 본문에 용어 이름이 포함되어 있다면 연결
         if term.name in content:
-            article_obj.terms.add(term)
-            linked_count += 1
+            found_terms.append(term)
     
-    return linked_count
+    if found_terms:
+        article_obj.terms.add(*found_terms) # 별표(*)를 붙여 리스트를 한꺼번에 추가
+    
+    return len(found_terms)
+
 
 def create_ai_quiz_from_article(article_obj):
     """
@@ -74,86 +80,45 @@ def create_ai_quiz_from_article(article_obj):
         if not json_match: return 0
         
         quiz_data = json.loads(json_match.group(0))
+        created_count = 0
+        
+        # DB 트랜잭션 시작 (데이터 저장 안정성 보장)
+        with transaction.atomic():
+            # 동시성 방어
+            if Quiz.objects.filter(article=article_obj, type='A').exists():
+                return 0
 
-        for item in quiz_data:
-            quiz, created = Quiz.objects.get_or_create(
-                article=article_obj,
-                question=item['question'],
-                defaults={
-                    'category': article_obj.category,
-                    'explanation': item['explanation'],
-                    'type': 'A',
-                    'level': 1
-                }
-            )
-            if created:
-                for option in item['options']:
-                    QuizChoice.objects.create(
-                        quiz=quiz,
-                        choice_text=option,
-                        is_correct=(option == item['answer'])
-                    )
-        return len(quiz_data)
+            for item in quiz_data:
+                quiz, created = Quiz.objects.get_or_create(
+                    article=article_obj,
+                    question=item['question'],
+                    defaults={
+                        'category': article_obj.category,
+                        'explanation': item['explanation'],
+                        'type': 'A',
+                        'level': 1
+                    }
+                )
+                if created:
+                    created_count += 1
+                    for option in item['options']:
+                        QuizChoice.objects.create(
+                            quiz=quiz,
+                            choice_text=option,
+                            is_correct=(option == item['answer'])
+                        )
+        return created_count
     except Exception as e:
         print(f"❌ AI 생성 실패: {e}")
         return 0
-
-def create_type_b_quiz(article_obj):
-    # 1. 기사 본문에 연결된 용어들 가져오기
-    terms_qs = article_obj.terms.all()
-    
-    if terms_qs.exists():
-        # [기사 속 단어가 있는 경우] 기사에 포함된 모든 단어
-        selected_terms = terms_qs.order_by('?')
-        is_from_article = True
-    else:
-        # [기사 속 단어가 없는 경우] 전체 DB에서 랜덤하게 3개를 뽑기
-        selected_terms = Term.objects.all().order_by('?')[:3]
-        is_from_article = False
-    
-    if not selected_terms:
-        return 0
-
-    created_count = 0
-    for term_obj in selected_terms:
-        prefix = "📌 [기사 속 용어]" if is_from_article else "💡 [경제 기초 단어]"
-        question_text = f"{prefix} 다음 설명이 가리키는 경제 용어는?\n\n- \"{term_obj.explanation}\""
-        
-        # 중복 체크: 이 기사에 대해 동일한 용어 퀴즈가 이미 있는지 확인
-        if not Quiz.objects.filter(article=article_obj, type='B', question=question_text).exists():
-            quiz = Quiz.objects.create(
-                article=article_obj,
-                type='B',
-                category=article_obj.category, 
-                interest=None,
-                question=question_text,
-                explanation=f"정답은 '{term_obj.name}'입니다.",
-                level=1
-            )
-            
-            # 오답 선택지 생성 (나머지 용어 중 랜덤 3개)
-            other_names = list(Term.objects.exclude(id=term_obj.id).order_by('?')[:3].values_list('name', flat=True))
-            choices = [term_obj.name] + other_names
-            random.shuffle(choices)
-
-            for choice_text in choices:
-                QuizChoice.objects.create(
-                    quiz=quiz,
-                    choice_text=choice_text,
-                    is_correct=(choice_text == term_obj.name)
-                )
-            created_count += 1
-            
-    return created_count
 
 def get_quiz_session_set(article_obj, target_level=1):
     """
     최종적으로 3문제를 반환 (A: 기사 분석, B: 용어 학습, C: 경제 상식)
     """
-    # 1. 퀴즈 생성 시도 (A유형 AI 생성 및 B유형 용어 연결)
+    # 1. 퀴즈 생성 시도 (A유형 AI 생성 및 기사 단어 연결)
     link_terms_to_article(article_obj)
     create_ai_quiz_from_article(article_obj)
-    create_type_b_quiz(article_obj)
 
     final_quiz_set = []
 
@@ -163,11 +128,24 @@ def get_quiz_session_set(article_obj, target_level=1):
         final_quiz_set.append(quiz_a)
 
     # [B] 용어 퀴즈 (기사 관련 우선 -> 없으면 일반 용어)
-    quiz_b = Quiz.objects.filter(article=article_obj, type='B').order_by('?').first()
-    if not quiz_b:
-        # 기사와 직접 연결된 용어 퀴즈가 없다면 전체 B유형 중 하나 선택
-        quiz_b = Quiz.objects.filter(type='B').order_by('?').first()
+    article_term_names = list(article_obj.terms.values_list('name', flat=True))
     
+    # 기사에 포함된 단어를 정답으로 가진 퀴즈 필터링
+    quiz_b = Quiz.objects.filter(
+        type='B', 
+        article__isnull=True, 
+        choices__choice_text__in=article_term_names, 
+        choices__is_correct=True
+    ).distinct().order_by('?').first()
+
+    # 기사 매칭 단어가 없으면 랜덤
+    if not quiz_b:
+        quiz_b = Quiz.objects.filter(type='B', article__isnull=True).order_by('?').first()
+        if quiz_b:
+            quiz_b.is_matched_with_article = False # 템플릿용 태그 (없앨수도)
+    else:
+        quiz_b.is_matched_with_article = True # 템플릿용 태그 (없앨수도)
+
     if quiz_b:
         final_quiz_set.append(quiz_b)
     

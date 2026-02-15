@@ -187,51 +187,83 @@ def logout_view(request):
 # 4. 마이페이지
 @login_required
 def mypage_view(request):
-    context = {}
-    if request.user.is_authenticated:
-        # MAIN 관심분야 중 사용자가 선택한 것들
-        selected = list(
-            UserInterest.objects.filter(
-                user=request.user,
-                interest__category_type='MAIN',
-                is_selected=True
-            ).values_list('interest__name', flat=True)
-        )
-        context['user_selected_interests'] = selected
-        # legacy context key kept as `user_nickname` for templates; populate with username
-        context['user_nickname'] = request.user.username
-        context['user_image_url'] = request.user.image_url
-        # session-stored term bookmarks (if any)
-        context['term_bookmarks'] = request.session.get('term_bookmarks', [])
+    progress_percent = 0
+    points_to_next_level = 0
+    # 1. 레벨 데이터 및 변수 정의
+    next_level_map = {1: 1715, 2: 5635, 3: 12985, 4: 25725, 5: 999999}
+    prev_level_map = {1: 0, 2: 1715, 3: 5635, 4: 12985, 5: 25725}
+    
+    current_level = int(request.user.level)
+    current_total_score = float(request.user.total_score if request.user.total_score else 0)
+    
+    next_xp = float(next_level_map.get(current_level, 999999))
+    prev_xp = float(prev_level_map.get(current_level, 0))
 
-        # include up to 3 random article bookmarks for preview on mypage
-        # build previews from user's bookmarked Article relation to avoid importing articles.models
-        try:
-            articles_qs = request.user.bookmarked_articles.select_related('category').prefetch_related('sub_interests').order_by('?')[:3]
-            preview_list = []
-            for art in articles_qs:
-                preview_list.append({
-                    'id': art.id,
-                    'title': art.title,
-                    'image_url': art.image_url,
-                    'source': art.source,
-                    'url': art.url,
-                    'category': getattr(art.category, 'name', ''),
-                    'sub_categories': list(art.sub_interests.values_list('name', flat=True)),
-                    'published_at': art.published_at.isoformat() if getattr(art, 'published_at', None) else None,
-                })
-            context['article_bookmarks_preview'] = preview_list
-        except Exception:
-            context['article_bookmarks_preview'] = []
+    # 2. 퍼센트 계산
+    if current_level >= 5:
+        points_to_next_level = 0
+        progress_percent = 100
+    else:
+        points_to_next_level = max(0, int(next_xp - current_total_score))
+        level_range = next_xp - prev_xp
+        current_progress = max(0, current_total_score - prev_xp)
+        
+        if level_range > 0:
+            raw_percent = (float(current_progress) / float(level_range)) * 100
+            progress_percent = min(100, int(raw_percent))
+        else:
+            progress_percent = 0
 
-        wrong_results = (
-            QuizResult.objects
-            .filter(user=request.user, is_correct=False)
-            .select_related("quiz")
-            .order_by("-created_at")[:10]
-        )
-        context['wrong_results'] = wrong_results
+    print(f"🔥🔥 Progress Calculation 🔥🔥")
+    print(f"  Progress Percent: {progress_percent}%")
+    print(f"  Points to Next: {points_to_next_level}")
+   
+    # 3. 관심분야
+    selected = list(
+        UserInterest.objects.filter(
+            user=request.user,
+            interest__category_type='MAIN',
+            is_selected=True
+        ).values_list('interest__name', flat=True)
+    )
+    
+    # 4. 뉴스 스크랩
+    try:
+        articles_qs = request.user.bookmarked_articles.select_related('category').prefetch_related('sub_interests').order_by('?')[:3]
+        preview_list = []
+        for art in articles_qs:
+            preview_list.append({
+                'id': art.id,
+                'title': art.title,
+                'image_url': art.image_url,
+                'category': getattr(art.category, 'name', ''),
+                'sub_categories': list(art.sub_interests.values_list('name', flat=True)),
+            })
+        article_bookmarks_preview = preview_list
+    except:
+        article_bookmarks_preview = []
 
+    # 5. 오답노트
+    wrong_results = QuizResult.objects.filter(
+        user=request.user, is_correct=False
+    ).select_related("quiz").order_by("-created_at")[:10]
+    
+    # 🔥 마지막에 한 번에 context 생성!
+    context = {
+        'user_selected_interests': selected,
+        'user_nickname': request.user.username,
+        'user_image_url': request.user.image_url,
+        'term_bookmarks': request.session.get('term_bookmarks', []),
+        'points_to_next_level': points_to_next_level,
+        'progress_percent': progress_percent,
+        'article_bookmarks_preview': article_bookmarks_preview,
+        'wrong_results': wrong_results,
+    }
+    
+    # 🔥 최종 디버깅
+    print(f"🔥🔥 FINAL CONTEXT 🔥🔥")
+    print(f"  progress_percent in context: {context['progress_percent']}")
+    
     return render(request, 'mypage.html', context)
 
 # 5. 리그 페이지 (중복 제거 및 로직 통합 완료)
@@ -317,7 +349,7 @@ def scrap_article_view(request):
     return render(request, 'mypage_scraparticle.html', {'article_bookmarks': bookmarks})
     
     
-    
+ # 레벨 테스트 관련 부분   
 from .services import (
     load_bank, pick_self_ids, next_question, grade_and_advance, score_to_level
 )
@@ -422,6 +454,10 @@ def api_submit(request):
 
     return JsonResponse(result)
 
+
+#레벨 테스트 보고 나면 결과에 맞는 레벨 & XP 부여되도록 설정
+LEVEL_TOTAL_XP = {1: 0, 2: 1715, 3: 5635, 4: 12985, 5: 25725}
+
 def result_page(request):
     state = request.session.get(SESSION_KEY)
     if not state:
@@ -430,20 +466,44 @@ def result_page(request):
     total = float(state["total_self"]) + float(state["total_knowledge"])
     level = score_to_level(total)
 
-    # (선택) 로그인 유저면 레벨 저장하고 싶을 때:
+    debug_info = None
+
     if request.user.is_authenticated:
-        # 너희 User 모델에 level 필드 있으니 필요하면 활성화
-        request.user.level = level
-        request.user.save(update_fields=["level"])
+        user = request.user
+        user.level_score = int(total)
+
+        target = LEVEL_TOTAL_XP.get(level, 0)
+
+        # 이번에 실제로 더해준 XP(지급 XP)
+        reward_xp = max(0, target - user.total_score)
+
+        user.total_score += reward_xp
+        user.save(update_fields=["level_score", "total_score", "level"])
+
+        print(
+            f"[LEVEL TEST] user={user.email} | "
+            f"reward_xp=+{reward_xp} | "
+            f"total_score={user.total_score} | "
+            f"level={user.level}",
+            flush=True
+        )
+
+        debug_info = {
+            "reward_xp": reward_xp,
+            "total_score": user.total_score,
+            "level": user.level,
+        }
 
     return render(request, "level_test_result.html", {
-        "total_self": state["total_self"],
-        "total_knowledge": state["total_knowledge"],
         "total": total,
-        "level": level,
-        "user_name": request.user.username,
+        "level": level,  # 레벨테스트 판정 레벨(점수 기반)
+        "user_name": request.user.username if request.user.is_authenticated else "게스트",
+        "debug_info": debug_info,
     })
 
+
+
+    
 @login_required
 def edit_view(request):
     # 전달할 관심분야 목록 (MAIN 8개) 및 사용자가 선택한 항목

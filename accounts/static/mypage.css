@@ -1,16 +1,14 @@
-/* 폰트 및 로컬 변수 설정 */
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@700&display=swap");
+
 
 /* [핵심] 네임스페이스: base.css와 충돌 방지 */
 .main-wrapper {
     /* 로컬 색상 변수 */
-    --mp-bg-color: #F1F7FF;       /* 배경색 */
+    --mp-bg-color: #F4F7FB;       /* 배경색 */
     --mp-card-bg: #ffffff;        /* 카드 배경 */
     --mp-text-main: #333333;
     --mp-text-sub: #666666;
     --mp-accent-green: #8bc34a;   /* 초록색 포인트 */
-    --mp-accent-navy: #1a2b45;    /* 남색 포인트 */
+    --mp-accent-navy: #1A2137;    /* 남색 포인트 */
     --mp-tag-bg: #ffebee;         
     --mp-tag-text: #e57373;   
     --mp-orange: #EF9160;
@@ -35,15 +33,15 @@
 /* --- 타이틀 영역 --- */
 .main-wrapper .main-header {
     text-align: center;
-    margin-bottom: 40px;
 }
 
 .main-wrapper .page-title {
     font-family: 'Merriweather', serif;
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
     color: var(--mp-accent-navy);
-    margin: 0;
+    margin: 0 0 24px;
+    padding: 0;
 }
 
 /* --- 섹션 헤더 (카드 밖 제목) --- */
@@ -145,7 +143,6 @@
 /* 경험치 바 */
 .main-wrapper .progress-area { width: 100%; }
 .main-wrapper .progress-bar {
-    width: 100%;
     height: 14px;
     background-color: #eee;
     border-radius: 7px;
@@ -385,5 +382,23 @@
     .main-wrapper .news-image {
         width: 100%;
         height: 180px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-wrapper .page-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .main-wrapper .page-title {
+        font-size: 48px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .main-wrapper .page-title {
+        font-size: 56px;
     }
 }

@@ -1,10 +1,51 @@
 /* static/mypage_scraparticle.css */
 
-.page-main-title {
-    font-size: 24px;
+.scraparticle-wrapper {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    background-color: #F4F7FB;
+}
+
+.scraparticle-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.scraparticle-header .page-main-title {
+    font-family: 'Merriweather', serif;
+    font-size: 32px;
     font-weight: 700;
     text-align: center;
-    margin: 30px 0;
+    margin: 0;
+    padding: 20px 0;
+    color: #1A2137;
+    text-decoration: none;
+    display: inline-block;
+}
+
+@media (max-width: 480px) {
+    .scraparticle-header .page-main-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .scraparticle-header .page-main-title {
+        font-size: 48px;
+        padding: 24px 0;
+    }
+}
+
+@media (min-width: 1024px) {
+    .scraparticle-header .page-main-title {
+        font-size: 56px;
+        padding: 28px 0;
+    }
 }
 
 .sort-container {
@@ -12,24 +53,23 @@
     justify-content: flex-end;
     align-items: center;
     gap: 8px;
-    max-width: 1000px;
-    margin: 0 auto 15px;
-    padding: 0 20px;
+    margin: 0 0 15px;
+    padding: 0;
 }
 
-.sort-container label {
+.scraparticle-wrapper .sort-container label {
     font-size: 14px; 
     color: #666;
     margin-right: 8px;
 }
 
-.sort-container .sort-dropdown {
+.scraparticle-wrapper .sort-container .sort-dropdown {
     position: relative;
     display: inline-block;
-    margin-right: 20px;
+    margin-right: 0;
 }
 
-.sort-container .sort-btn {
+.scraparticle-wrapper .sort-btn {
     padding: 6px 12px;
     border-radius: 10px;
     border: 1px solid #dcdcdc;
@@ -42,16 +82,16 @@
     transition: all 0.2s ease;
 }
 
-.sort-container .sort-btn:hover {
+.scraparticle-wrapper .sort-btn:hover {
     border-color: #80B27F;
 }
 
-.sort-container .sort-btn:active {
+.scraparticle-wrapper .sort-btn:active {
     background-color: #f5f5f5;
 }
 
 /* 드롭다운 메뉴 스타일 */
-.sort-menu {
+.scraparticle-wrapper .sort-menu {
     position: absolute;
     top: 100%;
     left: 0;
@@ -64,11 +104,11 @@
     z-index: 100;
 }
 
-.sort-menu.show {
+.scraparticle-wrapper .sort-menu.show {
     display: block !important;
 }
 
-.sort-option {
+.scraparticle-wrapper .sort-option {
     display: block;
     width: 100%;
     padding: 10px 15px;
@@ -82,30 +122,29 @@
     transition: background-color 0.2s ease;
 }
 
-.sort-option:first-child {
+.scraparticle-wrapper .sort-option:first-child {
     border-radius: 9px 9px 0 0;
 }
 
-.sort-option:last-child {
+.scraparticle-wrapper .sort-option:last-child {
     border-radius: 0 0 9px 9px;
 }
 
-.sort-option:hover {
+.scraparticle-wrapper .sort-option:hover {
     background-color: #f0f0f0;
     color: #80B27F;
 }
 
 /* 카드뉴스 그리드 */
-.scrap-list { 
+.scraparticle-wrapper .scrap-list { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
     gap: 20px; 
-    max-width: 1000px; 
-    margin: 24px auto; 
-    padding: 0 20px;
+    margin: 24px 0; 
+    padding: 0;
 }
 
-.article-card { 
+.scraparticle-wrapper .article-card { 
     background: #fff; 
     border-radius: 12px; 
     box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
@@ -117,28 +156,30 @@
     height: 100%;
 }
 
-.article-card:hover { transform: translateY(-5px); }
+.scraparticle-wrapper .article-card:hover { 
+    transform: translateY(-5px); 
+}
 
-.article-card .thumb { 
+.scraparticle-wrapper .article-card .thumb { 
     width: 100%; 
     height: 180px; 
     object-fit: cover; 
 }
 
-.article-info { 
+.scraparticle-wrapper .article-info { 
     padding: 15px; 
     display: flex; 
     flex-direction: column; 
     flex-grow: 1;
 }
 
-.article-info .meta {
+.scraparticle-wrapper .article-info .meta {
     font-size: 11px;
     color: #999;
     margin-bottom: 8px;
 }
 
-.article-info .title { 
+.scraparticle-wrapper .article-info .title { 
     font-size: 16px; 
     font-weight: 700; 
     line-height: 1.4; 
@@ -152,20 +193,20 @@
 }
 
 /* 태그 영역 */
-.smallTag { 
+.scraparticle-wrapper .smallTag { 
     margin-top: auto; 
     display: flex; 
     justify-content: space-between; 
     align-items: flex-end; 
 }
 
-.tag-container {
+.scraparticle-wrapper .tag-container {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
 }
 
-.tag { 
+.scraparticle-wrapper .tag { 
     font-size: 11px; 
     padding: 3px 8px; 
     border-radius: 4px; 
@@ -173,18 +214,18 @@
 }
 
 /* 대분류: 주황색 */
-.tag.main-category { 
+.scraparticle-wrapper .tag.main-category { 
     color: #e67e22; 
     background: #fdf2e9; 
 }
 
 /* 소분류: 초록색 */
-.tag.sub-category { 
+.scraparticle-wrapper .tag.sub-category { 
     color: #27ae60; 
     background: #e9f7ef; 
 }
 
-.bookmark-btn {
+.scraparticle-wrapper .bookmark-btn {
     transition: color 0.2s;
     color: #f39c12;
     background: none;
@@ -193,7 +234,24 @@
     padding: 5px;
 }
 
-.bookmark-btn svg {
+.scraparticle-wrapper .bookmark-btn svg {
     color: #f39c12;
     fill: #f39c12;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .scraparticle-wrapper .scrap-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .scraparticle-wrapper {
+        padding: 16px 12px 32px;
+    }
+    
+    .scraparticle-wrapper .scrap-list {
+        gap: 16px;
+    }
 }

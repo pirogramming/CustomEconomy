@@ -10,7 +10,7 @@
     <a href="{% url 'mypage' %}" class="back-to-mypage-btn" title="마이페이지로 돌아가기">← 마이페이지</a>
     <div class="edit-container">
         <div class="page-header">
-            <h1 class="page-title">Custom Economy</h1>
+            <a href="{% url 'mypage' %}" class="page-title">Custom Economy</a>
         </div>
 
         <div class="section-title">
@@ -54,14 +54,24 @@
                     </div>
 
                     <div class="level-row">
-                        <span class="level">Lv.4</span>
+                        <span class="level">Lv.{{ request.user.level }}</span>
                     </div>
 
-                    <div class="progress-bar-area">
+                    <div class="progress-area">
                         <div class="progress-bar">
-                            <div class="progress-fill" style="width: 40%;"></div>
+                            <div class="progress-fill" style="width: {{ progress_percent|default:0 }}%;"></div>
                         </div>
-                        <p class="mypage_edit-progress-text">주식으로 인생역전님, 다음 레벨까지 몇 점 남았습니다</p>
+                        <p class="mypage-progress-text">
+                            {% if request.user.level >= 5 %}
+                                {{ request.user.username }}님, 최고 레벨에 도달하셨습니다! 🎉
+                            {% else %}
+                                {% if user_nickname %}
+                                    {{ user_nickname }}님, 다음 레벨까지 {{ points_to_next_level }}XP 남았습니다
+                                {% else %}
+                                    {{ request.user.username }}님, 다음 레벨까지 {{ points_to_next_level }}XP 남았습니다
+                                {% endif %}
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>

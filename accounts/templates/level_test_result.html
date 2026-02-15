@@ -30,6 +30,17 @@
 
     <br>
 
+    {% comment %} 아래는 디버깅을 위한 로그 출력용 {% endcomment %}
+    {% comment %} {% if debug_info %}
+      <div style="margin-top:20px; font-size:13px; color:#777;">
+        <p>[DEBUG]</p>
+        <p>지급 XP: +{{ debug_info.reward_xp }}</p>
+        <p>총 XP: {{ debug_info.total_score }}</p>
+        <p>현재 레벨: Lv{{ debug_info.level }}</p>
+      </div>
+    {% endif %} {% endcomment %}
+
+
 
     <div class="btn_area">
       <div class="article_btn">

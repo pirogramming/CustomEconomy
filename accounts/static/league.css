@@ -8,10 +8,33 @@
 }
 
 .page-title {
-    font-family: 'Kadwa', serif;
-    font-size: 2.5rem;
-    color: #2c3e50;
-    margin-bottom: 40px;
+    font-family: 'Merriweather', serif;
+    font-size: 32px;
+    color: #1A2137;
+    font-weight: 700;
+    margin: 0 0 24px 0;
+    padding: 20px 0;
+    text-decoration: none;
+    display: inline-block;
+}
+
+@media (max-width: 480px) {
+    .page-title {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 768px) {
+    .page-title {
+        font-size: 48px;
+        margin-bottom: 36px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .page-title {
+        font-size: 56px;
+    }
 }
 
 /* ===========================

@@ -11,7 +11,7 @@
 {% block content %}
 <div class="league-wrapper">
     
-    <h1 class="page-title">Custom Economy League</h1>
+    <a href="{% url 'league' %}" class="page-title">Custom Economy League</a>
 
     <div class="level-tabs">
         {% for i in "12345" %}
@@ -47,6 +47,7 @@
         {% endfor %}
     </div>
 
+    {% if rest_users %}
     <div class="rank-list-container">
         {% for user in rest_users %}
         <div class="rank-row">
@@ -63,6 +64,7 @@
         </div>
         {% endfor %}
     </div>
+    {% endif %}
 
 </div>
 
