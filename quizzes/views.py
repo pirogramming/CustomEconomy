@@ -157,8 +157,8 @@ def submit_quiz_session(request, article_id):
                 match_count=Count('sub_interests', filter=Q(sub_interests__in=sub_categories))
             ).order_by('-match_count', '-created_at')[:5]
         # related_articles(객체)를 ID 리스트로 변환
-        related_article_ids = list(related_articles.values_list('id', flat=True))
-
+        related_article_ids = [article.id for article in related_articles]
+        
         request.session['quiz_result_data'] = {
             'results_detail': results_detail,
             'correct_count': correct_count,
@@ -176,6 +176,7 @@ def submit_quiz_session(request, article_id):
             'related_article_ids': related_article_ids,        
         }
         return redirect('quiz_result', article_id=article.id)
+    
 
 @login_required
 def quiz_result_view(request, article_id):
@@ -197,4 +198,4 @@ def quiz_result_view(request, article_id):
     context['article'] = article
     context['related_articles'] = actual_related_articles
     
-    return render(request, 'quiz_result.html', result_data)
+    return render(request, 'quiz_result.html', context)

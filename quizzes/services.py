@@ -181,7 +181,7 @@ def get_quiz_session_set(article_obj, target_level=1):
             models.Q(type='B') | models.Q(type='C', category=article_obj.category, level=target_level)
         ).exclude(id__in=already_ids).order_by('?')[:(3 - len(final_quiz_set))]
         
-        final_quiz_set.extend(extra_quizzes)
+        final_quiz_set.extend(list(extra_quizzes))
 
     # 3. 반환 (최대 3개)
     return final_quiz_set[:3]

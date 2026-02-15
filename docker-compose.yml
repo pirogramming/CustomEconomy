@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:13
+    container_name: postgres_db
+    environment:
+      - POSTGRES_USER=sihyun
+      - POSTGRES_PASSWORD=password123
+      - POSTGRES_DB=myproject_db
+    ports:
+      - "5432:5432"
+
+  # ⬅️ 스케줄러 추가 (실제 수집 담당)
+  airflow-webserver:
+    build: .
+    container_name: airflow_webserver
+    # 다시 가장 안전한 명령어로 복구합니다.
+    command: airflow standalone
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sihyun:password123@postgres:5432/myproject_db
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - PYTHONPATH=/app
+
+  # ⬅️ 스케줄러 서비스가 없다면 꼭 추가해줘야 합니다! (수집의 핵심)
+  airflow-scheduler:
+    build: .
+    container_name: airflow_scheduler
+    command: airflow scheduler
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sihyun:password123@postgres:5432/myproject_db
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
+      # ⬇️ 여기에도 추가합니다!
+      - PYTHONPATH=/app
+
+  django-app:
+    build: .
+    container_name: django_app
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - DB_HOST=postgres
+      - DB_NAME=myproject_db
+      - DB_USER=sihyun
+      - DB_PASSWORD=password123
+      - PYTHONPATH=/app

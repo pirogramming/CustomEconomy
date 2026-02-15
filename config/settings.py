@@ -32,6 +32,8 @@ ALLOWED_HOSTS = [
     "customeconomytest1.ap-northeast-2.elasticbeanstalk.com",
     "localhost",
     "127.0.0.1",
+    '3.37.61.5.nip.io',  # 이 줄을 꼭 추가하세요!
+    '.nip.io',
 ]
 
 
@@ -97,25 +99,18 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-if os.getenv("DJANGO_ENV") == "production":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.mysql",
-            "NAME": os.getenv("DB_NAME"),
-            "USER": os.getenv("DB_USER"),
-            "PASSWORD": os.getenv("DB_PASSWORD"),
-            "HOST": os.getenv("DB_HOST"),
-            "PORT": os.getenv("DB_PORT", "3306"),
-        }
+DB_HOST = os.getenv('DB_HOST', 'localhost')
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME', 'myproject_db'),
+        'USER': os.getenv('DB_USER', 'sihyun'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'password123'),
+        'HOST': 'postgres',  # Docker Compose에서 서비스 이름을 호스트로 사용
+        'PORT': '5432',
     }
-else:
-    # 로컬용 SQLite
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
-    }
+}
 
 
 # Password validation

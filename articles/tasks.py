@@ -270,21 +270,13 @@ class MKNewsFetcher:
             except: skip_reasons["에러"] += 1
         print(f"  ⚠️ 요약: {success}/{limit} 저장 (스킵이유: {skip_reasons})")
 
-def start_forever():
+def run_popular_news():
     fetcher = MKNewsFetcher()
-    interval = 3 * 60 * 60 
-    while True:
-        try:
-            print(f"\n--- [ {datetime.now().strftime('%H:%M:%S')} ] 사이클 시작 ---")
-            fetcher.update_popular_news(limit=5)
-            for cat in fetcher.rss_map.keys():
-                fetcher.run_import(cat, limit=5)
-            f_links = fetcher.fetch_financial_links(limit=15)
-            fetcher.run_import_from_links('금융', f_links, limit=5)
-            print(f"\n✨ 모든 수집 완료! {interval//3600}시간 대기...")
-        except Exception as e:
-            print(f"🚨 오류: {e}")
-        time.sleep(interval)
-
-if __name__ == "__main__":
-    start_forever()
+    fetcher.update_popular_news(limit=5)
+def run_category_news(category_name):
+    fetcher = MKNewsFetcher()
+    fetcher.run_import(category_name, limit=5)
+def run_financial_news():
+    fetcher = MKNewsFetcher()
+    f_links = fetcher.fetch_financial_links(limit=15)
+    fetcher.run_import_from_links('금융', f_links, limit=5)

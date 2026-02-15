@@ -55,7 +55,7 @@
 
                     <div class="smallTagRow">
                         <div class="smallTag">
-                        {% for tag in article.sub_category_names|slice:":3" %}
+                        {% for tag in article.sub_category_names.all|slice:":3" %}
                             <span class="tag">#{{ tag }}</span>
                         {% endfor %}
                         </div>

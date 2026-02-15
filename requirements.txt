@@ -23,4 +23,5 @@ gunicorn
 PyMySQL
 whitenoise
 # mysqlclient
-
+apache-airflow
+psycopg2-binary
