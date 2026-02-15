@@ -32,7 +32,8 @@ ALLOWED_HOSTS = [
     "customeconomytest1.ap-northeast-2.elasticbeanstalk.com",
     "localhost",
     "127.0.0.1",
-    '3.37.61.5.nip.io',  # 이 줄을 꼭 추가하세요!
+    "15.164.216.244",
+    '15.164.216.244.nip.io',  # 이 줄을 꼭 추가하세요!
     '.nip.io',
 ]
 

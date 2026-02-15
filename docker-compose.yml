@@ -1,70 +1,60 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:13
-    container_name: postgres_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=sihyun
-      - POSTGRES_PASSWORD=password123
-      - POSTGRES_DB=myproject_db
+      - POSTGRES_DB=custom_economy
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password1234
+
+  django-app:
+    image: xihxxn/custom-economy:latest
+    user: root  # 권한 에러 방지
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_NAME=custom_economy
+      - DB_USER=postgres
+      - DB_PASSWORD=password1234
+      - ALLOWED_HOSTS=* # 모든 접속 허용 (에러 해결 핵심)
+    volumes:
+      - static_volume:/app/staticfiles
+      - .:/app  # 현재 폴더의 소스코드와 DAG를 컨테이너에 연결 (DAG 해결 핵심)
+
+  nginx:
+    image: nginx:latest
     ports:
-      - "5432:5432"
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - static_volume:/app/staticfiles
+    depends_on:
+      - django-app
 
   airflow-webserver:
-    build: .
-    container_name: airflow_webserver
+    image: xihxxn/custom-economy:latest
+    user: root
     command: airflow standalone
     depends_on:
       - postgres
     ports:
       - "8080:8080"
-    volumes:
-      - .:/app
     environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      # 내부 통신이므로 postgres(컨테이너 이름) 사용
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sihyun:password123@postgres:5432/myproject_db
-      - DJANGO_SETTINGS_MODULE=config.settings
+      - DB_HOST=postgres
+      - DB_NAME=custom_economy
+      - DB_USER=postgres
+      - DB_PASSWORD=password1234
       - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
-      - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      - PYTHONPATH=/app
-      - DB_HOST=postgres
-      - DB_PORT=5432
-
-  airflow-scheduler:
-    build: .
-    container_name: airflow_scheduler
-    command: airflow scheduler
-    depends_on:
-      - postgres
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False  # 예제 DAG 숨기기
+      - AIRFLOW__CORE__SIMPLE_AUTH_MANAGER_ALL_ADMINS=True
     volumes:
-      - .:/app
-    environment:
-      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
-      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=postgresql+psycopg2://sihyun:password123@postgres:5432/myproject_db
-      - DJANGO_SETTINGS_MODULE=config.settings
-      - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
-      - PYTHONPATH=/app
-      - DB_HOST=postgres
-      - DB_PORT=5432
+      - .:/app  # 내 DAG 파일을 인식시키기 위해 연결
 
-  django-app:
-    build: .
-    container_name: django_app
-    command: python manage.py runserver 0.0.0.0:8000
-    depends_on:
-      - postgres
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.settings
-      # .env의 127.0.0.1을 무시하고 컨테이너 이름으로 접속하도록 설정
-      - DB_HOST=postgres
-      - DB_NAME=myproject_db
-      - DB_USER=sihyun
-      - DB_PASSWORD=password123
-      - DB_PORT=5432
-      - PYTHONPATH=/app
+volumes:
+  postgres_data:
+  static_volume:
