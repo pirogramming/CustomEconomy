@@ -14,9 +14,9 @@
 
   <div class="float">
     <div class="test_result">
-      <p>테스트 결과 </p>
+      {% comment %} <p>테스트 결과 </p>
       <p>SELF 점수: {{ total_self }} </p>
-      <p>KNOWLEDGE 점수: {{ total_knowledge }} </p><br>
+      <p>KNOWLEDGE 점수: {{ total_knowledge }} </p><br> {% endcomment %}
       <p><strong>총점: {{ total }} </strong> </p><br>
     </div>
 
@@ -29,6 +29,17 @@
     </div>
 
     <br>
+
+    {% comment %} 아래는 디버깅을 위한 로그 출력용 {% endcomment %}
+    {% comment %} {% if debug_info %}
+      <div style="margin-top:20px; font-size:13px; color:#777;">
+        <p>[DEBUG]</p>
+        <p>지급 XP: +{{ debug_info.reward_xp }}</p>
+        <p>총 XP: {{ debug_info.total_score }}</p>
+        <p>현재 레벨: Lv{{ debug_info.level }}</p>
+      </div>
+    {% endif %} {% endcomment %}
+
 
 
     <div class="btn_area">

@@ -12,8 +12,8 @@ from newspaper import Article as NewsArticle
 from django.utils import timezone
 
 # 1. 프로젝트 환경 설정
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
-django.setup()
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
+# django.setup()
 
 from articles.models import Article, Category
 from accounts.models import Interest
@@ -270,21 +270,34 @@ class MKNewsFetcher:
             except: skip_reasons["에러"] += 1
         print(f"  ⚠️ 요약: {success}/{limit} 저장 (스킵이유: {skip_reasons})")
 
-def start_forever():
+def run_once(
+    popular_limit=5,
+    per_category_limit=5,
+    financial_links_limit=15,
+    financial_import_limit=5
+):
+    """
+    ✅ 딱 1회 수집하고 종료하는 함수
+    """
     fetcher = MKNewsFetcher()
-    interval = 3 * 60 * 60 
-    while True:
-        try:
-            print(f"\n--- [ {datetime.now().strftime('%H:%M:%S')} ] 사이클 시작 ---")
-            fetcher.update_popular_news(limit=5)
-            for cat in fetcher.rss_map.keys():
-                fetcher.run_import(cat, limit=5)
-            f_links = fetcher.fetch_financial_links(limit=15)
-            fetcher.run_import_from_links('금융', f_links, limit=5)
-            print(f"\n✨ 모든 수집 완료! {interval//3600}시간 대기...")
-        except Exception as e:
-            print(f"🚨 오류: {e}")
-        time.sleep(interval)
 
+    print(f"\n--- [ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} ] 1회 수집 시작 ---")
+
+    # 1) 인기뉴스 갱신
+    fetcher.update_popular_news(limit=popular_limit)
+
+    # 2) RSS 카테고리별 수집
+    for cat in fetcher.rss_map.keys():
+        fetcher.run_import(cat, limit=per_category_limit)
+
+    # 3) 금융 링크 수집 + 수집
+    f_links = fetcher.fetch_financial_links(limit=financial_links_limit)
+    fetcher.run_import_from_links('금융', f_links, limit=financial_import_limit)
+
+    print("✨ 1회 수집 완료 (run_once 종료)")
+    return True
+
+
+# ✅ 로컬에서만 필요하면 이렇게(원하면 삭제해도 됨)
 if __name__ == "__main__":
-    start_forever()
+    run_once()
