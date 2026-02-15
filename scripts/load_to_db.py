@@ -27,6 +27,22 @@ def load_master_dictionary():
     
     count = 0
     for name, exp in data.items():
+        # sanitize just in case the JSON contains escaped sequences
+        import re
+        def decode_escapes(text):
+            if not text or "\\u" not in text:
+                return text
+            def replace_escape(m):
+                try:
+                    return chr(int(m.group(1), 16))
+                except Exception:
+                    return m.group(0)
+            return re.sub(r'\\u([0-9a-fA-F]{4})', replace_escape, text)
+        
+        name = decode_escapes(name)
+        if isinstance(exp, str):
+            exp = decode_escapes(exp)
+
         term, created = Term.objects.get_or_create(
             name=name, 
             defaults={'explanation': exp}

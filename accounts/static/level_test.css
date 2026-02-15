@@ -1,6 +1,6 @@
 /* ===== page ===== */
 .leveltest_body {
-  background-color: #F4F7FB;
+  background-color: #F1F7FF;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -156,13 +156,10 @@
   /* background-color: blueviolet; */
   padding: 5px 70px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   margin-top: 50px;
 }
 
-.leveltest_actions #prevBtn{
-  background-color: #D0D4D8;
-}
 .leveltest_actions #nextBtn{
   background-color: #4993E8;
 }

@@ -8,6 +8,28 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import json as _json
 from .models import TermBookmark, Term
+import codecs
+import re
+
+
+def _decode_unicode_escapes(text: str) -> str:
+    """Convert literal \\uXXXX escape sequences to real characters.
+
+    Occasionally terms have been stored in the database with literal
+    escape sequences like \\u0026 instead of the real character &.
+    This function replaces those patterns while preserving all other text.
+    """
+    if not text or "\\u" not in text:
+        return text
+    # Match pattern: \\ followed by u and 4 hex digits
+    def replace_escape(m):
+        hex_str = m.group(1)
+        try:
+            return chr(int(hex_str, 16))
+        except Exception:
+            return m.group(0)
+    return re.sub(r'\\u([0-9a-fA-F]{4})', replace_escape, text)
+
 
 
 def terms_view(request):
@@ -78,6 +100,11 @@ def bookmark_term(request):
 
 	word = payload.get('word') or request.POST.get('word')
 	definition = payload.get('definition') or request.POST.get('definition')
+	# ensure any escaped unicode sequences are converted before storing
+	if word and "\\u" in word:
+		word = _decode_unicode_escapes(word)
+	if definition and "\\u" in definition:
+		definition = _decode_unicode_escapes(definition)
 
 	if not word:
 		return JsonResponse({'ok': False, 'error': 'no_word'}, status=400)
@@ -93,14 +120,22 @@ def bookmark_term(request):
 
 	# return updated bookmark list (serialize as word/definition for compatibility)
 	qs = TermBookmark.objects.filter(user=request.user).order_by('-created_at')
-	data = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at.isoformat()} for b in qs]
+	data = []
+	for b in qs:
+		word = _decode_unicode_escapes(b.term.name)
+		definition = _decode_unicode_escapes(b.term.explanation)
+		data.append({'word': word, 'definition': definition, 'created_at': b.created_at.isoformat()})
 	return JsonResponse({'ok': True, 'created': created, 'bookmarks': data})
 
 
 @login_required
 def bookmarks_json(request):
 	qs = TermBookmark.objects.filter(user=request.user).order_by('-created_at')
-	data = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at.isoformat()} for b in qs]
+	data = []
+	for b in qs:
+		word = _decode_unicode_escapes(b.term.name)
+		definition = _decode_unicode_escapes(b.term.explanation)
+		data.append({'word': word, 'definition': definition, 'created_at': b.created_at.isoformat()})
 	return JsonResponse({'ok': True, 'bookmarks': data})
 
 
@@ -121,5 +156,9 @@ def unbookmark_term(request):
 	deleted = deleted_count > 0
 
 	qs = TermBookmark.objects.filter(user=request.user).order_by('-created_at')
-	data = [{'word': b.term.name, 'definition': b.term.explanation, 'created_at': b.created_at.isoformat()} for b in qs]
+	data = []
+	for b in qs:
+		word = _decode_unicode_escapes(b.term.name)
+		definition = _decode_unicode_escapes(b.term.explanation)
+		data.append({'word': word, 'definition': definition, 'created_at': b.created_at.isoformat()})
 	return JsonResponse({'ok': True, 'deleted': deleted, 'bookmarks': data})

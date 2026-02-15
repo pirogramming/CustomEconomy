@@ -3,12 +3,13 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'terms.css' %}">
+<link rel="stylesheet" href="{% static 'mypage_scrapterm.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="terms-wrapper">
 	<header class="terms-header">
-		<a class="page-title" href="{% url 'main' %}">Custom Economy</a>
+		<a class="page-title" href="{% url 'mypage' %}">Custom Economy</a>
 	</header>
 
 	<div class="terms-list">

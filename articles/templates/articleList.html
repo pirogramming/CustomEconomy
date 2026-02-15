@@ -7,7 +7,7 @@
 
 {% block content %}
 <div class="articleListBody">
-    <a class="page-main-title" href="{% url 'main' %}">Custom Economy</a>
+    <a class="page-main-title" href="{% url 'articleList' %}">Custom Economy</a>
     <div class="articleMenuBar">
         <a class="ecoBtn {% if current_category == '경제' %}active{% endif %}"
             href="?category=경제&sort={{ current_sort }}&page=1">경제</a>
@@ -27,7 +27,13 @@
 
     <div class="middleFloat">
         <div class="sort-dropdown">
-            <button id="sortBtn" class="sort-btn">최신순 ▼</button>
+            {% comment %} 버튼 초기 텍스트는 서버에서 받은 current_sort를 이용해 설정 {% endcomment %}
+            <button id="sortBtn" class="sort-btn">
+                {% if current_sort == 'oldest' %}오래된순
+                {% elif current_sort == 'title' %}이름순
+                {% else %}최신순
+                {% endif %} ▼
+            </button>
             <div id="sortMenu" class="sort-menu" style="display: none;">
                 <button class="sort-option" data-value="newest">최신순</button>
                 <button class="sort-option" data-value="oldest">오래된순</button>
@@ -106,6 +112,10 @@
     const sortOptions = document.querySelectorAll('.sort-option');
 
     if (sortBtn && sortMenu) {
+        // 초기 버튼 텍스트도 JS 로 설정해서 템플릿과 동일하게 유지
+        const labels = { newest: '최신순', oldest: '오래된순', title: '이름순' };
+        sortBtn.textContent = labels["{{ current_sort }}"] + ' ▼';
+
         sortBtn.addEventListener('click', () => {
             sortMenu.classList.toggle('show');
         });
@@ -113,7 +123,6 @@
         sortOptions.forEach(opt => {
             opt.addEventListener('click', () => {
                 const value = opt.getAttribute('data-value');
-                const labels = { newest: '최신순', oldest: '오래된순', title: '이름순' };
                 sortBtn.textContent = labels[value] + ' ▼';
 
                 const params = new URLSearchParams(window.location.search);
