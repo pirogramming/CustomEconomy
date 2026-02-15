@@ -12,8 +12,8 @@ from newspaper import Article as NewsArticle
 from django.utils import timezone
 
 # 1. 프로젝트 환경 설정
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
-django.setup()
+# os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings")
+# django.setup()
 
 from articles.models import Article, Category
 from accounts.models import Interest

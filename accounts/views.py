@@ -349,7 +349,7 @@ def scrap_article_view(request):
     return render(request, 'mypage_scraparticle.html', {'article_bookmarks': bookmarks})
     
     
-    
+ # 레벨 테스트 관련 부분   
 from .services import (
     load_bank, pick_self_ids, next_question, grade_and_advance, score_to_level
 )
@@ -454,29 +454,56 @@ def api_submit(request):
 
     return JsonResponse(result)
 
+
+#레벨 테스트 보고 나면 결과에 맞는 레벨 & XP 부여되도록 설정
+LEVEL_TOTAL_XP = {1: 0, 2: 1715, 3: 5635, 4: 12985, 5: 25725}
+
 def result_page(request):
     state = request.session.get(SESSION_KEY)
     if not state:
         return redirect("level_test:page")
 
-    # 1. 테스트 점수 계산 (예: 80점)
     total = float(state["total_self"]) + float(state["total_knowledge"])
-    
-    # 2. 레벨 판정 (예: 80점 -> 레벨 4)
     level = score_to_level(total)
 
-    # 로그인 유저: 배정 레벨만 저장. 레벨테스트 점수는 경험치(total_score)에 반영하지 않음.
+    debug_info = None
+
     if request.user.is_authenticated:
-        request.user.level = level
-        request.user.save(update_fields=["level"])
+        user = request.user
+        user.level_score = int(total)
+
+        target = LEVEL_TOTAL_XP.get(level, 0)
+
+        # 이번에 실제로 더해준 XP(지급 XP)
+        reward_xp = max(0, target - user.total_score)
+
+        user.total_score += reward_xp
+        user.save(update_fields=["level_score", "total_score", "level"])
+
+        print(
+            f"[LEVEL TEST] user={user.email} | "
+            f"reward_xp=+{reward_xp} | "
+            f"total_score={user.total_score} | "
+            f"level={user.level}",
+            flush=True
+        )
+
+        debug_info = {
+            "reward_xp": reward_xp,
+            "total_score": user.total_score,
+            "level": user.level,
+        }
 
     return render(request, "level_test_result.html", {
-        "total_self": state["total_self"],
-        "total_knowledge": state["total_knowledge"],
         "total": total,
-        "level": level,
-        "user_name": request.user.username,
+        "level": level,  # 레벨테스트 판정 레벨(점수 기반)
+        "user_name": request.user.username if request.user.is_authenticated else "게스트",
+        "debug_info": debug_info,
     })
+
+
+
+    
 @login_required
 def edit_view(request):
     # 전달할 관심분야 목록 (MAIN 8개) 및 사용자가 선택한 항목
