@@ -122,7 +122,7 @@
         <section class="wrong-answer-section">
             <div class="wrong-list">
                 {% if wrong_results %}
-                    {% for result in wrong_results %}
+                    {% for result in wrong_results|slice:":8" %}
                     <a class="wrong-item" href="{% url 'wrongquiz' %}">
                         <span class="q-mark">Q.</span>
                         <span class="q-text">{{ result.quiz.question }}</span>
@@ -153,7 +153,7 @@ function renderBookmarks(bookmarks){
         container.innerHTML = '<div class="term-card">스크랩한 용어가 없습니다.</div>';
         return;
     }
-    bookmarks.forEach(b => {
+    bookmarks.slice(0, 8).forEach(b => {
         const wrapper = document.createElement('div');
         wrapper.className = 'flip-card';
 

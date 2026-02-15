@@ -8,99 +8,99 @@
 {% endblock %}
 
 {% block content %}
-<a class="page-main-title" href="{% url 'articleList' %}">Custom Economy</a>
+<div class="quiz-wrapper">
+    <a class="page-main-title" href="{% url 'articleList' %}">Custom Economy</a>
+    <div class="quiz-container">
+        <main class="quiz-main">
+            <header class="quiz-header">
+                <span class="badge">QUIZ</span>
+                <h1 class="article-title">{{ article.title }}</h1>
+                
+                <div class="tags">
+                    <span class="tag">#{{ article.category.name }}</span>
 
-<div class="quiz-container">
-    <main class="quiz-main">
-        <header class="quiz-header">
-            <span class="badge">QUIZ</span>
-            <h1 class="article-title">{{ article.title }}</h1>
-            
-            <div class="tags">
-                <span class="tag">#{{ article.category.name }}</span>
-
-                {% if category_display_list %}
-                    {% for cat in category_display_list %}
-                        <span class="tag">#{{ cat.name }}</span>
-                    {% endfor %}
-                {% endif %}
-            </div>
-            
-            <div class="steps-container">
-                <div class="steps">
-                    {% for quiz in quiz_set %}
-                        <div class="step {% if forloop.first %}active{% endif %}" data-step="{{ forloop.counter }}">
-                            {{ forloop.counter }}
-                        </div>
-                        {% if not forloop.last %}
-                            <div class="step-line"></div>
-                        {% endif %}
-                    {% endfor %}
+                    {% if category_display_list %}
+                        {% for cat in category_display_list %}
+                            <span class="tag">#{{ cat.name }}</span>
+                        {% endfor %}
+                    {% endif %}
                 </div>
-                <p class="question-count">QUESTION <span id="current-num">1</span> OF {{ quiz_set|length }}</p>
-            </div>
-        </header>
-
-        <form action="{% url 'submit_quiz_session' article.id %}" method="post" id="quizForm">
-            {% csrf_token %}
-            <div class="questions-list">
-                {% for quiz in quiz_set %}
-                <section class="question-card {% if forloop.first %}is-visible{% endif %}" data-quiz-index="{{ forloop.counter }}">
-                    
-                    <div class="question-type">
-                        {% if quiz.type == 'A' %}
-                            <span class="type-icon">📰</span> 기사 내용 분석
-                        {% elif quiz.type == 'B' %}
-                            {% if quiz.is_matched_with_article %}
-                                <span class="type-icon">📌</span> 기사 속 용어 학습
-                            {% else %}
-                                <span class="type-icon">🔍</span> 추천 용어 학습
-                            {% endif %}
-                        {% elif quiz.type == 'C' %}
-                            <span class="type-icon">💡</span> 경제 상식 퀴즈
-                        {% else %}
-                            <span class="type-icon">❓</span> 일반 퀴즈
-                        {% endif %}
-                    </div>
-                    
-                    <h2 class="question-text">Q{{ forloop.counter }}. {{ quiz.question }}</h2>
-
-                    <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
-
-                    <div class="options-grid">
-                        {% for choice in quiz.choices.all %}
-                        <label class="option-item">
-                            <input type="radio" name="quiz_{{ quiz.id }}" value="{{ choice.id }}" required class="hidden-radio">
-                            <div class="option-content">
-                                <span class="option-number">{{ forloop.counter }}</span>
-                                <span class="option-text">{{ choice.choice_text }}</span>
+                
+                <div class="steps-container">
+                    <div class="steps">
+                        {% for quiz in quiz_set %}
+                            <div class="step {% if forloop.first %}active{% endif %}" data-step="{{ forloop.counter }}">
+                                {{ forloop.counter }}
                             </div>
-                        </label>
+                            {% if not forloop.last %}
+                                <div class="step-line"></div>
+                            {% endif %}
                         {% endfor %}
                     </div>
+                    <p class="question-count">QUESTION <span id="current-num">1</span> OF {{ quiz_set|length }}</p>
+                </div>
+            </header>
 
-                    <div class="card-footer">
-                        <div class="footer-left">
-                            {% if not forloop.first %}
-                                <button type="button" class="prev-btn" onclick="goToPrev({{ forloop.counter }})">← 이전 문제</button>
-                            {% endif %}
-                        </div>
-
-                        <div class="footer-right">
-                            {% if forloop.last %}
-                                <button type="submit" class="finish-button">제출하고 결과 확인하기</button>
+            <form action="{% url 'submit_quiz_session' article.id %}" method="post" id="quizForm">
+                {% csrf_token %}
+                <div class="questions-list">
+                    {% for quiz in quiz_set %}
+                    <section class="question-card {% if forloop.first %}is-visible{% endif %}" data-quiz-index="{{ forloop.counter }}">
+                        
+                        <div class="question-type">
+                            {% if quiz.type == 'A' %}
+                                <span class="type-icon">📰</span> 기사 내용 분석
+                            {% elif quiz.type == 'B' %}
+                                {% if quiz.is_matched_with_article %}
+                                    <span class="type-icon">📌</span> 기사 속 용어 학습
+                                {% else %}
+                                    <span class="type-icon">🔍</span> 추천 용어 학습
+                                {% endif %}
+                            {% elif quiz.type == 'C' %}
+                                <span class="type-icon">💡</span> 경제 상식 퀴즈
                             {% else %}
-                                <button type="button" class="next-btn" onclick="goToNext({{ forloop.counter }})">다음 문제 →</button>
+                                <span class="type-icon">❓</span> 일반 퀴즈
                             {% endif %}
                         </div>
-                    </div>
-                </section>
-                {% endfor %}
-            </div>
-        </form>
-    </main>
-</div>
+                        
+                        <h2 class="question-text">Q{{ forloop.counter }}. {{ quiz.question }}</h2>
 
+                        <input type="hidden" name="quiz_ids" value="{{ quiz.id }}">
+
+                        <div class="options-grid">
+                            {% for choice in quiz.choices.all %}
+                            <label class="option-item">
+                                <input type="radio" name="quiz_{{ quiz.id }}" value="{{ choice.id }}" required class="hidden-radio">
+                                <div class="option-content">
+                                    <span class="option-number">{{ forloop.counter }}</span>
+                                    <span class="option-text">{{ choice.choice_text }}</span>
+                                </div>
+                            </label>
+                            {% endfor %}
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="footer-left">
+                                {% if not forloop.first %}
+                                    <button type="button" class="prev-btn" onclick="goToPrev({{ forloop.counter }})">← 이전 문제</button>
+                                {% endif %}
+                            </div>
+
+                            <div class="footer-right">
+                                {% if forloop.last %}
+                                    <button type="submit" class="finish-button">제출하고 결과 확인하기</button>
+                                {% else %}
+                                    <button type="button" class="next-btn" onclick="goToNext({{ forloop.counter }})">다음 문제 →</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </section>
+                    {% endfor %}
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
 <script>
     // 다음 문제로 이동
     function goToNext(currentIndex) {
