@@ -115,6 +115,11 @@
   justify-content: center;
   align-items: center;
 }
+.auth-container .login_float .auth-form .login-error{
+  color: #ef9160;
+  font-size: 12px;
+  margin: 6px 10px 0;
+}
 .auth-container .login_float .auth-form .signup_submit_btn > button{
   width: 210px; height: 36px;
   background-color: #EF9160; color: black;

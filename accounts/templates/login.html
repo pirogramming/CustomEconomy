@@ -31,7 +31,7 @@
                     <div class="icon" id="email-icon">
                     <img src="{% static 'icon/mark_email_unread.svg' %}" alt="email icon" width="24">
                     </div>
-                    <input type="email" id="email" placeholder="이메일" name="email" required maxlength="40" />
+                    <input type="email" id="email" placeholder="이메일" name="email" required maxlength="40" value="{{ email|default_if_none:'' }}" />
                 </div>
 
                 <div class="field">
@@ -50,6 +50,13 @@
                 </div>
 
             </div>
+
+            {% if email_error or password_error %}
+            <div class="login-error">
+                {% if email_error %}{{ email_error }}{% endif %}
+                {% if password_error %}{{ password_error }}{% endif %}
+            </div>
+            {% endif %}
 
 
             <div class="signup_submit_btn">
