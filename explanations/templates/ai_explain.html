@@ -71,10 +71,6 @@
                             <span class="tag">#{{ tag }}</span>
                         {% endfor %}
                     </div>
-
-                    <div class="article-date-badge">
-                        {{ article.published_at|date:"Y.m.d" }}
-                    </div>
                     <div>
                         <button class="bookmark-btn {% if request.user in article.bookmarked_by.all %}active{% endif %}"
                                 data-article-id="{{ article.id }}"
@@ -94,6 +90,9 @@
                     <a href="{{ article.url }}" target="_blank" class="original-link">
                         🔗 기사 원문 보러가기 (공식 홈페이지)
                     </a>
+                    <div class="article-date-badge">
+                        {{ article.published_at|date:"Y.m.d" }}
+                    </div>
                 </div>
 
                 {% if article.image_url %}

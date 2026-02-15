@@ -79,6 +79,20 @@
   outline: none;
   width:99%;
 }
+.auth-container .login_float .auth-form .login_input_area .field > input:-webkit-autofill,
+.auth-container .login_float .auth-form .login_input_area .field > input:-webkit-autofill:hover,
+.auth-container .login_float .auth-form .login_input_area .field > input:-webkit-autofill:focus,
+.auth-container .login_float .auth-form .login_input_area .field > input:-webkit-autofill:active{
+  -webkit-text-fill-color: #000000;
+  -webkit-box-shadow: 0 0 0 1000px #DDDADA inset;
+  box-shadow: 0 0 0 1000px #DDDADA inset;
+  caret-color: #000000;
+}
+.auth-container .login_float .auth-form .login_input_area .field > input:autofill{
+  background-color: #DDDADA;
+  color: #000000;
+  caret-color: #000000;
+}
 .auth-container .login_float .auth-form .login_input_area .field .pw_show_btn{
   /* background-color: pink; */
   background-color: #DDDADA;
@@ -100,6 +114,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.auth-container .login_float .auth-form .login-error{
+  color: #ef9160;
+  font-size: 12px;
+  margin: 6px 10px 0;
 }
 .auth-container .login_float .auth-form .signup_submit_btn > button{
   width: 210px; height: 36px;

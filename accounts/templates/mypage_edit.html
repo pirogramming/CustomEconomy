@@ -7,7 +7,6 @@
 
 {% block content %}
 <div class="mypage-edit-wrapper">
-    <a href="{% url 'mypage' %}" class="back-to-mypage-btn" title="마이페이지로 돌아가기">← 마이페이지</a>
     <div class="edit-container">
         <div class="page-header">
             <a href="{% url 'mypage' %}" class="page-title">Custom Economy</a>
@@ -20,7 +19,7 @@
         <div class="profile-card">
             <div class="profile-left">
                 <div class="profile-img-box">
-                    <img src="{% if request.user.image_url %}{{ request.user.image_url }}{% else %}{% static 'img/profile-default.png' %}{% endif %}" id="mainProfileImg" alt="프로필 이미지">
+                    <img src="{% if request.user.image_url %}{{ request.user.image_url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" id="mainProfileImg" alt="프로필 이미지">
                     <button class="edit-icon-circle" onclick="openModal('modal-photo')">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 20h9"></path>
@@ -81,14 +80,14 @@
     <div id="modal-nickname" class="modal-overlay">
         <div class="modal-box">
             <button class="close-btn" onclick="closeModal('modal-nickname')">x</button>
-            <h3 class="modal-title">닉네임 수정하기</h3>
+            <h3 class="modal-title">사용자 이름 수정하기</h3>
             <div class="modal-body">
                 <form action="{% url 'update_username' %}" method="POST">
                     {% csrf_token %}
-                    <label class="input-label">현재 닉네임</label>
+                    <label class="input-label">현재 사용자 이름</label>
                     <input type="text" class="modal-input" value="{{ request.user.username }}" readonly>
                     
-                    <label class="input-label">변경 닉네임</label>
+                    <label class="input-label">변경 사용자 이름</label>
                     <input type="text" name="username" class="modal-input" placeholder="새로운 사용자 이름을 입력하세요" maxlength="20">
                     
                     <button type="submit" class="confirm-btn">확인</button>
@@ -100,13 +99,13 @@
     <div id="modal-photo" class="modal-overlay">
         <div class="modal-box">
             <button class="close-btn" onclick="closeModal('modal-photo')">x</button>
-            <h3 class="modal-title">사진 수정하기</h3>
+            <h3 class="modal-title">프로필 사진 수정하기</h3>
             <div class="modal-body">
                 <form action="{% url 'update_photo' %}" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="photo-preview-area">
                         <div class="preview-box">
-                            <img src="{% if request.user.image_url %}{{ request.user.image_url }}{% else %}{% static 'img/profile-default.png' %}{% endif %}" id="previewImg" alt="미리보기">
+                            <img src="{% if request.user.image_url %}{{ request.user.image_url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" id="previewImg" alt="미리보기">
                         </div>
                     </div>
                     <input type="file" id="fileInput" name="photo" accept="image/*" hidden onchange="previewImage(this)">
