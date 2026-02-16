@@ -16,6 +16,7 @@ services:
 
   django-app:
     image: xihxxn/custom-economy:latest
+    platform: linux/amd64
     user: root
     command: >
       sh -c "python manage.py collectstatic --noinput &&
@@ -42,6 +43,7 @@ services:
 
   airflow-webserver:
     image: xihxxn/custom-economy:latest
+    platform: linux/amd64
     user: root
     # 최신 버전(3.x)에 맞게 초기화 명령어를 보강했습니다.
     command: >
