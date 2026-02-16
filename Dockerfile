@@ -11,6 +11,12 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
+RUN mkdir -p /app/staticfiles
+RUN useradd -m sihyun
+RUN chown -R sihyun:sihyun /app  # 여기서 staticfiles를 포함한 /app 전체 권한을 sihyun에게 줍니다.
+
+USER sihyun
+
 # 2. Gunicorn 및 의존성 설치
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
