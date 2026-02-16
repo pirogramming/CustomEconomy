@@ -33,7 +33,7 @@ jobs:
           key: ${{ secrets.KEY }}
           script: |
             # 서버(AWS)에 접속해서 실행할 명령어들입니다.
-            cd /home/ubuntu
+            cd /home/ubuntu/CustomEconomy
             echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}" > .env
             echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env

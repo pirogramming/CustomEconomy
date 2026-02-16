@@ -100,20 +100,34 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DB_HOST = os.getenv('DB_HOST', '127.0.0.1')
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+if os.getenv("DOCKER_ENV") == "1":
+    DB_HOST = "postgres"
+else:
+    DB_HOST = "127.0.0.1"
+DB_PORT = os.getenv("DB_PORT", "5432")
+
+missing = [k for k,v in {
+    "DB_NAME": DB_NAME,
+    "DB_USER": DB_USER,
+    "DB_PASSWORD": DB_PASSWORD,
+}.items() if not v]
+
+if missing:
+    raise Exception(f"Missing required DB env vars: {missing}")
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME', 'myproject_db'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'password123'),
-        'HOST': DB_HOST,
-        'PORT': '5432',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": DB_NAME,
+        "USER": DB_USER,
+        "PASSWORD": DB_PASSWORD,
+        "HOST": DB_HOST,
+        "PORT": DB_PORT,
     }
 }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

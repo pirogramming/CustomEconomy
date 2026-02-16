@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d myproject_db"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -20,7 +20,6 @@ services:
     command: >
       sh -c "
       mkdir -p /app/staticfiles &&
-      chown -R sihyun:sihyun /app/staticfiles &&
       python manage.py collectstatic --noinput &&
       python manage.py migrate --noinput &&
       gunicorn --bind 0.0.0.0:8000 config.wsgi:application"
@@ -29,12 +28,16 @@ services:
         condition: service_healthy
     env_file:
       - .env
+    environment:
+      DOCKER_ENV: "1"
     volumes:
       - static_volume:/app/staticfiles
 
 
   airflow:
     image: apache/airflow:3.1.7
+    env_file:
+      - .env
     environment:
       AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${DB_USER}:${DB_PASSWORD}@postgres/${DB_NAME}
       AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -48,8 +51,10 @@ services:
       - "8080:8080"
     volumes:
       - ./dags:/opt/airflow/dags
-    command: standalone
-
+    command: >
+      bash -c "
+      airflow db migrate &&
+      airflow standalone"
 
 
   nginx:
