@@ -33,7 +33,6 @@ services:
       - .env
     volumes:
       - static_volume:/app/staticfiles
-      - .:/app
 
   airflow-webserver:
     image: xihxxn/custom-economy:latest

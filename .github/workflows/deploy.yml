@@ -45,6 +45,7 @@ jobs:
             echo "DB_NAME=myproject_db" >> .env
             echo "DB_USER=sihyun" >> .env
             echo "DB_PASSWORD=password123" >> .env
+            git pull origin deploy
             sudo docker compose pull
             sudo docker compose up -d
             # DB 마이그레이션까지 자동으로!
