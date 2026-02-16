@@ -41,10 +41,11 @@ jobs:
             echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env
             echo "NAVER_SECRET=${{ secrets.NAVER_SECRET }}" >> .env
             echo "BOK_API_KEY=${{ secrets.BOK_API_KEY }}" >> .env
+            echo "AIRFLOW_SECRET_KEY=${{ secrets.AIRFLOW_SECRET_KEY }}" >> .env
             echo "DB_HOST=postgres" >> .env
             echo "DB_NAME=myproject_db" >> .env
-            echo "DB_USER=sihyun" >> .env
-            echo "DB_PASSWORD=password123" >> .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             git pull origin deploy
             sudo docker compose pull
             sudo docker compose up -d
