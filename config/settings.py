@@ -100,7 +100,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-DB_HOST = os.getenv('DB_HOST', 'localhost')
+DB_HOST = os.getenv('DB_HOST', '127.0.0.1')
 
 DATABASES = {
     'default': {
@@ -108,7 +108,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', 'myproject_db'),
         'USER': os.getenv('DB_USER', 'sihyun'),
         'PASSWORD': os.getenv('DB_PASSWORD', 'password123'),
-        'HOST': os.environ.get('DB_HOST', '127.0.0.1'),
+        'HOST': DB_HOST,
         'PORT': '5432',
     }
 }
