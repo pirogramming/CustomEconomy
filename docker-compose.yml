@@ -1,38 +1,67 @@
+version: '3.8'
+
 services:
   postgres:
     image: postgres:13
+    container_name: ubuntu-postgres-1
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=myproject_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password123
-    # DB가 준비되었는지 확인 (유저명을 postgres로 수정함)
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d myproject_db"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
 
   django-app:
     image: xihxxn/custom-economy:latest
+    container_name: ubuntu-django-app-1
     platform: linux/amd64
     user: root
+    # gunicorn 앞에 경로를 명시적으로 지정하여 실행 오류 방지
     command: >
       sh -c "python manage.py collectstatic --noinput &&
              python manage.py migrate --noinput &&
-             gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+             gunicorn --bind 0.0.0.0:8000 config.wsgi:application"
     depends_on:
       postgres:
         condition: service_healthy
     env_file:
-      - ./.env
+      - .env
     volumes:
       - static_volume:/app/staticfiles
       - .:/app
 
+  airflow-webserver:
+    image: xihxxn/custom-economy:latest
+    container_name: ubuntu-airflow-webserver-1
+    platform: linux/amd64
+    user: root
+    command: >
+      bash -c "airflow db migrate && 
+               airflow users create --username admin --firstname sihyun --lastname kim --role Admin --email admin@example.com --password admin || true &&
+               airflow standalone"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:password123@postgres/myproject_db
+      - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__WEBSERVER__SECRET_KEY=sihyun_secret_key_12345
+    volumes:
+      - .:/app
+
   nginx:
     image: nginx:latest
+    container_name: ubuntu-nginx-1
     ports:
       - "80:80"
     volumes:
@@ -40,29 +69,6 @@ services:
       - static_volume:/app/staticfiles
     depends_on:
       - django-app
-
-  airflow-webserver:
-    image: xihxxn/custom-economy:latest
-    platform: linux/amd64
-    user: root
-    # 최신 버전(3.x)에 맞게 초기화 명령어를 보강했습니다.
-    command: >
-      bash -c "airflow standalone"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    ports:
-      - "8080:8080"
-    env_file:
-      - ./.env
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://postgres:password123@postgres/myproject_db
-      - AIRFLOW__CORE__DAGS_FOLDER=/app/dags
-      - AIRFLOW__CORE__LOAD_EXAMPLES=False
-      # 최신 버전에서 보안을 위해 요구하는 필수 값입니다.
-      - AIRFLOW__WEBSERVER__SECRET_KEY=sihyun_secret_key_12345
-    volumes:
-      - .:/app
 
 volumes:
   postgres_data:
