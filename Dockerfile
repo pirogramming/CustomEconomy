@@ -25,8 +25,9 @@ RUN pip install --no-cache-dir -r requirements.txt \
 COPY . .
 
 # 3. 비관리자 권한 사용자 생성 (보안 정석)
-RUN useradd -m sihyun
-RUN chown -R sihyun:sihyun /app
+RUN id -u sihyun >/dev/null 2>&1 || useradd -m sihyun && \
+    mkdir -p /app/staticfiles && \
+    chown -R sihyun:sihyun /app
 USER sihyun
 
 ENV PYTHONUNBUFFERED=1
