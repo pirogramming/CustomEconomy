@@ -45,9 +45,9 @@ services:
     user: root
     # 최신 버전(3.x)에 맞게 초기화 명령어를 보강했습니다.
     command: >
-      bash -c "airflow db migrate &&
-               airflow users create --username admin --firstname sihyun --lastname kim --role Admin --email admin@example.com --password admin || true &&
-               airflow webserver & airflow scheduler"
+      bash -c "airflow db migrate && 
+               airflow users create --username admin --firstname sihyun --lastname kim --role Admin --email admin@example.com --password admin &&
+               airflow standalone"
     depends_on:
       postgres:
         condition: service_healthy
