@@ -34,7 +34,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     username= models.CharField(max_length=20, unique=True)
     email = models.EmailField(max_length=40, unique=True)
-    image_url = models.URLField(max_length=500, null=True, blank=True)
+    image_url = models.ImageField(upload_to='profiles/', null=True, blank=True)
     level = models.IntegerField(default=1, help_text="1~5")
     level_score = models.IntegerField(default=0)
     total_score = models.IntegerField(default=0)

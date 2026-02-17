@@ -567,37 +567,26 @@ def update_interest(request):
 @login_required
 @require_POST
 def update_photo(request):
-    # 파일을 프로젝트 static/img/uploads 에 저장하고 URL을 user.image_url에 저장
-    from django.conf import settings
-
-    # 리셋 요청 처리
+    # 1. 리셋 요청 처리 (기존 유지)
     if request.POST.get('reset_default') == '1':
+        # 필드가 ImageField면 None을 넣고 저장하면 파일 연결이 끊깁니다.
         request.user.image_url = None
         request.user.save(update_fields=['image_url'])
         messages.success(request, '기본 프로필로 변경되었습니다.')
         return redirect('edit')
 
+    # 2. 파일 확인 (기존 유지)
     file = request.FILES.get('photo')
     if not file:
         messages.error(request, '업로드할 파일을 선택해 주세요.')
         return redirect('edit')
 
-    upload_dir = Path(settings.BASE_DIR) / 'static' / 'img' / 'uploads'
-    upload_dir.mkdir(parents=True, exist_ok=True)
-
-    # 안전한 파일명
-    import uuid
-    ext = Path(file.name).suffix
-    fname = f"user_{request.user.id}_{uuid.uuid4().hex[:8]}{ext}"
-    dest = upload_dir / fname
-
-    with open(dest, 'wb') as out:
-        for chunk in file.chunks():
-            out.write(chunk)
-
-    # 개발환경에서 접근 가능한 static 경로로 저장
-    request.user.image_url = settings.STATIC_URL + f"img/uploads/{fname}"
+    # 3. ImageField 저장 (이게 핵심!)
+    # 필드에 파일 객체를 바로 할당하면 장고가 알아서:
+    # 1) 파일명 안전하게 변경 2) MEDIA_ROOT/profiles에 저장 3) DB에 경로 기록을 다 해줍니다.
+    request.user.image_url = file 
     request.user.save(update_fields=['image_url'])
+
     messages.success(request, '프로필 사진이 변경되었습니다.')
     return redirect('edit')
     

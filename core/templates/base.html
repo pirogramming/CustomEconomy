@@ -35,7 +35,7 @@
             <!-- 유저 프로필 이미지 -->
             <div class="profile-avatar">
                 {% if user.is_authenticated and user.image_url %}
-                    <img src="{{ user.image_url }}" alt="프로필">
+                    <img src="{{ user.image_url.url }}" alt="프로필">
                 {% else %}
                     <img src="{% static 'img/profile-default.jpg' %}" alt="기본 프로필">
                 {% endif %}

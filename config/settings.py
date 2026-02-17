@@ -256,3 +256,7 @@ print("[ENV] DB_HOST =", os.getenv("DB_HOST"))
 print("[ENV] DB_PORT =", os.getenv("DB_PORT"))
 print("[ENV] DB_NAME =", os.getenv("DB_NAME"))
 print("[ENV] DB_USER =", os.getenv("DB_USER"))
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
