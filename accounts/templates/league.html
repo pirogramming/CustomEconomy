@@ -30,7 +30,7 @@
             
             <div class="profile-img-box">
                 {% if user.image_url %}
-                    <img src="{{ user.image_url }}" alt="{{ user.username }}">
+                    <img src="{{ user.image_url.url }}" alt="{{ user.username }}">
                 {% else %}
                     <img src="{% static 'img/profile-default.jpg' %}" alt="기본">
                 {% endif %}
