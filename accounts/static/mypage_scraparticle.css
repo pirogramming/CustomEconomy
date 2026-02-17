@@ -28,6 +28,17 @@
     display: inline-block;
 }
 
+.scraparticle-wrapper .section-title {
+    margin-bottom: 15px;
+}
+
+.scraparticle-wrapper .section-title h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+    margin: 0 0 10px 5px;
+}
+
 @media (max-width: 480px) {
     .scraparticle-header .page-main-title {
         font-size: 26px;

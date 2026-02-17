@@ -6,48 +6,86 @@
 {% endblock %}
 
 {% block content %}
-    <div class="wrong-page-wrapper">
-        <div class="wrong-top-area">
-            <a class="page-main-title" href="{% url 'mypage' %}">Custom Economy</a>
-        </div>
-        <div class="wrong-body-area">
-            <div class="sub-title">
-                <h2>틀린 문제 다시 풀어보기</h2>
-            </div>
-            <div class="sub-explanation">
-                <p>{{ user.username }}님이 틀린 문제들이에요. 틀린 문제를 다시 확인하며 경제 지식을 쌓아보세요!</p>
-            </div>
+<header class="brand-header">
+    <a class="page-main-title" href="{% url 'mypage' %}">Custom Economy</a>
+</header>
 
-            <div class="quiz_list_area">
+<div class="quiz-main-content">
+    <div class="main-left-wrapper">
+        <section class="quiz-hero-section">
+            <div class="hero-inner">
+                <h2 class="quiz-main-title">오답 노트</h2>
+                <p class="quiz-subtext">{{ user.username }}님이 틀린 문제들이에요. 틀린 문제를 다시 확인하며 경제 지식을 쌓아보세요!</p>
+            </div>
+        </section>
+
+        <section class="quiz-body-area">
+            <div class="quiz-inner-wrapper">
                 {% for r in wrong_results %}
-                <div class="question-card-with-explanation">
-                    <div class="quiz_date">{{ r.created_at|date:"Y. m. d" }}</div>
-                    <div class="question-header">
-                        <h3 class="question-number">Q. {{ r.quiz.question }}</h3>
+                <div class="quiz-card{% if forloop.counter > 10 %} is-hidden{% endif %}">
+                    <div class="card-top">
+                        <span class="question-index date-text">{{ r.created_at|date:"Y. m. d" }}</span>
                     </div>
+                    <h3 class="question-text">Q. {{ r.quiz.question }}</h3>
 
                     <div class="answers-grid">
-                    {% for c in r.quiz.choices.all %}
-                        <div class="answer-option
+                        {% for c in r.quiz.choices.all %}
+                        <div class="answer-option-result
                         {% if c.is_correct %}correct
                         {% elif c.choice_text == r.selected_answer %}wrong
                         {% endif %}
                         ">
-                        <span class="answer-text">{{ forloop.counter }}. {{ c.choice_text }}</span>
+                            <span class="answer-text">{{ forloop.counter }}. {{ c.choice_text }}</span>
                         </div>
-                    {% endfor %}
+                        {% endfor %}
                     </div>
 
                     <div class="explanation-box">
-                        <p class="explanation-text">💡 {{ r.quiz.explanation }}</p>
+                        <p class="explanation-text">💡 <strong>해설:</strong> {{ r.quiz.explanation }}</p>
                     </div>
                 </div>
                 {% empty %}
-                <p>틀린 문제가 없습니다!</p>
+                <div class="quiz-card empty-state">
+                    <p class="empty-text">틀린 문제가 없습니다!</p>
+                </div>
                 {% endfor %}
-        </div>
+            </div>
+            
+            {% if wrong_results|length > 10 %}
+            <div class="wrongquiz-load-more">
+                <button id="loadMoreWrongQuiz" class="load-more-btn" type="button">더보기</button>
+            </div>
+            {% endif %}
+        </section>
     </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loadMoreBtn = document.getElementById('loadMoreWrongQuiz');
+    if (!loadMoreBtn) return;
     
+    let currentIndex = 10;
+    const quizCards = document.querySelectorAll('.quiz-card');
+    const totalCards = quizCards.length;
     
-    
+    loadMoreBtn.addEventListener('click', function() {
+        const hiddenCards = document.querySelectorAll('.quiz-card.is-hidden');
+        let count = 0;
+        
+        for (let card of hiddenCards) {
+            if (count >= 10) break;
+            card.classList.remove('is-hidden');
+            count++;
+        }
+        
+        // 더 이상 숨겨진 카드가 없으면 버튼 숨기기
+        if (document.querySelectorAll('.quiz-card.is-hidden').length === 0) {
+            loadMoreBtn.style.display = 'none';
+        }
+    });
+});
+</script>
 {% endblock %}

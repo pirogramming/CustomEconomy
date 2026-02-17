@@ -32,7 +32,7 @@
                 {% if user.image_url %}
                     <img src="{{ user.image_url }}" alt="{{ user.username }}">
                 {% else %}
-                    <img src="{% static 'img/fox-avatar.png' %}" alt="기본">
+                    <img src="{% static 'img/profile-default.jpg' %}" alt="기본">
                 {% endif %}
             </div>
 
@@ -56,7 +56,7 @@
                 {% if user.image_url %}
                     <img src="{{ user.image_url }}" alt="프로필">
                 {% else %}
-                    <img src="{% static 'img/fox-avatar.png' %}" alt="기본">
+                    <img src="{% static 'img/profile-default.jpg' %}" alt="기본">
                 {% endif %}
                 <span class="nickname">{{ user.username }}</span>
             </div>
