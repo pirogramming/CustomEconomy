@@ -47,7 +47,7 @@ jobs:
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             git pull origin deploy
-            sudo docker compose pull
-            sudo docker compose up -d
+            sudo docker-compose pull
+            sudo docker-compose up -d
             # DB 마이그레이션까지 자동으로!
-            sudo docker compose exec -T django-app python manage.py migrate
+            sudo docker-compose exec -T django-app python manage.py migrate
