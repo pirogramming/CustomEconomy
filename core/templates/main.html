@@ -15,21 +15,42 @@
 
     <section class="hot-news-section">
         <h2 class="section-title hot-title">🔥 오늘 가장 Hot한 뉴스 🔥</h2>
-        {% if latest_articles %}
-            {% with latest=latest_articles.0 %}
-            <article class="featured-card" onclick="location.href='{% url 'detail' latest.pk %}'" style="cursor:pointer;">
-                <div class="featured-content">
-                    <div class="featured-text">
-                        <h3 class="featured-title">{{ latest.title }}</h3>
-                        <p class="featured-excerpt">{{ latest.content|truncatechars:150 }}</p>
+<div class="featured-section">
+    <div class="carousel-outer-wrapper">
+        <button class="nav-btn prev" onclick="moveSlide(-1)">❮</button>
+
+        <div class="carousel-viewport">
+            <div class="slider-wrapper" id="sliderWrapper">
+                {% for article in latest_articles %}
+                <article class="featured-card" onclick="location.href='{% url 'detail' article.pk %}'">
+                    <div class="featured-content">
+                        <div class="featured-text">
+                            <!-- <span class="badge">HOT</span> -->
+                            <h3 class="featured-title">{{ article.title }}</h3>
+                            <p class="featured-excerpt">{{ article.content|truncatechars:130 }}</p>
+                        </div>
+                        <div class="featured-image-container">
+                            {% if article.image_url %}
+                                <img src="{{ article.image_url }}" alt="{{ article.title }}">
+                            {% else %}
+                                <div class="image-placeholder">No Image</div>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="featured-image">
-                        <img src="{{ latest.image_url }}" alt="{{ latest.title }}">
-                    </div>
-                </div>
-            </article>
-            {% endwith %}
-        {% endif %}
+                </article>
+                {% endfor %}
+            </div>
+        </div>
+
+        <button class="nav-btn next" onclick="moveSlide(1)">❯</button>
+    </div>
+
+    <div class="carousel-dots" id="carouselDots">
+        {% for article in latest_articles %}
+            <span class="dot {% if forloop.first %}active{% endif %}" onclick="currentSlide({{ forloop.counter0 }})"></span>
+        {% endfor %}
+    </div>
+</div>
     </section>
 
     <section class="interest-news-section">
@@ -126,7 +147,194 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.style.display = "none";
   };
 });
+
+let currentIdx = 0;
+    const wrapper = document.getElementById('sliderWrapper');
+    const dots = document.querySelectorAll('.dot');
+    const slideCount = dots.length;
+    let timer;
+
+    function updateSlider() {
+        wrapper.style.transform = `translateX(-${currentIdx * 100}%)`;
+        dots.forEach((dot, i) => dot.classList.toggle('active', i === currentIdx));
+    }
+
+    function moveSlide(step) {
+        currentIdx = (currentIdx + step + slideCount) % slideCount;
+        updateSlider();
+        startAutoPlay(); // 조작 시 타이머 리셋
+    }
+
+    function currentSlide(idx) {
+        currentIdx = idx;
+        updateSlider();
+        startAutoPlay();
+    }
+
+    function startAutoPlay() {
+        clearInterval(timer);
+        timer = setInterval(() => moveSlide(1), 2000);
+    }
+
+    // 마우스 올리면 일시정지
+    const viewport = document.querySelector('.carousel-viewport');
+    viewport.addEventListener('mouseenter', () => clearInterval(timer));
+    viewport.addEventListener('mouseleave', () => startAutoPlay());
+
+    if(slideCount > 0) startAutoPlay();
 </script>
+<style>
+/* --- Hot News Section: 글씨 및 이미지 최적화 버전 --- */
 
+/* 1. 최외곽 컨테이너 */
+.hot-news-section {
+    width: 100%;
+    margin-top: 30px; /* 여백 약간 축소 */
+    margin-bottom: 50px;
+}
 
+.featured-section {
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 2. 뷰포트: 선 굵기 조정 */
+.carousel-viewport {
+    width: 100%;
+    overflow: hidden;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.slider-wrapper {
+    display: flex;
+    width: 100%;
+    transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* 4. 개별 카드: 높이를 400px -> 340px로 축소 */
+.featured-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+    padding: 40px 12%; /* 상하 패딩 줄임, 좌우 여백 확보 */
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    height: 340px;     /* 전체적인 세로 부피 감소 */
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.featured-card:hover {
+    background: #fcfcfc;
+}
+
+.featured-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center; /* 중앙 정렬 강화 */
+    gap: 40px;               /* 요소 간 간격 조정 */
+}
+
+/* 5. 텍스트 스타일: 크기 하향 조정 */
+.featured-text {
+    flex: 1;
+    min-width: 0;
+    max-width: 600px; /* 텍스트가 너무 퍼지지 않게 제한 */
+}
+
+.featured-title {
+    font-size: 1.75rem;   /* 2.2rem -> 1.75rem으로 축소 */
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #111;
+    line-height: 1.4;
+    word-break: keep-all;
+}
+
+.featured-excerpt {
+    font-size: 1.05rem;   /* 1.15rem -> 1.05rem으로 축소 */
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 8px;
+    /* 3줄 이상 넘어갈 경우 생략 처리(선택 사항) */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 6. 이미지 컨테이너: 크기 축소 */
+.featured-image-container {
+    flex: 0 0 35%;        /* 40% -> 35%로 비중 축소 */
+    max-width: 420px;     /* 최대 너비 축소 */
+    aspect-ratio: 16 / 10; /* 약간 더 정방형에 가깝게 조정 */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08); /* 그림자도 연하게 */
+}
+
+.featured-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 7. 내비게이션 버튼: 크기 및 디자인 미세 조정 */
+.nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;         /* 50px -> 44px */
+    height: 44px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #eee;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background: #f8f8f8;
+    color: var(--c-orange);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.nav-btn.prev { left: 25px; }
+.nav-btn.next { right: 25px; }
+
+/* 8. 인디케이터(점) */
+.carousel-dots {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dot {
+    width: 8px;          /* 10px -> 8px */
+    height: 8px;
+    background: #ddd;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.dot.active {
+    background: var(--c-orange);
+    width: 20px;         /* 25px -> 20px */
+    border-radius: 10px;
+}
+</style>
 {% endblock %}

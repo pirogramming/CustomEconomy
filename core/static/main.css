@@ -453,3 +453,12 @@ section {
 .main-wrapper .modal .modal-content .button_area .yes_btn:hover{
   cursor: pointer;
 }
+
+.category-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--c-orange);
+    margin-bottom: 4px;
+}

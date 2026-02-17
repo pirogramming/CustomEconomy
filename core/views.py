@@ -186,9 +186,9 @@ def main_view(request):
     has_learning_history = False
 
     # 상단 인기 뉴스
-    latest_articles = Article.objects.filter(is_popular=True).order_by('-published_at')[:1]
+    latest_articles = Article.objects.filter(is_popular=True).order_by('-published_at')[:5]
     if not latest_articles.exists():
-        latest_articles = Article.objects.order_by('-published_at')[:1]
+        latest_articles = Article.objects.order_by('-published_at')[:5]
         
     if user.is_authenticated:
         # --- [1단계] 점수 및 가중치 계산 시간 설정 ---

@@ -280,3 +280,41 @@ def run_financial_news():
     fetcher = MKNewsFetcher()
     f_links = fetcher.fetch_financial_links(limit=15)
     fetcher.run_import_from_links('금융', f_links, limit=5)
+
+# ... 기존 코드 최하단에 추가 ...
+
+# def local_test_run():
+#     """
+#     로컬 개발 환경에서 Airflow 없이 크롤링을 수동으로 실행하기 위한 함수
+#     """
+#     print("\n🚀 [로컬 테스트] 크롤링 작업을 시작합니다...")
+    
+#     # 1. 프로젝트 환경 설정 (주석 해제 필요)
+#     # 로컬에서 실행할 때는 Django 설정을 불러와야 모델에 접근 가능합니다.
+#     import os
+#     import django
+#     if not os.environ.get("DJANGO_SETTINGS_MODULE"):
+#         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "myproject.settings") # 시현님 프로젝트명 확인!
+#         django.setup()
+
+#     try:
+#         fetcher = MKNewsFetcher()
+
+#         # 1. 인기 뉴스 수집
+#         run_popular_news()
+
+#         # 2. RSS 기반 카테고리 수집 (원하는 카테고리만 활성화)
+#         for cat in ['경제', '기업', '증권', '부동산']:
+#             run_category_news(cat)
+
+#         # 3. 금융 섹션 직접 크롤링 수집
+#         run_financial_news()
+
+#         print("\n✨ 모든 크롤링 테스트가 성공적으로 완료되었습니다!")
+
+#     except Exception as e:
+#         print(f"\n❌ 크롤링 중 에러 발생: {e}")
+
+# if __name__ == "__main__":
+#     # 로컬에서만 실행되도록 보장
+#     local_test_run()
