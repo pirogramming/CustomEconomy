@@ -47,7 +47,12 @@ jobs:
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             git pull origin deploy
-            sudo ~/.docker/cli-plugins/docker-compose up -d pull
-            sudo ~/.docker/cli-plugins/docker-compose up -d up -d
-            # DB 마이그레이션까지 자동으로!
-            sudo ~/.docker/cli-plugins/docker-compose up -d exec -T django-app python manage.py migrate
+            
+            # 1. 최신 이미지 가져오기
+            sudo ~/.docker/cli-plugins/docker-compose pull
+            
+            # 2. 컨테이너 띄우기 (이미 켜져있으면 업데이트된 이미지만 반영해서 재시작됨)
+            sudo ~/.docker/cli-plugins/docker-compose up -d
+            
+            # 3. DB 마이그레이션 실행 (exec 명령어 사용)
+            sudo ~/.docker/cli-plugins/docker-compose exec -T django-app python manage.py migrate
