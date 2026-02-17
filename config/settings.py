@@ -35,6 +35,7 @@ ALLOWED_HOSTS = [
     "13.125.210.67",
     '13.125.210.67.nip.io',  # 이 줄을 꼭 추가하세요!
     '.nip.io',
+    'customeconomy.duckdns.org',
 ]
 
 
