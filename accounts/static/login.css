@@ -177,3 +177,103 @@
   border-radius: 50%;
   border: 1px solid #DDDADA;
 }
+
+/* =========================================
+   반응형 디자인
+   ========================================= */
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .auth-container {
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  .auth-container .login_float {
+    width: 100%;
+    min-width: 280px;
+    height: auto;
+    min-height: 500px;
+    padding: 30px 15px;
+  }
+  
+  .auth-container .login_float .login_logo {
+    margin-top: 10px;
+  }
+  
+  .auth-container .login_float .login_logo>p {
+    font-size: 28px;
+  }
+  
+  .auth-container .login_float .login_toggle {
+    margin-bottom: 30px;
+    width: 100%;
+  }
+  
+  .auth-container .login_float .login_toggle .login_toggle_btn,
+  .auth-container .login_float .login_toggle .signup_toggle_btn {
+    width: 50%;
+    font-size: 18px;
+  }
+  
+  .auth-container .login_float .auth-form .login_input_area .field {
+    width: 100%;
+    max-width: 320px;
+    margin: 8px auto;
+  }
+  
+  .auth-container .login_float .auth-form .signup_submit_btn > button {
+    width: 180px;
+    height: 40px;
+    font-size: 15px;
+    margin-top: 30px;
+  }
+  
+  .auth-container .login_float .login_divider > hr {
+    width: 80px;
+  }
+  
+  .auth-container .login_float .login_social_area {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .auth-container .login_float .login_social_area .social_signup_btn > a {
+    width: 48px;
+    height: 48px;
+    margin: 6px;
+  }
+  
+  .auth-container .login_float .login_social_area .social_signup_btn a>img {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+/* 태블릿 (481px ~ 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .auth-container {
+    padding: 40px 20px;
+  }
+  
+  .auth-container .login_float {
+    width: 90%;
+    max-width: 480px;
+    height: auto;
+    padding: 30px 20px;
+  }
+  
+  .auth-container .login_float .login_logo>p {
+    font-size: 32px;
+  }
+  
+  .auth-container .login_float .login_toggle .login_toggle_btn,
+  .auth-container .login_float .login_toggle .signup_toggle_btn {
+    width: 160px;
+  }
+  
+  .auth-container .login_float .auth-form .login_input_area .field {
+    width: 90%;
+    max-width: 380px;
+  }
+}

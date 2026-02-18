@@ -408,3 +408,159 @@
   transform: scale(1.1);
   color: #f39c12;
 }
+
+/* =========================================
+   반응형 디자인 보완
+   ========================================= */
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .articleListBody {
+    padding: 15px 10px;
+  }
+  
+  .articleListBody .page-main-title {
+    font-size: 26px;
+    padding: 15px 0;
+  }
+  
+  .articleListBody .articleMenuBar {
+    flex-wrap: wrap;
+    height: auto;
+    max-width: 100%;
+  }
+  
+  .articleListBody .articleMenuBar > a {
+    width: calc(50% - 5px);
+    font-size: 11px;
+    padding: 8px 10px;
+    margin: 2px;
+  }
+  
+  .articleListBody .middleFloat {
+    max-width: 100%;
+    padding: 12px;
+    border-radius: 0 0 20px 20px;
+  }
+  
+  .articleListBody .middleFloat .sort-dropdown {
+    margin-right: 10px;
+    margin-top: 5px;
+  }
+  
+  .articleListBody .middleFloat .sort-btn {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+  
+  .articleListBody .middleFloat .articleCards {
+    grid-template-columns: 1fr;
+    padding: 15px 5px;
+    gap: 15px;
+  }
+  
+  .articleListBody .middleFloat .articleCards .article-card {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    margin: 0 auto;
+  }
+  
+  .articleListBody .middleFloat .articleCards .article-card .thumb-wrap {
+    height: 140px;
+  }
+  
+  .articleListBody .middleFloat .articleCards .article-card .article-info .title {
+    font-size: 14px;
+  }
+  
+  .articleListBody .middleFloat .articleCards .article-card .article-info .smallTag .tag {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+  
+  .articleListBody .middleFloat .pagination {
+    gap: 6px;
+    padding: 8px 12px;
+  }
+  
+  .articleListBody .middleFloat .pagination a {
+    font-size: 12px;
+    padding: 5px 10px;
+  }
+}
+
+/* 태블릿 (481px ~ 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .articleListBody {
+    padding: 20px 15px;
+  }
+  
+  .articleListBody .page-main-title {
+    font-size: 36px;
+  }
+  
+  .articleListBody .articleMenuBar {
+    max-width: 100%;
+  }
+  
+  .articleListBody .articleMenuBar > a {
+    width: auto;
+    flex: 1;
+    font-size: 12px;
+    padding: 9px 14px;
+  }
+  
+  .articleListBody .middleFloat {
+    max-width: 100%;
+    padding: 20px;
+  }
+  
+  .articleListBody .middleFloat .articleCards {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 25px;
+    gap: 18px;
+  }
+  
+  .articleListBody .middleFloat .articleCards .article-card {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* 중간 사이즈 (769px ~ 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .articleListBody .page-main-title {
+    font-size: 42px;
+  }
+  
+  .articleListBody .middleFloat .articleCards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
+
+/* 기존 미디어 쿼리 정리 */
+@media (max-width: 1300px) {
+  .articleListBody .middleFloat .articleCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .articleListBody .articleMenuBar,
+  .articleListBody .middleFloat {
+    max-width: 692px;
+  }
+}
+
+@media (max-width: 1000px) and (min-width: 769px) {
+  .articleListBody .middleFloat .articleCards {
+    grid-template-columns: 1fr;
+  }
+  .articleListBody .articleMenuBar,
+  .articleListBody .middleFloat {
+    max-width: 392px;
+  }
+  .articleListBody .articleMenuBar > a {
+    font-size: 13px;
+  }
+}

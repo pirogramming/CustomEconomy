@@ -210,31 +210,122 @@ section {
 
 @media (max-width: 480px) {
     .main-wrapper {
-        padding: 16px 12px 32px;
+        padding: 80px 16px 32px; /* 상단 여백을 늘려 햄버거 메뉴와 겹치지 않게 */
     }
     
     .page-main-title {
-        font-size: 26px;
+        font-size: 24px;
+        margin-bottom: 16px;
     }
     
-    .news-grid {
-        gap: 10px;
+    .section-title {
+        font-size: 18px;
+        margin-bottom: 12px;
+    }
+    
+    /* Featured 카드 모바일 최적화 */
+    .featured-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+    
+    .featured-content {
+        flex-direction: column; /* 세로 배치로 변경 */
+        gap: 12px;
+    }
+    
+    .featured-image {
+        width: 100%; /* 전체 너비 사용 */
+        height: 200px; /* 높이 조정 */
+        order: -1; /* 이미지를 위로 */
     }
     
     .featured-title {
-        font-size: 13px;
+        font-size: 16px;
+        margin-bottom: 6px;
     }
     
     .featured-excerpt {
-        font-size: 10px;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+    
+    /* 뉴스 그리드 1열로 */
+    .news-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    /* 뉴스 카드 */
+    .news-card {
+        padding: 20px;
+        min-height: auto;
     }
     
     .card-title {
-        font-size: 11px;
+        font-size: 15px;
     }
     
     .card-excerpt {
-        font-size: 9px;
+        font-size: 13px;
+    }
+    
+    section {
+        margin-bottom: 28px;
+    }
+}
+
+/* 태블릿 (481px ~ 767px) */
+@media (min-width: 481px) and (max-width: 767px) {
+    .main-wrapper {
+        padding: 80px 24px 40px;
+    }
+    
+    .page-main-title {
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+    
+    .section-title {
+        font-size: 20px;
+    }
+    
+    .featured-card {
+        padding: 24px;
+    }
+    
+    .featured-content {
+        flex-direction: column;
+    }
+    
+    .featured-image {
+        width: 100%;
+        height: 220px;
+    }
+    
+    .featured-title {
+        font-size: 18px;
+    }
+    
+    .featured-excerpt {
+        font-size: 14px;
+    }
+    
+    .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 18px;
+    }
+    
+    .news-card {
+        padding: 20px;
+    }
+    
+    .card-title {
+        font-size: 15px;
+    }
+    
+    .card-excerpt {
+        font-size: 13px;
     }
 }
 
@@ -248,7 +339,7 @@ section {
     }
     
     .page-main-title {
-        font-size: 48px;
+        font-size: 40px;
     }
     
     .logout-btn {
@@ -262,7 +353,11 @@ section {
     }
     
     .featured-card {
-        padding: 24px;
+        padding: 28px;
+    }
+    
+    .featured-content {
+        flex-direction: row; /* 가로 배치 복원 */
     }
     
     .featured-title {
@@ -280,6 +375,7 @@ section {
     }
     
     .news-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2단 그리드 */
         gap: 20px;
     }
     
@@ -303,7 +399,7 @@ section {
     }
     
     .page-main-title {
-        font-size: 56px;
+        font-size: 48px;
     }
     
     .section-title {
@@ -328,6 +424,7 @@ section {
     }
     
     .news-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3단 그리드 */
         gap: 24px;
     }
     
@@ -469,4 +566,47 @@ section {
     font-weight: 500;
     color: var(--c-green);
     margin-bottom: 4px;
+}
+
+/* 모달 반응형 */
+@media (max-width: 640px) {
+  .main-wrapper .modal .modal-content {
+    width: 90%;
+    max-width: 400px;
+    height: auto;
+    min-height: 400px;
+    padding: 30px 20px;
+  }
+  
+  .main-wrapper .modal .modal-content .close_btn {
+    top: 15px;
+    right: 15px;
+  }
+  
+  .main-wrapper .modal .modal-content .leveltest_suggestion {
+    padding-top: 40px;
+  }
+  
+  .main-wrapper .modal .modal-content .leveltest_suggestion>p {
+    font-size: 16px;
+    line-height: 28px;
+  }
+  
+  .main-wrapper .modal .modal-content .leveltest_subtext>p {
+    font-size: 12px;
+  }
+  
+  .main-wrapper .modal .modal-content .button_area {
+    bottom: 50px;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 20px;
+  }
+  
+  .main-wrapper .modal .modal-content .button_area .no_btn,
+  .main-wrapper .modal .modal-content .button_area .yes_btn {
+    width: 100%;
+    max-width: 280px;
+    margin: 0;
+  }
 }
