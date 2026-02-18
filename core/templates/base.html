@@ -18,6 +18,11 @@
 </head>
 
 <body>
+    <!-- 모바일 햄버거 메뉴 버튼 -->
+    <button id="mobileMenuToggle" class="mobile-menu-toggle">
+        <span id="mobileMenuIcon">☰</span>
+    </button>
+
     <nav class="sidebar">
         <button id="sidebarToggle" class="toggle-btn">
             <span class="arrow-icon">◀</span>
@@ -159,6 +164,33 @@
         const toggleBtn = document.getElementById('sidebarToggle');
         const arrowIcon = toggleBtn.querySelector('.arrow-icon');
         const body = document.body;
+
+        // 모바일 메뉴 토글
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mobileMenuIcon = document.getElementById('mobileMenuIcon');
+        
+        if (mobileMenuToggle) {
+            mobileMenuToggle.addEventListener('click', () => {
+                body.classList.toggle('mobile-menu-open');
+                
+                // 아이콘 변경
+                if (body.classList.contains('mobile-menu-open')) {
+                    mobileMenuIcon.innerText = '✕';
+                } else {
+                    mobileMenuIcon.innerText = '☰';
+                }
+            });
+            
+            // 오버레이 클릭 시 메뉴 닫기
+            document.addEventListener('click', (e) => {
+                if (body.classList.contains('mobile-menu-open') && 
+                    !e.target.closest('.sidebar') && 
+                    !e.target.closest('.mobile-menu-toggle')) {
+                    body.classList.remove('mobile-menu-open');
+                    mobileMenuIcon.innerText = '☰';
+                }
+            });
+        }
 
         // 1. 저장된 상태 불러오기 (새로고침 대응)
         const isCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';

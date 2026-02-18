@@ -193,3 +193,172 @@
   margin-top: 10px;
   color: #444;
 }
+
+/* =========================================
+   반응형 디자인
+   ========================================= */
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .leveltest_body {
+    padding: 10px;
+  }
+  
+  .leveltest_body .leveltest_main .logo_area {
+    padding: 15px;
+  }
+  
+  .leveltest_body .leveltest_main .leveltest_title {
+    font-size: 18px;
+    margin: 0 0 12px 0;
+  }
+  
+  .leveltest_body .leveltest_main .leveltest_progress_area {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    padding: 15px 10px;
+    border-radius: 30px;
+    overflow-x: auto;
+  }
+  
+  .leveltest_body .leveltest_main .leveltest_progress_area .leveltest_progress_banner {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+  }
+  
+  .leveltest_body .leveltest_main .leveltest_progress_area .progress_line {
+    width: 30px;
+  }
+  
+  .leveltest_card {
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    padding: 20px 15px;
+    border-radius: 30px;
+  }
+  
+  .leveltest_card .question_area {
+    height: auto;
+    min-height: 200px;
+  }
+  
+  .leveltest_qtype {
+    padding-left: 10px;
+    padding-top: 15px;
+    font-size: 10px;
+  }
+  
+  .leveltest_question {
+    padding: 10px 10px;
+    font-size: 16px;
+  }
+  
+  .leveltest_options {
+    padding: 10px 10px;
+    gap: 6px;
+  }
+  
+  .leveltest_options > button {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .leveltest_actions {
+    padding: 5px 10px;
+    margin-top: 30px;
+  }
+  
+  .leveltest_btn {
+    width: 80px;
+    height: 38px;
+    font-size: 14px;
+  }
+}
+
+/* 태블릿 (481px ~ 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .leveltest_body .leveltest_main .leveltest_progress_area {
+    width: 90%;
+    max-width: 700px;
+    height: 100px;
+  }
+  
+  .leveltest_body .leveltest_main .leveltest_progress_area .leveltest_progress_banner {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .leveltest_body .leveltest_main .leveltest_progress_area .progress_line {
+    width: 60px;
+  }
+  
+  .leveltest_card {
+    width: 90%;
+    max-width: 700px;
+    height: auto;
+    padding: 40px 30px;
+    border-radius: 60px;
+  }
+  
+  .leveltest_qtype {
+    padding-left: 30px;
+  }
+  
+  .leveltest_question {
+    padding: 10px 30px;
+    font-size: 20px;
+  }
+  
+  .leveltest_options {
+    padding: 10px 30px;
+  }
+  
+  .leveltest_options > button {
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .leveltest_actions {
+    padding: 5px 30px;
+  }
+}
+
+/* 중간 사이즈 (769px ~ 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .leveltest_body .leveltest_main .leveltest_progress_area {
+    width: 90%;
+    max-width: 900px;
+  }
+  
+  .leveltest_card {
+    width: 90%;
+    max-width: 900px;
+    padding: 60px 50px;
+  }
+  
+  .leveltest_qtype {
+    padding-left: 50px;
+  }
+  
+  .leveltest_question {
+    padding: 10px 50px;
+    font-size: 22px;
+  }
+  
+  .leveltest_options {
+    padding: 10px 50px;
+  }
+  
+  .leveltest_options > button {
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .leveltest_actions {
+    padding: 5px 50px;
+  }
+}

@@ -334,8 +334,166 @@ body {
 }
 
 /* =========================
-   반응형 (유지)
+   반응형 디자인
 ========================= */
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+    .quiz-wrapper {
+        padding: 20px 15px;
+    }
+    
+    .quiz-container {
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+    
+    .quiz-container .quiz-header {
+        padding: 30px 20px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+    }
+    
+    .quiz-container .badge {
+        font-size: 0.65rem;
+        padding: 5px 12px;
+    }
+    
+    .quiz-container .article-title {
+        font-size: 1.3rem;
+        margin: 15px 0;
+    }
+    
+    .quiz-container .tag {
+        font-size: 0.7rem;
+        padding: 5px 10px;
+    }
+    
+    .quiz-container .steps {
+        gap: 8px;
+    }
+    
+    .quiz-container .step {
+        width: 32px;
+        height: 32px;
+        font-size: 0.85rem;
+    }
+    
+    .quiz-container .step-line {
+        width: 30px;
+        height: 2px;
+    }
+    
+    .quiz-container .question-count {
+        font-size: 0.8rem;
+    }
+    
+    .quiz-container .question-card {
+        padding: 25px 18px;
+        border-radius: 20px;
+        min-height: 350px;
+    }
+    
+    .quiz-container .question-type {
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+    
+    .quiz-container .question-text {
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+    
+    .quiz-container .options-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .quiz-container .option-content {
+        padding: 16px 18px;
+        min-height: 70px;
+        gap: 14px;
+    }
+    
+    .quiz-container .option-number {
+        min-width: 28px;
+        height: 28px;
+        font-size: 0.85rem;
+    }
+    
+    .quiz-container .option-text {
+        font-size: 0.95rem;
+    }
+    
+    .quiz-container .card-footer {
+        margin-top: 40px;
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .quiz-container .prev-btn {
+        width: 100%;
+        padding: 14px 28px;
+        font-size: 0.95rem;
+    }
+    
+    .quiz-container .next-btn,
+    .quiz-container .finish-button {
+        width: 100%;
+        padding: 16px 40px;
+        font-size: 0.95rem;
+    }
+}
+
+/* 태블릿 (481px ~ 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+    .quiz-wrapper {
+        padding: 30px 20px;
+    }
+    
+    .quiz-container {
+        margin: 30px auto;
+    }
+    
+    .quiz-container .quiz-header {
+        padding: 40px 30px;
+    }
+    
+    .quiz-container .article-title {
+        font-size: 1.6rem;
+    }
+    
+    .quiz-container .question-card {
+        padding: 40px 30px;
+    }
+    
+    .quiz-container .options-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .quiz-container .card-footer {
+        flex-direction: row;
+    }
+}
+
+/* 중간 사이즈 (769px ~ 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .quiz-container .quiz-header {
+        padding: 50px 40px;
+    }
+    
+    .quiz-container .question-card {
+        padding: 50px 40px;
+    }
+    
+    .quiz-container .options-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+}
+
+/* 큰 화면 (1200px 이상) */
 @media (max-width: 1200px) {
     .quiz-container {
         grid-template-columns: 1fr;
@@ -343,21 +501,5 @@ body {
     }
     .quiz-container .quiz-sidebar {
         position: static;
-    }
-}
-
-@media (max-width: 640px) {
-    .quiz-container .quiz-header, .quiz-container .question-card {
-        padding: 35px;
-    }
-    .quiz-container .options-grid {
-        grid-template-columns: 1fr;
-    }
-    .quiz-container .card-footer {
-        flex-direction: column;
-        gap: 15px;
-    }
-    .quiz-container .prev-btn, .quiz-container .next-btn, .quiz-container .finish-button {
-        width: 100%;
     }
 }
