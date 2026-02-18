@@ -95,7 +95,7 @@
             {% for article in weak_articles %}
             <article class="news-card weak-border" onclick="location.href='{% url 'detail' article.pk %}'" style="cursor:pointer;">
                 <div class="card-content">
-                    <span class="category-tag weak-tag">{{ article.category.name }}</span>
+                    <span class="category-tag weak-tag">{{ article.sub_category_names|join:", " }}</span>
                     <h3 class="card-title">{{ article.title }}</h3>
                     <p class="card-excerpt">{{ article.content|truncatechars:80 }}</p>
                     <small>{{ article.published_at|date:"Y.m.d" }}</small>

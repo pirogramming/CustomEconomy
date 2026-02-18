@@ -462,3 +462,11 @@ section {
     color: var(--c-orange);
     margin-bottom: 4px;
 }
+.category-tag.weak-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--c-green);
+    margin-bottom: 4px;
+}
