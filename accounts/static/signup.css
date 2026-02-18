@@ -303,3 +303,128 @@
 .signup_body .modal .modal-content .button_area .yes_btn:hover{
   cursor: pointer;
 } */
+
+/* =========================================
+   반응형 디자인
+   ========================================= */
+
+/* 모바일 (480px 이하) */
+@media (max-width: 480px) {
+  .signup_body {
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  .signup_float {
+    width: 100%;
+    min-width: 280px;
+    height: auto;
+    padding: 30px 15px;
+  }
+  
+  .signup_float .signup_logo {
+    margin-top: 10px;
+  }
+  
+  .signup_float .signup_logo>p {
+    font-size: 28px;
+  }
+  
+  .signup_float .signup_toggle {
+    margin-bottom: 30px;
+    width: 100%;
+  }
+  
+  .signup_float .signup_toggle .login_toggle_btn,
+  .signup_float .signup_toggle .signup_toggle_btn {
+    width: 50%;
+    font-size: 18px;
+  }
+  
+  .signup_float .signup_input_area .field {
+    width: 100%;
+    max-width: 320px;
+    margin: 6px auto;
+    padding: 8px;
+  }
+  
+  .signup_float .signup_interest_title {
+    margin-left: 20px;
+    margin-top: 30px;
+  }
+  
+  .signup_float .signup_interest_area {
+    width: 100%;
+    max-width: 320px;
+    height: auto;
+    padding: 15px;
+  }
+  
+  .signup_float .signup_interest_area .interest-btn {
+    width: 100px;
+    height: 32px;
+    font-size: 12px;
+    margin: 4px;
+    padding: 4px;
+  }
+  
+  .signup_submit_btn button {
+    width: 180px;
+    height: 40px;
+    font-size: 15px;
+    margin-top: 30px;
+  }
+  
+  .signup_divider hr {
+    width: 80px;
+  }
+  
+  .signup_social_area {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .signup_social_area a>img {
+    width: 44px;
+    height: 44px;
+    margin: 0px 6px;
+  }
+}
+
+/* 태블릿 (481px ~ 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .signup_body {
+    padding: 40px 20px;
+  }
+  
+  .signup_float {
+    width: 90%;
+    max-width: 480px;
+    height: auto;
+    padding: 30px 20px;
+  }
+  
+  .signup_float .signup_logo>p {
+    font-size: 32px;
+  }
+  
+  .signup_float .signup_toggle .login_toggle_btn,
+  .signup_float .signup_toggle .signup_toggle_btn {
+    width: 160px;
+  }
+  
+  .signup_float .signup_input_area .field {
+    width: 90%;
+    max-width: 380px;
+  }
+  
+  .signup_float .signup_interest_area {
+    width: 90%;
+    max-width: 380px;
+    height: auto;
+  }
+  
+  .signup_float .signup_interest_area .interest-btn {
+    width: 110px;
+  }
+}
