@@ -21,7 +21,7 @@
         <div class="profile-card">
             <div class="profile-left">
                 <div class="profile-img-box">
-                    <img src="{% if request.user.image_url %}{{ request.user.image_url.url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" id="mainProfileImg" alt="프로필 이미지">
+                    <img src="{% if request.user.image_url.url %}{{ request.user.image_url.url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" id="mainProfileImg" alt="프로필 이미지">
                     <button class="edit-icon-circle" onclick="openModal('modal-photo')">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M12 20h9"></path>
@@ -107,7 +107,7 @@
                     {% csrf_token %}
                     <div class="photo-preview-area">
                         <div class="preview-box">
-                            <img src="{% if request.user.image_url %}{{ request.user.image_url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" id="previewImg" alt="미리보기">
+                            <img src="{% if request.user.image_url.url %}{{ request.user.image_url.url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" id="previewImg" alt="미리보기">
                         </div>
                     </div>
                     <input type="file" id="fileInput" name="photo" accept="image/*" hidden onchange="previewImage(this)">

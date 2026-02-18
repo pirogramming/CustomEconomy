@@ -24,7 +24,7 @@
         <section class="card-section my-info-card" onclick="window.location.href='{% url 'edit' %}'" style="cursor: pointer;">
             <div class="user-profile">
                 <div class="profile-image">
-                    <img src="{% if user_image_url %}{{ user_image_url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" alt="프로필">
+                    <img src="{% if user_image_url.url %}{{ user_image_url.url }}{% else %}{% static 'img/profile-default.jpg' %}{% endif %}" alt="프로필">
                 </div>
                 <div class="profile-info">
                     <div class="info-header">
