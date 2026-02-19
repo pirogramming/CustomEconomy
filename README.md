@@ -8,7 +8,7 @@
 
 "경제를 공부하는 게 아니라, 이해하게 만들자"라는 목표로 시작되었습니다.
 
-### Custom Economy url : [https://customeconomy.duckdns.org](https://www.google.com/search?q=https://customeconomy.duckdns.org)
+### Custom Economy url : https://customeconomy.duckdns.org/
 
 # 📌 목차
 
