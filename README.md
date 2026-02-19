@@ -156,7 +156,8 @@ CustomEconomy/
 <div align="center">
 
 | **양현서** | **강승구** | **공하은** | **안시현** | **장준학** |
-| :------: |  :------: | :------: | :------: | :------: |
+| :---: | :---: | :---: | :---: | :---: |
+| [<img width="150" height="200" alt="image" src="https://github.com/user-attachments/assets/b3505d51-2868-4646-b5bc-8c8b6d5e3180" /> <br/> @lilyyang0077](https://github.com/lilyyang0077) |  [<img width="150" height="200" alt="image" src="https://github.com/user-attachments/assets/b23fbedd-0b96-476d-9f47-10cd9ec645b1" /> <br/> @SeungKu-Kang](https://github.com/SeungKu-Kang) | [<img width="150" height="200" alt="image" src="https://github.com/user-attachments/assets/285e6fc5-272f-43f2-9397-be9f6a0ad740" /> <br/> @haeuniea](https://github.com/haeuniea) | [<img width="150" height="200" alt="image" src="https://github.com/user-attachments/assets/413e3e80-1f48-4d88-9ff3-a9aa1174a0c7" /> <br/> @xihxxn](https://github.com/xihxxn) | [<img width="150" height="200" alt="image" src="https://github.com/user-attachments/assets/80e2bf69-a8fd-4224-9469-89c2dc746e02" /> <br/> @Greendeer07](https://github.com/Greendeer07) |
 | PM / FE | BE | BE | BE | FE |
 
 </div>
