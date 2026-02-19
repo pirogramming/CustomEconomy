@@ -2,7 +2,7 @@ name: Deploy to AWS
 
 on:
   push:
-    branches: [ "deploy" ] # deploy 브랜치에 푸시될 때만 작동합니다!
+    branches: [ "deployment" ] # deploy 브랜치에 푸시될 때만 작동합니다!
 
 jobs:
   deploy:
